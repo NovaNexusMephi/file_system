@@ -46,11 +46,7 @@ struct FATConfig final {
  * @param[in,out] fat_config A reference to the `FATConfig` structure where the parsed
  *                           configuration will be stored.
  */
-inline void operator>>(const YAML::Node& node, FATConfig& fat_config) {
-  if (node["segment_number"] && node["segment_number"].IsScalar()) {
-    fat_config.segment_number = node["segment_number"].as<std::uint8_t>();
-  }
-}
+void operator>>(const YAML::Node&, FATConfig&);
 
 }  // namespace config
 

@@ -1,4 +1,4 @@
-#include "config/config.h"
+#include <config/config.h>
 
 #include <gtest/gtest.h>
 
@@ -10,9 +10,4 @@ TEST(ConfigTest, HandlesConfigConstructorWithoutPath) {
   auto info_cfg = cfg.get_info_config();
   EXPECT_EQ(info_cfg.owner_name, "Owner");
   EXPECT_EQ(info_cfg.volume_id, "Volume");
-}
-
-int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
 }
