@@ -8,4 +8,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: echo test
-      - run: apt install clang
+      - run: sudo apt update
+      - run: sudo apt install clang
