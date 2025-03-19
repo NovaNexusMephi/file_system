@@ -16,6 +16,13 @@ set(CONFIGS_SOURCES ${CMAKE_SOURCE_DIR}/configs)
 set(CONFIGS_DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY ${CONFIGS_SOURCES} DESTINATION ${CONFIGS_DESTINATION})
 
-# add_subdirectory(tests)
+
+find_package(yaml-cpp REQUIRED)
+
+add_subdirectory(config)
+
+add_subdirectory(app)
 
 add_executable(${PROJECT_NAME} main.cpp)
+# FIXME: delete linking of config library there
+target_link_libraries(${PROJECT_NAME} app config yaml-cpp::yaml-cpp)
