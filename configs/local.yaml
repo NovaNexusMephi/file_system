@@ -1,0 +1,5 @@
+fat:
+  segment_number: 15
+info:
+  owner_name: "owner"
+  volume_id: "volume"
