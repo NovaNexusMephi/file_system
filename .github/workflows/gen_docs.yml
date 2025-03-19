@@ -38,4 +38,4 @@ jobs:
       - name: Publishing docs on github pages
         uses: rayluo/github-pages-overwriter@v1.3
         with:
-          source-directory: ./docs/html
+          source-directory: docs/html
