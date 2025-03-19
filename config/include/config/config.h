@@ -44,7 +44,9 @@ class Config final {
    *
    * @see FATConfig
    */
-  [[nodiscard]] inline const FATConfig& get_fat_config() const noexcept { return fat_cfg_; }
+  [[nodiscard]] inline const FATConfig& get_fat_config() const noexcept {
+    return fat_cfg_;
+  }
 
   /**
    * @brief Retrieves the user-specified metadata information configuration.
@@ -57,7 +59,9 @@ class Config final {
    *
    * @see InfoConfig
    */
-  [[nodiscard]] inline const InfoConfig& get_info_config() const noexcept { return info_cfg_; }
+  [[nodiscard]] const InfoConfig& get_info_config() const noexcept {
+    return info_cfg_;
+  }
 
  private:
   FATConfig fat_cfg_;
