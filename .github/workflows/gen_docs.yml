@@ -6,6 +6,6 @@ jobs:
   production-deploy:
     runs-on: ubuntu-latest
     steps:
-      run: |
-        echo test
-        apt install clang
+      - uses: actions/checkout@v2
+      - run: echo test
+      - run: apt install clang
