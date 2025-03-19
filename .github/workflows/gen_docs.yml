@@ -1,24 +1,30 @@
-name: formatting and generating docs
+name: Generating docs using doxygen
 
-on: push
+on:
+  push:
+    branches:
+      dev
 
 jobs:
-  format_and_gen_docs:
+  gen_docs:
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Updating
         run: sudo apt update -y
       
       - name: Installing doxygen and clang
-        run: sudo apt install -y doxygen clang
+        run: sudo apt install -y doxygen
       
       - name: Formatting all .cpp and .h files
-        run: find . -iname '*.h' -o -iname '*.cpp' | xargs clang-format -i
-      
-      - name: Generating docs
         run: doxygen .doxygen.conf
 
       - name: Commit and push changes
@@ -28,4 +34,3 @@ jobs:
           git add .
           git diff --cached --quiet || git commit -m "Auto-format code using clang-format"
           git push
-
