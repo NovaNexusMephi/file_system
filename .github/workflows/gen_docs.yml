@@ -1,0 +1,41 @@
+name: Generating docs using doxygen
+
+on:
+  push:
+    branches:
+      dev
+
+jobs:
+  gen_docs:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Updating
+        run: sudo apt update -y
+      
+      - name: Installing doxygen and clang
+        run: sudo apt install -y doxygen
+      
+      - name: Formatting all .cpp and .h files
+        run: doxygen .doxygen.conf
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --cached --quiet || git commit -m "Auto-format code using clang-format"
+          git push
+      
+      - name: Publishing docs on github pages
+        uses: rayluo/github-pages-overwriter@v1.3
+        with:
+          source-directory: docs/html
