@@ -1,4 +1,4 @@
-name: generating docs
+name: formatting and generating docs
 
 on: push
 
@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: echo test
       - run: sudo apt update
-      - run: sudo apt install clang
+      - run: sudo apt install doxygen clang
+      - run: find . -iname '*.h' -o -iname '*.cpp' | xargs clang-format -i
+      - run: doxygen .doxygen.conf
