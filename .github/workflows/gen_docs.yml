@@ -1,0 +1,11 @@
+name: generating docs
+
+on: push
+
+jobs:
+  production-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      run: |
+        echo test
+        apt install clang
