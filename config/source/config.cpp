@@ -4,7 +4,7 @@
 
 #include <filesystem>
 
-using config::Config;
+using namespace config;
 
 Config::Config(const std::filesystem::path& cfg_path) {
   if (std::filesystem::exists(cfg_path)) {
