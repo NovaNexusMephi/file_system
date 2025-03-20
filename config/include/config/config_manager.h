@@ -9,6 +9,7 @@
 #include <libconfig.h++>
 
 #include "config/fat_config.h"
+#include "config/logging_config.h"
 #include "config/system_info_config.h"
 
 namespace config {
@@ -42,8 +43,11 @@ class ConfigManager final {
     /// @param cfg libconfig object containing parsed file
     void read_system_info_config(const libconfig::Config& cfg);
 
+    void read_logging_config(const libconfig::Config& cfg);
+
     FATConfig fat_cfg_{};                 ///< Validated FAT configuration parameters
     SystemInfoConfig system_info_cfg_{};  ///< Validated system information parameters
+    LoggingConfig logging_cfg_{};
 };
 
 /// @}

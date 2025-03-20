@@ -2,9 +2,12 @@
 #define APP_APP_H
 
 #include <config/config_manager.h>
+#include <spdlog/logger.h>
+#include <spdlog/spdlog.h>
 
 #include <atomic>
 #include <filesystem>
+#include <memory>
 
 namespace app {
 
@@ -43,8 +46,9 @@ class App final {
      */
     static void signal_handler(int signal);
 
-    config::ConfigManager cfg_manager_;  ///< Manages configuration settings
-    std::atomic<bool> working_{true};    ///< Controls the main loop execution
+    config::ConfigManager cfg_manager_;       ///< Manages configuration settings
+    std::atomic<bool> working_{true};         ///< Controls the main loop execution
+    std::shared_ptr<spdlog::logger> logger_;  ///< Logs system information
 };
 }  // namespace app
 

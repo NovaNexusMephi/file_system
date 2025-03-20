@@ -54,3 +54,5 @@ void ConfigManager::read_system_info_config(const libconfig::Config& cfg) {
     system_info_cfg_.owner_name = static_cast<std::string>(cfg.lookup("system_info.owner_name"));
     system_info_cfg_.system_name = static_cast<std::string>(cfg.lookup("system_info.system_name"));
 }
+
+void ConfigManager::read_logging_config(const libconfig::Config& cfg) {}
