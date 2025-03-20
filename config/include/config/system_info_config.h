@@ -1,30 +1,21 @@
 #ifndef CONFIG_SYSTEM_INFO_CONFIG_H
 #define CONFIG_SYSTEM_INFO_CONFIG_H
 
+#include <cstdint>
+#include <libconfig.h++>
 #include <string>
+#include <vector>
+
 namespace config {
-
-/// @addtogroup configuration
-/// @{
-
-/// @struct SystemInfoConfig
-/// @brief Represents configuration of system information block.
 struct SystemInfoConfig final {
-    /// @brief Version structure for semantic versioning
-    struct Version final {
-        int major{}, minor{}, patch{};  ///< Version components
+    std::string volume_id;
+    std::string owner_name;
+    std::string system_name;
+    std::vector<uint16_t> defect_table;
 
-        Version() = default;
-        Version(int major, int minor, int patch) : major(major), minor(minor), patch(patch) {}
-    };
-
-    Version version{};          ///< Filesystem version (MAJOR.MINOR.PATCH)
-    std::string owner_name{};   ///< System owner identifier
-    std::string volume_name{};  ///< Volume identifier
-    std::string system_name{};  ///< Filesystem name
+    SystemInfoConfig() = default;
+    explicit SystemInfoConfig(const libconfig::Setting& setting);
 };
-
-/// @}
 }  // namespace config
 
 #endif
