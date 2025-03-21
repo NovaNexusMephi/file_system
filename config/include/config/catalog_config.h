@@ -6,6 +6,8 @@
 #include "config/constants.h"
 
 namespace config {
+
+/// Represents configuration of catalog
 struct CatalogConfig final {
     int max_segments = MAX_CATALOG_SEGMENTS;
     int segment_size_blocks = SEGMENT_SIZE_BLOCKS;

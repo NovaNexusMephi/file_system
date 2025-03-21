@@ -15,9 +15,11 @@ set(CONFIGS_SOURCES ${CMAKE_SOURCE_DIR}/configs)
 set(CONFIGS_DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY ${CONFIGS_SOURCES} DESTINATION ${CONFIGS_DESTINATION})
 
+find_package(fmt REQUIRED)
+
 add_subdirectory(config)
 
 # add_subdirectory(app)
 
 add_executable(${PROJECT_NAME} main.cpp)
-target_link_libraries(${PROJECT_NAME} config app)
+target_link_libraries(${PROJECT_NAME} config  fmt::fmt config++)

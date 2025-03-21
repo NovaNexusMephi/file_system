@@ -1,14 +1,10 @@
 #include <exception>
-#include <filesystem>
 #include <iostream>
-
-#include "app/app_builder.h"
+#include "config/filesystem_config.h"
 
 int main() {
     try {
-        auto application = app::AppBuilder().set_cfg_path("configs/general.cfg").build();
-        application->run();
-
+        config::FileSystemConfig cfg{"configs/filesystem.cfg"};
     } catch (const std::exception& fatal_error) {
         std::cout << fatal_error.what() << "\n";
         return 1;

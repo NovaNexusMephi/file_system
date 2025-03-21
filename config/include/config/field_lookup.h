@@ -3,6 +3,7 @@
 
 #include <libconfig.h++>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 namespace config {
@@ -15,7 +16,7 @@ template <typename T>
         throw std::runtime_error("invalid configuration: " + field_name + "is required but it is missing");
     }
     if (contains_field) {
-        setting.lookupValue(field_name, field);
+        setting.lookupValue(field_name.c_str(), field);
     }
     return contains_field;
 }
