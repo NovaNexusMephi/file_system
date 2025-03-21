@@ -8,12 +8,12 @@
 
 namespace config {
 struct LoggingConfig final {
-  bool enable_file_logging = true;
-  std::string log_pattern = "[%Y-%m-%d %H:%M:%S] [%l] %v";
-  spdlog::level::level_enum level = spdlog::level::info;
+    bool enable_file_logging = true;
+    std::string log_pattern = "[%Y-%m-%d %H:%M:%S] [%l] %v";
+    spdlog::level::level_enum level = spdlog::level::info;
 
-  LoggingConfig() = default;
-  LoggingConfig(const libconfig::Setting& setting);
+    LoggingConfig() = default;
+    LoggingConfig(const libconfig::Setting& setting);
 };
 }  // namespace config
 

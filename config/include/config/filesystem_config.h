@@ -13,15 +13,15 @@
 
 namespace config {
 struct FileSystemConfig {
-  SystemInfoConfig system_info{};
-  CatalogConfig catalog{};
-  FileMgmtConfig file_mgmt{};
-  CommandsConfig commands{};
-  DefectMgmtConfig defect_mgmt{};
-  LoggingConfig logging{};
+    SystemInfoConfig system_info{};
+    CatalogConfig catalog{};
+    FileMgmtConfig file_mgmt{};
+    CommandsConfig commands{};
+    DefectMgmtConfig defect_mgmt{};
+    LoggingConfig logging{};
 
-  FileSystemConfig() = default;
-  explicit FileSystemConfig(const std::filesystem::path& cfg_path);
+    FileSystemConfig() = default;
+    explicit FileSystemConfig(const std::filesystem::path& cfg_path);
 };
 }  // namespace config
 

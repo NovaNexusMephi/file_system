@@ -6,11 +6,11 @@
 
 namespace config {
 struct DefectMgmtConfig final {
-  std::vector<int> replacement_blocks{};
-  bool auto_remap = true;
+    std::vector<int> replacement_blocks{};
+    bool auto_remap = true;
 
-  DefectMgmtConfig() = default;
-  DefectMgmtConfig(const libconfig::Setting& setting);
+    DefectMgmtConfig() = default;
+    DefectMgmtConfig(const libconfig::Setting& setting);
 };
 }  // namespace config
 
