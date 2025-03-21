@@ -17,7 +17,7 @@ file(COPY ${CONFIGS_SOURCES} DESTINATION ${CONFIGS_DESTINATION})
 
 add_subdirectory(config)
 
-add_subdirectory(app)
+# add_subdirectory(app)
 
 add_executable(${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME} config app)
