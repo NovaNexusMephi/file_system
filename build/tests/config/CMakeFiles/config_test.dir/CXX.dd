@@ -1,0 +1,3 @@
+ninja_dyndep_version = 1.0
+build tests/config/CMakeFiles/config_test.dir/config_test.cpp.o: dyndep
+

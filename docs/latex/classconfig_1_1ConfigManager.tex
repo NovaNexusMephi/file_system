@@ -1,0 +1,56 @@
+\doxysection{config\+::Config\+Manager Class Reference}
+\hypertarget{classconfig_1_1ConfigManager}{}\label{classconfig_1_1ConfigManager}\index{config::ConfigManager@{config::ConfigManager}}
+
+
+Central configuration management class for system parameters.  
+
+
+
+
+{\ttfamily \#include $<$config\+\_\+manager.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classconfig_1_1ConfigManager_a7c17b6d57546a43a187f12206938dc67}{Config\+Manager}} (const std\+::filesystem\+::path \&cfg\+\_\+path)
+\begin{DoxyCompactList}\small\item\em Constructor with configuration file path. \end{DoxyCompactList}\item 
+\Hypertarget{classconfig_1_1ConfigManager_ac75ca363f3f69b2b9a921276a43ce041}\label{classconfig_1_1ConfigManager_ac75ca363f3f69b2b9a921276a43ce041} 
+const \mbox{\hyperlink{structconfig_1_1FATConfig}{FATConfig}} \& {\bfseries get\+\_\+fat\+\_\+config} () const noexcept
+\begin{DoxyCompactList}\small\item\em Retrieves configuration of file allocation table. \end{DoxyCompactList}\item 
+\Hypertarget{classconfig_1_1ConfigManager_ae91fb91acc95ae15d2986614e636b84d}\label{classconfig_1_1ConfigManager_ae91fb91acc95ae15d2986614e636b84d} 
+const \mbox{\hyperlink{structconfig_1_1SystemInfoConfig}{System\+Info\+Config}} \& {\bfseries get\+\_\+system\+\_\+info\+\_\+config} () const noexcept
+\begin{DoxyCompactList}\small\item\em Retrieves configuration of system information block. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Central configuration management class for system parameters. 
+
+Handles parsing and validation of configuration files using libconfig \mbox{[}\mbox{[}6\mbox{]}\mbox{]} 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classconfig_1_1ConfigManager_a7c17b6d57546a43a187f12206938dc67}\index{config::ConfigManager@{config::ConfigManager}!ConfigManager@{ConfigManager}}
+\index{ConfigManager@{ConfigManager}!config::ConfigManager@{config::ConfigManager}}
+\doxysubsubsection{\texorpdfstring{ConfigManager()}{ConfigManager()}}
+{\footnotesize\ttfamily \label{classconfig_1_1ConfigManager_a7c17b6d57546a43a187f12206938dc67} 
+Config\+Manager\+::\+Config\+Manager (\begin{DoxyParamCaption}\item[{const std\+::filesystem\+::path \&}]{cfg\+\_\+path}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+
+
+Constructor with configuration file path. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em cfg\+\_\+path} & Path to configuration file (supports JSON-\/like format) \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em std\+::runtime\+\_\+error} & on parse errors, I/O errors, or validation failures \\
+\hline
+\end{DoxyExceptions}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+config/include/config/\mbox{\hyperlink{config__manager_8h}{config\+\_\+manager.\+h}}\item 
+config/source/config\+\_\+manager.\+cpp\end{DoxyCompactItemize}

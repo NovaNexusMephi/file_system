@@ -1,0 +1,47 @@
+\doxysection{Configuration}
+\hypertarget{group__configuration}{}\label{group__configuration}\index{Configuration@{Configuration}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classconfig_1_1ConfigManager}{config\+::\+Config\+Manager}}
+\begin{DoxyCompactList}\small\item\em Central configuration management class for system parameters. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structconfig_1_1FATConfig}{config\+::\+FATConfig}}
+\begin{DoxyCompactList}\small\item\em Represents configuration of file allocation table (FAT). \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structconfig_1_1SystemInfoConfig}{config\+::\+System\+Info\+Config}}
+\begin{DoxyCompactList}\small\item\em Represents configuration of system information block. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{group__configuration_ga76a80101e2ba8fc2ea8c9e26c3916ae8}{config\+::\+Segment\+Number\+Limits}} \+: int \{ \mbox{\hyperlink{group__configuration_gga76a80101e2ba8fc2ea8c9e26c3916ae8a91ac75b07ce659dbfb892887072366a8}{config\+::\+MIN\+\_\+\+SEGMENT\+\_\+\+NUMBER}} = 1
+, \mbox{\hyperlink{group__configuration_gga76a80101e2ba8fc2ea8c9e26c3916ae8a59c67d54f611caffe4e0a82718d7f4ed}{config\+::\+MAX\+\_\+\+SEGMENT\+\_\+\+NUMBER}} = 31
+ \}
+\begin{DoxyCompactList}\small\item\em Valid range for FAT segment numbers. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{group__configuration_ga76a80101e2ba8fc2ea8c9e26c3916ae8}\index{Configuration@{Configuration}!SegmentNumberLimits@{SegmentNumberLimits}}
+\index{SegmentNumberLimits@{SegmentNumberLimits}!Configuration@{Configuration}}
+\doxysubsubsection{\texorpdfstring{SegmentNumberLimits}{SegmentNumberLimits}}
+{\footnotesize\ttfamily \label{group__configuration_ga76a80101e2ba8fc2ea8c9e26c3916ae8} 
+enum \mbox{\hyperlink{group__configuration_ga76a80101e2ba8fc2ea8c9e26c3916ae8}{config\+::\+Segment\+Number\+Limits}} \+: int}
+
+
+
+Valid range for FAT segment numbers. 
+
+\begin{DoxyWarning}{Warning}
+Values will be moved to common library \mbox{[}\mbox{[}1\mbox{]}\mbox{]} 
+\end{DoxyWarning}
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{MIN\_SEGMENT\_NUMBER@{MIN\_SEGMENT\_NUMBER}!Configuration@{Configuration}}\index{Configuration@{Configuration}!MIN\_SEGMENT\_NUMBER@{MIN\_SEGMENT\_NUMBER}}}\Hypertarget{group__configuration_gga76a80101e2ba8fc2ea8c9e26c3916ae8a91ac75b07ce659dbfb892887072366a8}\label{group__configuration_gga76a80101e2ba8fc2ea8c9e26c3916ae8a91ac75b07ce659dbfb892887072366a8} 
+MIN\+\_\+\+SEGMENT\+\_\+\+NUMBER&Minimum allowed segment count (inclusive) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{MAX\_SEGMENT\_NUMBER@{MAX\_SEGMENT\_NUMBER}!Configuration@{Configuration}}\index{Configuration@{Configuration}!MAX\_SEGMENT\_NUMBER@{MAX\_SEGMENT\_NUMBER}}}\Hypertarget{group__configuration_gga76a80101e2ba8fc2ea8c9e26c3916ae8a59c67d54f611caffe4e0a82718d7f4ed}\label{group__configuration_gga76a80101e2ba8fc2ea8c9e26c3916ae8a59c67d54f611caffe4e0a82718d7f4ed} 
+MAX\+\_\+\+SEGMENT\+\_\+\+NUMBER&Maximum allowed segment count (inclusive) \\
+\hline
+
+\end{DoxyEnumFields}

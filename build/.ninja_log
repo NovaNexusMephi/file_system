@@ -1,0 +1,27 @@
+# ninja log v6
+1	4	1742335261787523714	clean	a31eedcededa8236
+33	40	1742335261863940262	CMakeFiles/FileSystemModel.dir/main.cpp.o.modmap	29963a72f18efc4d
+1	33	1742335261825567106	CMakeFiles/FileSystemModel.dir/main.cpp.o.ddi	424ed7b016c68927
+2	3677	1742491930060138139	CMakeFiles/FileSystemModel.dir/main.cpp.o	af1affc40bcff056
+2	1658	1742491930059880510	app/CMakeFiles/app.dir/source/app.cpp.o	ae1077ef238d7ab0
+52	59	1742335261882709586	tests/config/CMakeFiles/config_test.dir/config_test.cpp.o.modmap	88ae0b0d5ff9e59d
+1	52	1742335261825687946	tests/config/CMakeFiles/config_test.dir/config_test.cpp.o.ddi	233cca145e6b6d58
+33	40	1742335261863940262	CMakeFiles/FileSystemModel.dir/CXX.dd	29963a72f18efc4d
+596	621	1742491930654678957	config/libconfig.a	2484317f46ec329f
+33	40	1742335261863940262	/home/narratives/Projects/file_system/build/CMakeFiles/FileSystemModel.dir/CXXModules.json	29963a72f18efc4d
+3677	3796	1742491933734744514	FileSystemModel	8c26aeda565464a0
+42	49	1742335261872900076	src/config/CMakeFiles/config.dir/src/config.cpp.o.modmap	a080a52b822c54e5
+724	749	1742335262547543569	src/config/libconfig.a	3a96894a758449e2
+1	17	1742491930059479279	config/CMakeFiles/config.dir/source/fat_config.cpp.o	2fc8cf3e926595c8
+49	724	1742335261872900076	src/config/CMakeFiles/config.dir/src/config.cpp.o	581aa057e3717775
+1	17	1742491930059612742	config/CMakeFiles/config.dir/source/logging_config.cpp.o	340cbc1942e2ff0
+42	49	1742335261872900076	/home/narratives/Projects/file_system/build/src/config/CMakeFiles/config.dir/CXXModules.json	a080a52b822c54e5
+1	596	1742491930058666270	config/CMakeFiles/config.dir/source/config_manager.cpp.o	c3b18d7f3abeb8ed
+52	59	1742335261882709586	/home/narratives/Projects/file_system/build/tests/config/CMakeFiles/config_test.dir/CXXModules.json	88ae0b0d5ff9e59d
+42	49	1742335261872900076	src/config/CMakeFiles/config.dir/CXX.dd	a080a52b822c54e5
+2	1598	1742491930060023511	app/CMakeFiles/app.dir/source/app_builder.cpp.o	c6714ce284780315
+1	42	1742335261824524680	src/config/CMakeFiles/config.dir/src/config.cpp.o.ddi	972b82ec59ad0708
+1658	1685	1742491931715701541	app/libapp.a	b935b20d60288848
+59	1252	1742335261882709586	tests/config/CMakeFiles/config_test.dir/config_test.cpp.o	536cf70962a67b28
+1	17	1742491930059750153	config/CMakeFiles/config.dir/source/system_infog_config.cpp.o	8045f574ff96b9f1
+52	59	1742335261882709586	tests/config/CMakeFiles/config_test.dir/CXX.dd	88ae0b0d5ff9e59d

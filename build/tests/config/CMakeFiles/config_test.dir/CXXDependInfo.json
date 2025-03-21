@@ -1,0 +1,30 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "Clang",
+	"compiler-simulate-id" : "",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "/home/narratives/Projects/file_system/build/tests/config",
+	"dir-cur-src" : "/home/narratives/Projects/file_system/tests/config",
+	"dir-top-bld" : "/home/narratives/Projects/file_system/build",
+	"dir-top-src" : "/home/narratives/Projects/file_system",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"/home/narratives/Projects/file_system/src/config/include"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/home/narratives/Projects/file_system/build/tests/config/CMakeFiles/config_test.dir",
+	"sources" : 
+	{
+		"tests/config/CMakeFiles/config_test.dir/config_test.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/narratives/Projects/file_system/tests/config/config_test.cpp"
+		}
+	}
+}
