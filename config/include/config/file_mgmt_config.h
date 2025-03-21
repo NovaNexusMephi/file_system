@@ -7,14 +7,14 @@ namespace config {
 enum class AllocationStrategy { BEST_FIT, LARGEST_FREE, HALF_OR_SECOND };
 
 struct FileMgmtConfig final {
-    AllocationStrategy allocation_strategy = AllocationStrategy::BEST_FIT;
+  AllocationStrategy allocation_strategy = AllocationStrategy::BEST_FIT;
 
-    bool allow_temporary_files = true;
-    bool auto_convert_temp = true;
-    bool protect_deletion = false;
+  bool allow_temporary_files = true;
+  bool auto_convert_temp = true;
+  bool protect_deletion = false;
 
-    FileMgmtConfig() = default;
-    FileMgmtConfig(const libconfig::Setting& setting);
+  FileMgmtConfig() = default;
+  FileMgmtConfig(const libconfig::Setting& setting);
 };
 }  // namespace config
 

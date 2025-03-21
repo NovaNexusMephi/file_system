@@ -7,12 +7,12 @@
 
 namespace config {
 struct CatalogConfig final {
-    int max_segments = MAX_CATALOG_SEGMENTS;
-    int segment_size_blocks = SEGMENT_SIZE_BLOCKS;
-    int entry_size_words = ENTRY_SIZE_WORDS;
+  int max_segments = MAX_CATALOG_SEGMENTS;
+  int segment_size_blocks = SEGMENT_SIZE_BLOCKS;
+  int entry_size_words = ENTRY_SIZE_WORDS;
 
-    CatalogConfig() = default;
-    CatalogConfig(const libconfig::Setting& setting);
+  CatalogConfig() = default;
+  CatalogConfig(const libconfig::Setting& setting);
 };
 
 }  // namespace config
