@@ -13,7 +13,7 @@ struct LoggingConfig final {
     spdlog::level::level_enum level = spdlog::level::info;
 
     LoggingConfig() = default;
-    explicit LoggingConfig(const libconfig::Setting& setting);
+    LoggingConfig(const libconfig::Setting& setting);
 };
 }  // namespace config
 

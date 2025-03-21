@@ -14,7 +14,7 @@ struct FileMgmtConfig final {
     bool protect_deletion = false;
 
     FileMgmtConfig() = default;
-    explicit FileMgmtConfig(const libconfig::Setting& setting);
+    FileMgmtConfig(const libconfig::Setting& setting);
 };
 }  // namespace config
 

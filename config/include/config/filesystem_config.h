@@ -1,6 +1,9 @@
 #ifndef CONFIG_FILESYSTEM_CONFIG_H
 #define CONFIG_FILESYSTEM_CONFIG_H
 
+#include <filesystem>
+#include <libconfig.h++>
+
 #include "config/catalog_config.h"
 #include "config/commands_config.h"
 #include "config/defect_mgmt_config.h"
@@ -18,7 +21,7 @@ struct FileSystemConfig {
     LoggingConfig logging{};
 
     FileSystemConfig() = default;
-    explicit FileSystemConfig(const libconfig::Setting& setting);
+    explicit FileSystemConfig(const std::filesystem::path& cfg_path);
 };
 }  // namespace config
 

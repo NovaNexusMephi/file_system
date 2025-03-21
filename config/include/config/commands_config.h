@@ -21,7 +21,7 @@ struct CommandsConfig final {
     } squeeze;
 
     CommandsConfig() = default;
-    explicit CommandsConfig(const libconfig::Setting& setting);
+    CommandsConfig(const libconfig::Setting& setting);
 };
 }  // namespace config
 

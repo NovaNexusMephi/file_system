@@ -6,6 +6,7 @@
 #include <vector>
 
 namespace config {
+
 template <typename T>
 [[maybe_unused]] inline bool lookup_scalar_field(const libconfig::Setting& setting, const std::string& field_name,
                                                  T& field, bool required = false) {

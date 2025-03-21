@@ -12,7 +12,7 @@ struct CatalogConfig final {
     int entry_size_words = ENTRY_SIZE_WORDS;
 
     CatalogConfig() = default;
-    explicit CatalogConfig(const libconfig::Setting& setting);
+    CatalogConfig(const libconfig::Setting& setting);
 };
 
 }  // namespace config

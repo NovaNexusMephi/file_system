@@ -10,7 +10,7 @@ struct DefectMgmtConfig final {
     bool auto_remap = true;
 
     DefectMgmtConfig() = default;
-    explicit DefectMgmtConfig(const libconfig::Setting& setting);
+    DefectMgmtConfig(const libconfig::Setting& setting);
 };
 }  // namespace config
 
