@@ -1,10 +1,11 @@
 #include <exception>
 #include <iostream>
-#include "config/filesystem_config.h"
+#include "app/include/app/app.h"
 
 int main() {
     try {
-        config::FileSystemConfig cfg{"configs/filesystem.cfg"};
+        app::App application{"configs/filesystem.cfg"};
+        application.run();
     } catch (const std::exception& fatal_error) {
         std::cout << fatal_error.what() << "\n";
         return 1;
