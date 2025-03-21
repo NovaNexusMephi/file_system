@@ -10,15 +10,15 @@
 
 namespace config {
 struct FileSystemConfig {
-    SystemInfoConfig system_info{};
-    CatalogConfig catalog{};
-    FileMgmtConfig file_mgmt{};
-    CommandsConfig commands{};
-    DefectMgmtConfig defect_mgmt{};
-    LoggingConfig logging{};
+  SystemInfoConfig system_info{};
+  CatalogConfig catalog{};
+  FileMgmtConfig file_mgmt{};
+  CommandsConfig commands{};
+  DefectMgmtConfig defect_mgmt{};
+  LoggingConfig logging{};
 
-    FileSystemConfig() = default;
-    explicit FileSystemConfig(const libconfig::Setting& setting);
+  FileSystemConfig() = default;
+  explicit FileSystemConfig(const libconfig::Setting& setting);
 };
 }  // namespace config
 
