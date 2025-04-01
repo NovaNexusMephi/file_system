@@ -3,7 +3,14 @@
 
 int main() {
     try {
-        std::cout << "Hello, world!" << std::endl;
+        // TODO: Initialize config from file
+
+        // TODO: Initialize logger
+
+        // TODO: Initialize model of filesystem
+
+        // TODO: Initialize monitor
+
     } catch (const std::exception& fatal_error) {
         std::cout << fatal_error.what() << std::endl;
         return 1;
