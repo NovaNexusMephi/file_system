@@ -91,7 +91,7 @@ template <typename T>
  */
 template <typename T>
 [[nodiscard]] T scalar_of_default(const libconfig::Setting& from, const std::string& as, T default_value) {
-    auto scalar_value = required_scalar<T>(from, as);  // Use optional-based lookup
+    auto scalar_value = scalar<T>(from, as);  // Use optional-based lookup
     return scalar_value.value_or(default_value);
 }
 
