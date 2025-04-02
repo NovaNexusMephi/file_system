@@ -1,9 +1,0 @@
-/home/narratives/Projects/file_system/build/CMakeFiles/FileSystemModel.dir
-/home/narratives/Projects/file_system/build/CMakeFiles/edit_cache.dir
-/home/narratives/Projects/file_system/build/CMakeFiles/rebuild_cache.dir
-/home/narratives/Projects/file_system/build/config/CMakeFiles/config.dir
-/home/narratives/Projects/file_system/build/config/CMakeFiles/edit_cache.dir
-/home/narratives/Projects/file_system/build/config/CMakeFiles/rebuild_cache.dir
-/home/narratives/Projects/file_system/build/app/CMakeFiles/app.dir
-/home/narratives/Projects/file_system/build/app/CMakeFiles/edit_cache.dir
-/home/narratives/Projects/file_system/build/app/CMakeFiles/rebuild_cache.dir

@@ -1,9 +1,0 @@
-{
-  "revision": 0,
-  "rules": [
-    {
-      "primary-output": "src/config/CMakeFiles/config.dir/src/config.cpp.o"
-    }
-  ],
-  "version": 1
-}

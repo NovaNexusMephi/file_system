@@ -1,9 +1,0 @@
-{
-  "revision": 0,
-  "rules": [
-    {
-      "primary-output": "CMakeFiles/FileSystemModel.dir/main.cpp.o"
-    }
-  ],
-  "version": 1
-}
