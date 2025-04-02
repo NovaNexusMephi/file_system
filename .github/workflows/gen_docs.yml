@@ -23,12 +23,9 @@ jobs:
       
       - name: Installing doxygen and clang
         run: sudo apt install -y doxygen
-
-      - name: Making directory
-        run: mkdir docs
       
       - name: Formatting all .cpp and .h files
-        run: doxygen .doxygen.conf
+        run: doxygen docs/doxygen.conf
 
       - name: Commit and push changes
         run: |
