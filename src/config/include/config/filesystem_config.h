@@ -7,7 +7,7 @@
 namespace config {
 struct FilesystemConfig final {
     SystemInfoConfig system_info_cfg{};
-    unsigned short segments_number{};
+    int segments_number{};
 
     FilesystemConfig() = default;
     FilesystemConfig(const libconfig::Setting& settings);

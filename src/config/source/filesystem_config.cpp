@@ -11,13 +11,12 @@ FilesystemConfig::FilesystemConfig(const libconfig::Setting& settings) {
         throw std::runtime_error("invalid configuration: missing group " + SYSTEM_INFO_GROUP + ".");
     }
     system_info_cfg = settings[SYSTEM_INFO_GROUP];
-
 #ifdef FORCE_CONFIG
-    auto validation = [](const unsigned short& value) -> bool {
+    auto validation = [](const short& value) -> bool {
         return lib::MIN_SEGMENT_NUMBER <= value && value <= lib::MAX_SEGMENT_NUMBER;
     };
-    segments_number = validated_scalar<unsigned short>(settings, SEGMENT_NUMBER_FIELD, validation);
+    segments_number = validated_scalar<int>(settings, SEGMENT_NUMBER_FIELD, validation);
 #else
-    segments_number = scalar_of_default(settings, SEGMENT_NUMBER_FIELD, lib::DEFAULT_SEGMENT_NUMBER);
+    segments_number = scalar_of_default<int>(settings, SEGMENT_NUMBER_FIELD, lib::DEFAULT_SEGMENT_NUMBER);
 #endif
 }
