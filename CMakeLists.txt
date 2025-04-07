@@ -18,6 +18,8 @@ add_subdirectory(src/config)
 
 add_subdirectory(src/monitor)
 
+add_subdirectory(tests)
+
 add_executable(${PROJECT_NAME} src/main.cpp)
 
 add_dependencies(${PROJECT_NAME} CopyConfigFiles)
