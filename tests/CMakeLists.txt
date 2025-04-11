@@ -11,5 +11,5 @@ add_executable(Tests ${TESTS_SOURCE_FILES})
 
 target_link_libraries(Tests gtest
                             gtest_main
-                            monitor_readers
+                            monitor
 )
