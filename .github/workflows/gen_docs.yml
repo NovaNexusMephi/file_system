@@ -30,6 +30,9 @@ jobs:
           git checkout gh-pages || git checkout --orphan gh-pages
           git reset --hard
 
+      - name: Debug
+        run: ls -lah ./* ./*/*
+
       - name: Commit and push docs
         run: |
           rm -rf search/
