@@ -1,78 +1,96 @@
 #include "monitor/reader.h"
-#include <ios>
-#include <iostream>
-#include <nlohmann/json.hpp>
+#include <algorithm>
+#include <cctype>
+#include <cstddef>
+
+#include <istream>
 #include <nlohmann/json_fwd.hpp>
 #include <optional>
-#include <sstream>
-#include <stdexcept>
+
 #include <string>
+#include <vector>
 
 using monitor::Reader;
 
-std::optional<nlohmann::json> Reader::read() {
-    nlohmann::json result;
+std::optional<nlohmann::json> Reader::read(std::istream& from) noexcept {
+    std::string command_str;
+    if (!std::getline(from, command_str, ';'))
+        return std::nullopt;
+    return parse_command(command_str);
+}
 
-    std::string command;
-    if (!std::getline(stream_, command, ';'))
+std::vector<std::string> Reader::split(const std::string& src, const std::string& delims) noexcept {
+    std::vector<std::string> tokens;
+    size_t start = 0, end = 0;
+
+    while ((end = src.find_first_of(delims, start)) != std::string::npos) {
+        if (end > start) {
+            tokens.emplace_back(src.substr(start, end - start));
+        }
+        start = end + 1;
+    }
+
+    if (start < src.size()) {
+        tokens.emplace_back(src.substr(start));
+    }
+
+    return tokens;
+}
+
+std::pair<std::string, std::string> Reader::split_opt(const std::string& opt_token) {
+    auto parts = split(opt_token, "/:");
+    if (parts.empty()) {
+        return {"", ""};
+    } else if (parts.size() == 1) {
+        return {parts[0], ""};
+    }
+    return {parts[0], parts[1]};
+}
+
+nlohmann::json Reader::make_options(const std::vector<std::string>& opt_src) noexcept {
+    nlohmann::json options = R"({})"_json;
+    for (auto& opt : opt_src) {
+        auto [key, value] = split_opt(opt);
+        if (key.empty()) {
+            continue;
+        }
+
+        if (value.empty()) {
+            options[key] = true;
+        } else if (std::all_of(value.begin(), value.end(), ::isdigit)) {
+            int casted = std::stoi(value);
+            options[key] = casted;
+        } else {
+            options[key] = value;
+        }
+    }
+    return options;
+}
+
+std::optional<nlohmann::json> Reader::parse_command(const std::string& source) noexcept {
+    nlohmann::json parsed_command;
+
+    auto tokens = split(source, " ;");
+    if (tokens.empty())
         return std::nullopt;
 
-    std::istringstream ss(command);
+    auto command_name_token = tokens[0];
 
-    std::string name;
-    ss >> name;
-    result["command_name"] = name;
+    std::vector<std::string> data_tokens{};
+    std::vector<std::string> opt_tokens{};
 
-    nlohmann::json options{};
-    std::string token{};
-    while (ss >> token) {
-        auto [key, value] = split_val(token);
-        if (key.empty())
-            continue;
-
-        if (!value.has_value() || value->empty()) {
-            options[key] = true;
+    for (std::size_t i = 1; i < tokens.size(); ++i) {
+        auto token = tokens[i];
+        if (token.starts_with('/')) {
+            opt_tokens.push_back(token);
         } else {
-            try {
-                size_t pos;
-                int ival = std::stoi(*value, &pos);
-
-                if (pos == value->size()) {
-                    options[key] = ival;
-                } else {
-                    options[key] = *value;
-                }
-            } catch (const std::invalid_argument&) {
-                options[key] = *value;
-            } catch (const std::out_of_range&) {
-                options[key] = *value;
-            }
+            data_tokens.push_back(token);
         }
     }
 
-    result["options"] = options;
-    return result;
-}
+    parsed_command["name"] = command_name_token;
+    parsed_command["data"] = data_tokens;
+    parsed_command["options"] = make_options(opt_tokens);
 
-std::string Reader::trim(const std::string& str) {
-    size_t start = str.find_first_not_of(" \t\n\r");
-    size_t end = str.find_last_not_of(" \t\n\r");
-    return (start == std::string::npos || end == std::string::npos) ? "" : str.substr(start, end - start + 1);
-}
-
-std::pair<std::string, std::optional<std::string>> Reader::split_val(const std::string& input) {
-    if (input.empty() || input.front() != '\\') {
-        return {"", std::nullopt};
-    }
-
-    std::string trimmed = trim(input.substr(1));
-
-    size_t colon_pos = trimmed.find(':');
-    if (colon_pos != std::string::npos) {
-        std::string option = trim(trimmed.substr(0, colon_pos));
-        std::string value = trim(trimmed.substr(colon_pos + 1));
-        return {option, value.empty() ? std::nullopt : std::make_optional(value)};
-    } else {
-        return {trim(trimmed), std::nullopt};
-    }
+    return parsed_command;
 }
