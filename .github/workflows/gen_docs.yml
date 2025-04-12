@@ -32,8 +32,8 @@ jobs:
 
       - name: Commit and push docs
         run: |
-          mv docs/html/* .
-          mv docs/doxygen-awesome.css .
+          mv -f docs/html/* .
+          mv -f docs/doxygen-awesome.css .
           rm -rf docs
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
