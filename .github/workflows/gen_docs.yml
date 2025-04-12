@@ -32,9 +32,10 @@ jobs:
 
       - name: Commit and push docs
         run: |
-          mv -f docs/html/* .
-          mv -f docs/doxygen-awesome.css .
-          rm -rf docs
+          rm -rf search/
+          mv docs/html/* .
+          mv docs/doxygen-awesome.css .
+          rm -rf docs/
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
