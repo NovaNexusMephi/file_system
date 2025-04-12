@@ -3,7 +3,7 @@ name: Generating docs using doxygen
 on:
   push:
     branches:
-      dev
+      - dev
 
 jobs:
   gen_docs:
@@ -15,28 +15,27 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Updating
-        run: sudo apt update -y
+      - name: Install doxygen
+        run: sudo apt update -y && sudo apt install -y doxygen
       
-      - name: Installing doxygen
-        run: sudo apt install -y doxygen
-      
-      - name: Generating docs
-        run: doxygen docs/doxygen.conf
-
-      - name: Commit and push changes
+      - name: Generate docs
         run: |
+          mkdir -p docs/html
+          doxygen docs/doxygen.conf
+
+      - name: Setup gh-pages branch
+        run: |
+          git fetch origin gh-pages || true
+          git checkout gh-pages || git checkout --orphan gh-pages
+          git reset --hard
+
+      - name: Commit and push docs
+        run: |
+          cp -R docs/html/* .
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout gh-pages
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git add .
           git diff --cached --quiet || git commit -m "Auto-generating docs"
-          git push -f
-      
-      - name: Publishing docs on github pages
-        uses: rayluo/github-pages-overwriter@v1.3
-        with:
-          source-directory: docs/html
+          git push origin gh-pages -f
