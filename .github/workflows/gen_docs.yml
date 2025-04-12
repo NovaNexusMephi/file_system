@@ -21,19 +21,20 @@ jobs:
       - name: Updating
         run: sudo apt update -y
       
-      - name: Installing doxygen and clang
+      - name: Installing doxygen
         run: sudo apt install -y doxygen
       
-      - name: Formatting all .cpp and .h files
+      - name: Generating docs
         run: doxygen docs/doxygen.conf
 
       - name: Commit and push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout gh-pages
           git add .
           git diff --cached --quiet || git commit -m "Auto-generating docs"
-          git push
+          git push -f
       
       - name: Publishing docs on github pages
         uses: rayluo/github-pages-overwriter@v1.3
