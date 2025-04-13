@@ -1,6 +1,7 @@
 #include <exception>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include "monitor/reader.h"
 
 int main() {
     try {
