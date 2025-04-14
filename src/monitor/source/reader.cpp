@@ -1,4 +1,6 @@
 #include "monitor/reader.h"
+#include <cstdio>
+#include <iostream>
 #include <istream>
 #include <nlohmann/json_fwd.hpp>
 #include <optional>
@@ -10,6 +12,8 @@ std::optional<nlohmann::json> Reader::read(std::istream& from) {
     if (!from || !from.good()) {
         return std::nullopt;
     }
+
+    std::cout << prompt_;
 
     std::string command_line;
     if (!(std::getline(from, command_line, ';'))) {
