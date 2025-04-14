@@ -6,12 +6,12 @@
 
 namespace config {
 struct MonitorConfig final {
-   public:
-    std::string prompt{};
+public:
+  std::string prompt{};
 
-    MonitorConfig() = default;
-    MonitorConfig(const libconfig::Setting& settings);
+  MonitorConfig() = default;
+  MonitorConfig(const libconfig::Setting &settings);
 };
-}  // namespace config
+} // namespace config
 
 #endif

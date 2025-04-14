@@ -17,6 +17,6 @@ constexpr std::string DEFAULT_OWNER_NAME = "Admin";
 
 constexpr std::string DEFAULT_SYSTEM_NAME = "fs";
 
-}  // namespace lib
+} // namespace lib
 
 #endif
