@@ -11,7 +11,8 @@ namespace monitor {
 
 class Reader final {
    public:
-    explicit Reader(const std::string& prompt) : prompt_(prompt){};
+    Reader() = default;
+    explicit Reader(const std::string& prompt) : prompt_(prompt) {};
     [[nodiscard]] std::optional<nlohmann::json> read(std::istream& from = std::cin);
 
    private:

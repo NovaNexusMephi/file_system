@@ -2,21 +2,16 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include "monitor/reader.h"
+#include "monitor/writer.h"
 
 int main() {
     try {
-        // TODO: Initialize config from file
-
-        // TODO: Initialize logger
-
-        // TODO: Initialize model of filesystem
-
-        // TODO: Initialize monitor
         monitor::Reader reader{"> "};
+        monitor::Writer writer{};
 
         while (true) {
             auto precommand = reader.read(std::cin);
-            std::cout << (precommand.has_value() ? *precommand : "nullopt") << "\n";
+            writer.write(std::cout, (precommand.has_value() ? "parsed" : "nullopt"));
         }
 
     } catch (const std::exception& fatal_error) {
