@@ -26,9 +26,7 @@ jobs:
 
       - name: Setup gh-pages branch
         run: |
-          git fetch origin gh-pages -f
-          git checkout gh-pages || git checkout --orphan gh-pages
-          git reset --hard
+          git checkout gh-pages
 
       - name: Commit and push docs
         run: |
