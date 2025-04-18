@@ -1,6 +1,9 @@
 name: formatting
 
-on: push
+on: 
+  push:
+    branches-ignore:
+      - ci-cd
       
 
 jobs:
