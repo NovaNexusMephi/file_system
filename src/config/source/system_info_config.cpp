@@ -5,9 +5,9 @@
 #include "lib/constants.h"
 using config::SystemInfoConfig;
 
-constexpr std::string VOLUME_NAME_FIELD = "volume_name";
-constexpr std::string OWNER_NAME_FIELD = "owner_name";
-constexpr std::string SYSTEM_NAME_FIELD = "system_name";
+static const std::string VOLUME_NAME_FIELD = "volume_name";
+static const std::string OWNER_NAME_FIELD = "owner_name";
+static const std::string SYSTEM_NAME_FIELD = "system_name";
 
 SystemInfoConfig::SystemInfoConfig(const libconfig::Setting& setting) {
 #ifdef FORCE_CONFIG

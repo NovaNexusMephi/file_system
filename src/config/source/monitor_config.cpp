@@ -3,7 +3,7 @@
 #include "config/lookup.h"
 using config::MonitorConfig;
 
-constexpr std::string PROMPT_FIELD = "prompt";
+static const std::string PROMPT_FIELD = "prompt";
 
 MonitorConfig::MonitorConfig(const libconfig::Setting& settings) {
 #ifdef FORCE_CONFIG
