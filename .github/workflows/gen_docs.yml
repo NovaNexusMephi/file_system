@@ -21,7 +21,7 @@ jobs:
       
       - name: Generate docs
         run: |
-          mkdir docs
+          mkdir -p docs
           doxygen docs/doxygen.conf
 
       - name: Setup gh-pages branch
