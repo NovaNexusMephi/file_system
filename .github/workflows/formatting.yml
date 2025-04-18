@@ -1,0 +1,34 @@
+name: formatting
+
+on: push
+      
+
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Updating
+        run: sudo apt update -y
+      
+      - name: Installing clang
+        run: sudo apt install -y clang
+      
+      - name: Formatting all .cpp and .h files
+        run: find . -iname '*.h' -o -iname '*.cpp' | xargs clang-format -i
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --cached --quiet || git commit -m "Auto-format code using clang-format"
+          git push
