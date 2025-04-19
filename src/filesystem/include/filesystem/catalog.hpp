@@ -6,14 +6,14 @@
 
 namespace filesystem {
 
-class Catalog {
-   public:
+class Catalog final {
+public:
     Catalog();
     void addFile(const std::string& filename, const std::string& content);
     void removeFile(const std::string& filename);
     void listFiles() const;
 
-   private:
+private:
     struct CatalogHeader {
         size_t number_;
         size_t counter_;
