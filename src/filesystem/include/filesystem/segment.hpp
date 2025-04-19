@@ -8,38 +8,29 @@
 namespace filesystem {
 
 class Segment final {
-public:
-    
-    Segment(size_t start, size_t next, size_t size = 0) : header_(start, next) {
-        records_.reserve(size);
-    }
+   public:
+    Segment(size_t start, size_t next, size_t size = 0) : header_(start, next) { records_.reserve(size); }
 
-    inline void setNext(size_t next) {
-        header_.setNext(next);
-    }
+    inline void setNext(size_t next) { header_.setNext(next); }
 
-    [[nodiscard]] inline const std::vector<FileRecord>& getRecords() const noexcept {
-        return records_;
-    }
+    inline void setStart(size_t start) { header_.setStart(start); }
 
-    [[nodiscard]] inline std::vector<FileRecord>& getRecords() noexcept {
-        return records_;
-    }
+    [[nodiscard]] inline size_t getSize() const noexcept { return records_.size(); }
 
-    [[nodiscard]] inline size_t getSize() const noexcept {
-        return records_.size();
-    }
+    [[nodiscard]] inline size_t getStart() const noexcept { return header_.getStart(); }
 
-private:
+    [[nodiscard]] inline size_t getNext() const noexcept { return header_.getNext(); }
+
+    [[nodiscard]] inline const std::vector<FileRecord>& getRecords() const noexcept { return records_; }
+
+    [[nodiscard]] inline std::vector<FileRecord>& getRecords() noexcept { return records_; }
+
+   private:
     struct SegmentHeader {
         size_t start_;
         size_t next_;
 
         SegmentHeader(size_t start, size_t next) : start_(start), next_(next) {}
-
-        inline void setNext(size_t next) {
-            next_ = next;
-        }
     };
 
     SegmentHeader header_;
