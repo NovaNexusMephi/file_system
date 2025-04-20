@@ -1,19 +1,15 @@
 #include <exception>
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include "monitor/reader.h"
-#include "monitor/writer.h"
+#include "monitor/monitor.h"
 
 int main() {
     try {
-        monitor::Reader reader{"> "};
-        monitor::Writer writer{};
-
+        monitor::Monitor monitor{};
         while (true) {
-            auto precommand = reader.read(std::cin);
-            writer.write(std::cout, (precommand.has_value() ? "parsed" : "nullopt"));
+            auto command_date = monitor.poll_command();
+            monitor.display(command_date.has_value() ? command_date->dump() : "not a command");
         }
-
     } catch (const std::exception& fatal_error) {
         std::cout << fatal_error.what() << std::endl;
         return 1;
