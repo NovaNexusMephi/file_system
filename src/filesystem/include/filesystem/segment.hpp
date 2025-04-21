@@ -11,21 +11,35 @@ class Segment final {
    public:
     Segment(size_t start, size_t next, size_t size = 0) : header_(start, next) { records_.reserve(size); }
 
-    inline void setNext(size_t next) { header_.setNext(next); }
+    inline void set_next(size_t next) noexcept { 
+        header_.next_ = next; 
+    }
 
-    inline void setStart(size_t start) { header_.setStart(start); }
+    inline void setStart(size_t start) noexcept { 
+        header_.start_ = start; 
+    }
 
-    [[nodiscard]] inline size_t getSize() const noexcept { return records_.size(); }
+    [[nodiscard]] inline size_t get_size() const noexcept { 
+        return records_.size(); 
+    }
 
-    [[nodiscard]] inline size_t getStart() const noexcept { return header_.getStart(); }
+    [[nodiscard]] inline size_t get_start() const noexcept { 
+        return header_.start_; 
+    }
 
-    [[nodiscard]] inline size_t getNext() const noexcept { return header_.getNext(); }
+    [[nodiscard]] inline size_t get_next() const noexcept { 
+        return header_.next_; 
+    }
 
-    [[nodiscard]] inline const std::vector<FileRecord>& getRecords() const noexcept { return records_; }
+    [[nodiscard]] inline const std::vector<FileRecord>& get_records() const noexcept { 
+        return records_; 
+    }
 
-    [[nodiscard]] inline std::vector<FileRecord>& getRecords() noexcept { return records_; }
+    [[nodiscard]] inline std::vector<FileRecord>& get_records() noexcept { 
+        return records_; 
+    }
 
-    bool addRecord(const std::string& filename, size_t size);
+    bool add_record(const std::string& filename, size_t size);
 
    private:
     struct SegmentHeader {

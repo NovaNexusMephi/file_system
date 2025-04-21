@@ -14,13 +14,21 @@ class FileSystem {
     void exit();
     std::string help() const;
 
-    [[nodiscard]] inline SystemInformation getInfo() const noexcept { return info_block_; }
+    [[nodiscard]] inline SystemInformation get_info() const noexcept { 
+        return info_block_; 
+    }
 
-    inline void setInfo(const SystemInformation& info) { info_block_ = info; }
+    inline void set_info(const SystemInformation& info) noexcept { 
+        info_block_ = info; 
+    }
 
-    [[nodiscard]] inline const Catalog& getCatalog() const noexcept { return catalog_; }
+    [[nodiscard]] inline const Catalog& get_catalog() const noexcept { 
+        return catalog_; 
+    }
 
-    [[nodiscard]] inline Catalog& getCatalog() noexcept { return catalog_; }
+    [[nodiscard]] inline Catalog& get_catalog() noexcept { 
+        return catalog_; 
+    }
 
    private:
     SystemInformation info_block_;

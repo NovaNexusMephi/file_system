@@ -20,20 +20,11 @@ class Catalog final {
 
     void move(const std::string& filename, const std::string& dist_filename);
 
-    bool open(const std::string& filename);
-
-    void close(const std::string& filename);
-
-    void write(const std::string& filename, const std::string& data);  // ?????
-
-    void read(const std::string& filename) const;
-
     void squeeze();
 
-    void add(const std::string& filename, const std::string& data);  // ?????
+    void add(const std::string& filename, size_t size);
 
-    // vol only это вообще что такое
-    void dir(bool is_full = false, const std::string& dist_filename = "") const;
+    [[nodiscard]] std::vector<std::string> dir(bool full = false) const;
 
     void free() const;
 
@@ -41,16 +32,24 @@ class Catalog final {
 
     void attr();
 
-    [[nodiscard]] inline const std::vector<Segment>& getSegments() const noexcept { return segments_; }
+    [[nodiscard]] inline const std::vector<Segment>& get_segments() const noexcept { 
+        return segments_; 
+    }
 
-    [[nodiscard]] inline std::vector<Segment>& getSegments() noexcept { return segments_; }
+    [[nodiscard]] inline std::vector<Segment>& get_segments() noexcept { 
+        return segments_; 
+    }
 
-    inline void setCount(size_t count) { header_.setCount(count); }
+    inline void set_count(size_t count) {
+        header_.count_ = count; 
+    }
 
-    inline void setCounter(size_t counter) { header_.setCounter(counter); }
+    inline void setCounter(size_t counter) { 
+        header_.counter_ = counter; 
+    }
 
    private:
-    std::optional<FileRecord> findRecord(const std::string& filename) const;
+    [[nodiscard]] std::optional<FileRecord> find_record(const std::string& filename) const;
 
     struct CatalogHeader {
         size_t count_;
