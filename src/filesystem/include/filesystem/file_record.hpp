@@ -6,10 +6,7 @@
 
 namespace filesystem {
 
-enum class FileType {
-    FREE, 
-    PERMANENT
-};
+enum class FileType { FREE, PERMANENT, BLOCKED };
 
 class FileRecord final {
    public:
@@ -22,21 +19,13 @@ class FileRecord final {
 
     void set_type(FileType) noexcept;
 
-    [[nodiscard]] inline std::string get_filename() const noexcept { 
-        return name_; 
-    }
+    [[nodiscard]] inline std::string get_filename() const noexcept { return name_; }
 
-    [[nodiscard]] inline size_t get_size() const noexcept { 
-        return size_; 
-    }
+    [[nodiscard]] inline size_t get_size() const noexcept { return size_; }
 
-    [[nodiscard]] inline FileType get_type() const noexcept { 
-        return type_; 
-    }
+    [[nodiscard]] inline FileType get_type() const noexcept { return type_; }
 
-    [[nodiscard]] inline std::chrono::system_clock::time_point get_timestamp() const noexcept { 
-        return timestamp_; 
-    }
+    [[nodiscard]] inline std::chrono::system_clock::time_point get_timestamp() const noexcept { return timestamp_; }
 
    private:
     FileType type_;

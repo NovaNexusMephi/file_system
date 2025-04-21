@@ -1,70 +1,105 @@
 #include "filesystem/catalog.hpp"
 
 #include <format>
+#include <iostream>
+
+#include "filesystem/file_record.hpp"
 
 namespace filesystem {
 
-void Catalog::create(const std::string& filename, size_t size) {
-    if (size > free_space_) {
-        throw std::runtime_error("There is no free space in the catalog");
+Error Catalog::create(const std::string& filename, size_t size) {
+    if (size > header_.free_space_) {
+        return Error::NO_FREE_SPACE;
     }
-    if (free_records_ == 0) {
-        throw std::runtime_error("There are no free records in the catalog");
+    if (header_.free_records_ == 0) {
+        return Error::NO_FREE_RECORDS;
     }
-
-    if (header_.counter_ < header_.count_) {
-        segments_[header_.counter_].addRecord(filename, size);
+    if (files_.contains(filename)) {
+        return Error::FILE_ALREADY_EXISTS;
     }
-    for (auto& segment : segments_) {
-        for (const auto& record : segment.getRecords()) {
-            if (record.getType() == FileType::FREE) {}
+    for (size_t i = 0, segsize = segments_.size(); i < segsize; ++i) {
+        for (size_t j = 0, recsize = segments_[i].get_records().size(); j < recsize; ++j) {
+            FileRecord record = segments_[i].get_records()[j];
+            std::cout << "i = " << i << ", j = " << j << std::endl;
+            if (record.get_type() == FileType::FREE) {
+                std::cout << "record.get_type() == FileType::FREE" << std::endl;
+                size_t sum = record.get_size();
+                for (size_t k = j + 1; k < recsize && segments_[i].get_records()[k].get_type() == FileType::FREE; ++k) {
+                    sum += segments_[i].get_records()[k].get_size();
+                    std::cout << "sum = " << sum << std::endl;
+                    if (sum >= size) {
+                        std::cout << "sum >= size" << std::endl;
+                        segments_[i].get_records()[j].set_size(size);
+                        files_.insert(filename);
+                        header_.free_space_ -= size;
+                        --header_.free_records_;
+                        for (size_t l = j + 1; l <= k; ++l) {
+                            segments_[i].get_records()[l].set_type(FileType::BLOCKED);
+                        }
+                        std::cout << "for, free space = " << header_.free_space_ << std::endl;
+                        return Error::NO_ERROR;
+                    }
+                }
+            }
         }
     }
-}
-
-void Catalog::remove(const std::string& filename) {
-    auto record = findRecord(filename);
-    if (record) {
-        record->setType(FileType::FREE);
-        ++free_records_;
-        free_space_ += record->getSize();
-        return;
+    if (header_.counter_ < header_.count_) {
+        if (segments_[header_.counter_].add_record(filename, size)) {
+            ++header_.counter_;
+        }
+        --header_.free_records_;
+        header_.free_space_ -= size;
+        std::cout << "if, free space = " << header_.free_space_ << std::endl;
+        return Error::NO_ERROR;
     }
-    throw std::runtime_error("File not found");
+    return Error::NO_FREE_SPACE;
 }
 
-void Catalog::rename(const std::string& old_filename, const std::string& new_filename) {
-    auto record = findRecord(old_filename);
+Error Catalog::remove(const std::string& filename) {
+    auto record = find_record(filename);
     if (record) {
-        record->setFilename(new_filename);
-        return;
+        record->set_type(FileType::FREE);
+        ++header_.free_records_;
+        header_.free_space_ += record->get_size();
+        files_.erase(filename);
+        return Error::NO_ERROR;
     }
-    throw std::runtime_error("File not found");
+    return Error::FILE_NOT_FOUND;
 }
 
-void Catalog::copy(const std::string& filename, const std::string& dist_filename) {
-    auto record = findRecord(filename);
+Error Catalog::rename(const std::string& old_filename, const std::string& new_filename) {
+    auto record = find_record(old_filename);
     if (record) {
-        create(dist_filename, record->getSize());
-        return;
+        record->set_filename(new_filename);
+        return Error::NO_ERROR;
     }
-    throw std::runtime_error("File not found");
+    return Error::FILE_NOT_FOUND;
 }
 
-void Catalog::move(const std::string& filename, const std::string& dist_filename) {
+Error Catalog::copy(const std::string& filename, const std::string& dist_filename) {
+    auto record = find_record(filename);
+    if (record) {
+        create(dist_filename, record->get_size());
+        return Error::NO_ERROR;
+    }
+    return Error::FILE_NOT_FOUND;
+}
+
+Error Catalog::move(const std::string& filename, const std::string& dist_filename) {
     auto record = find_record(filename);
     if (record) {
         create(dist_filename, record->get_size());
         remove(filename);
-        return;
+        return Error::NO_ERROR;
     }
-    throw std::runtime_error("File not found");
+    return Error::FILE_NOT_FOUND;
 }
 
 std::optional<FileRecord> Catalog::find_record(const std::string& filename) const {
     for (const auto& segment : segments_) {
         for (const auto& record : segment.get_records()) {
-            if (record.get_type() != FileType::FREE && record.getFilename() == filename) {
+            if (record.get_type() != FileType::FREE && record.get_type() != FileType::BLOCKED &&
+                record.get_filename() == filename) {
                 return {record};
             }
         }
@@ -72,13 +107,13 @@ std::optional<FileRecord> Catalog::find_record(const std::string& filename) cons
     return std::nullopt;
 }
 
-std::vector<std::string> Catalog::dir(bool full = false) const {
+std::vector<std::string> Catalog::dir(bool full) const {
     std::vector<std::string> result;
     std::string temp;
     for (const auto& segment : segments_) {
-        for (const auto& record : segment.getRecords()) {
-            if (record.getType() != FileType::FREE) {
-                temp = std::format("{} {} {}", record.getTimestamp(), record.getSize(), record.getFilename());
+        for (const auto& record : segment.get_records()) {
+            if (record.get_type() != FileType::FREE) {
+                temp = std::format("{} {} {}", record.get_timestamp(), record.get_size(), record.get_filename());
                 result.push_back(temp);
             }
         }

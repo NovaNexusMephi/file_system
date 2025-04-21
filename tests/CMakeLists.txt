@@ -7,9 +7,22 @@ find_package(GTest REQUIRED)
 
 file(GLOB TESTS_SOURCE_FILES "source/*.cpp")
 
-add_executable(Tests ${TESTS_SOURCE_FILES})
-
-target_link_libraries(Tests gtest
-                            gtest_main
-                            monitor
-)
+foreach(test_source ${TESTS_SOURCE_FILES})
+    get_filename_component(test_name ${test_source} NAME_WE)
+    
+    add_executable(${test_name} ${test_source})
+    
+    target_include_directories(${test_name} PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src
+        ${GTEST_INCLUDE_DIRS}
+    )
+    
+    target_link_libraries(${test_name} PRIVATE
+        GTest::gtest
+        GTest::gtest_main
+        monitor
+        filesystem
+    )
+    
+    add_test(NAME ${test_name} COMMAND ${test_name})
+endforeach() 
