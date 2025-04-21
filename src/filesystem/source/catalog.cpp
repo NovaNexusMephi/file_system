@@ -31,8 +31,7 @@ void Catalog::create(const std::string& filename, size_t size) {
     }
     for (auto& segment : segments_) {
         for (const auto& record : segment.getRecords()) {
-            if (record.getType() == FileType::FREE) {
-            }
+            if (record.getType() == FileType::FREE) {}
         }
     }
 }
