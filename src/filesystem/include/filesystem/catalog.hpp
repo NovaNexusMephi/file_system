@@ -52,7 +52,7 @@ class Catalog final {
     inline void setCounter(size_t counter) { header_.counter_ = counter; }
 
    private:
-    [[nodiscard]] std::optional<FileRecord> find_record(const std::string& filename) const;
+    [[nodiscard]]FileRecord* find_record(const std::string& filename);
 
     struct CatalogHeader {
         size_t count_;

@@ -41,6 +41,14 @@ TEST(CatalogTest, CreateFileSuccessfully3) {
     EXPECT_EQ(catalog.create("test8.txt", 1), Error::NO_FREE_SPACE);
 }
 
+TEST(CatalogTest, RenameFile) {
+    Catalog catalog(3, 2, 10);
+    EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
+    EXPECT_EQ(catalog.rename("test1.txt", "test2.txt"), Error::NO_ERROR);
+    EXPECT_EQ(catalog.remove("test2.txt"), Error::NO_ERROR);
+    EXPECT_EQ(catalog.rename("test2.txt", "test1.txt"), Error::FILE_NOT_FOUND);
+}
+
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
