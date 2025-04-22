@@ -1,4 +1,4 @@
-#include "monitor/command_parsing.h"
+#include "monitor/reading/command_parsing.h"
 #include <algorithm>
 #include <cctype>
 #include <cstddef>
@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-std::optional<nlohmann::json> monitor::parse_command(const std::string& cmd_line) noexcept {
+std::optional<nlohmann::json> monitor::reading::parse_command(const std::string& cmd_line) noexcept {
     auto tokens = split(cmd_line, " ;\t\n\r");
     if (tokens.empty())
         return std::nullopt;
@@ -37,7 +37,7 @@ std::optional<nlohmann::json> monitor::parse_command(const std::string& cmd_line
     return parsed_command;
 }
 
-std::vector<std::string> monitor::split(const std::string& str, const std::string& delims) noexcept {
+std::vector<std::string> monitor::reading::split(const std::string& str, const std::string& delims) noexcept {
     std::vector<std::string> tokens{};
     size_t start = 0, end = 0;
 
@@ -55,7 +55,7 @@ std::vector<std::string> monitor::split(const std::string& str, const std::strin
     return tokens;
 }
 
-std::pair<std::string, std::string> monitor::make_opt(const std::string& opt_token) noexcept {
+std::pair<std::string, std::string> monitor::reading::make_opt(const std::string& opt_token) noexcept {
     if (!opt_token.starts_with('/'))
         return {"", ""};
     const size_t delim_pos = opt_token.find_first_of(":");
@@ -64,7 +64,7 @@ std::pair<std::string, std::string> monitor::make_opt(const std::string& opt_tok
     return {opt_token.substr(1, delim_pos - 1), opt_token.substr(delim_pos + 1)};
 }
 
-[[nodiscard]] std::pair<std::string, std::vector<std::string>> monitor::name_params(
+[[nodiscard]] std::pair<std::string, std::vector<std::string>> monitor::reading::name_params(
     const std::vector<std::string>& arg_tokens) noexcept {
     std::string name_token = arg_tokens[0];
     std::vector<std::string> param_tokens{};
@@ -74,7 +74,7 @@ std::pair<std::string, std::string> monitor::make_opt(const std::string& opt_tok
     return {name_token, param_tokens};
 }
 
-nlohmann::json monitor::make_opt_obj(const std::vector<std::string>& opt_tokens) noexcept {
+nlohmann::json monitor::reading::make_opt_obj(const std::vector<std::string>& opt_tokens) noexcept {
     nlohmann::json options = R"({})"_json;
     for (auto& opt_token : opt_tokens) {
         auto [key, value] = make_opt(opt_token);

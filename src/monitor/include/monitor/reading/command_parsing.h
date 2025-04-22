@@ -7,7 +7,7 @@
 #include <utility>
 #include <vector>
 
-namespace monitor {
+namespace monitor::reading {
 
 [[nodiscard]] std::optional<nlohmann::json> parse_command(const std::string& cmd_line) noexcept;
 
@@ -20,4 +20,4 @@ namespace monitor {
 [[nodiscard]] std::pair<std::string, std::vector<std::string>> name_params(
     const std::vector<std::string>& arg_tokens) noexcept;
 
-}  // namespace monitor
+}  // namespace monitor::reading

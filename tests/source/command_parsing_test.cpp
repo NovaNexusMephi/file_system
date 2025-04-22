@@ -4,14 +4,20 @@
 #include <vector>
 #include "gtest/gtest.h"
 
-#include <monitor/command_parsing.h>
+#include <monitor/reading/command_parsing.h>
+using monitor::reading::make_opt;
+using monitor::reading::make_opt_obj;
+using monitor::reading::name_params;
+using monitor::reading::parse_command;
+using monitor::reading::split;
+
 using json = nlohmann::json;
 
 class SplitTest : public testing::TestWithParam<std::tuple<std::string, std::string, std::vector<std::string>>> {};
 
 TEST_P(SplitTest, HandlesVariousInputs) {
     const auto& [input, delimiters, expected] = GetParam();
-    const auto result = monitor::split(input, delimiters);
+    const auto result = split(input, delimiters);
     ASSERT_EQ(result, expected);
 }
 
@@ -37,7 +43,7 @@ class MakeOptTest : public testing::TestWithParam<std::tuple<std::string, std::p
 
 TEST_P(MakeOptTest, HandlesVariousOptions) {
     const auto& [input, expected] = GetParam();
-    const auto result = monitor::make_opt(input);
+    const auto result = make_opt(input);
     ASSERT_EQ(result, expected);
 }
 
@@ -61,7 +67,7 @@ class NameParamsTest : public testing::TestWithParam<
 
 TEST_P(NameParamsTest, HandlesVariousInputs) {
     const auto& [input, expected] = GetParam();
-    const auto result = monitor::name_params(input);
+    const auto result = name_params(input);
     ASSERT_EQ(result, expected);
 }
 
@@ -84,7 +90,7 @@ class MakeOptObjTest : public testing::TestWithParam<std::tuple<std::vector<std:
 
 TEST_P(MakeOptObjTest, HandlesVariousOptions) {
     const auto& [input, expected] = GetParam();
-    const auto result = monitor::make_opt_obj(input);
+    const auto result = make_opt_obj(input);
     ASSERT_EQ(result, expected);
 }
 
@@ -121,7 +127,7 @@ class ParseCommandTest : public testing::TestWithParam<std::tuple<std::string, s
 
 TEST_P(ParseCommandTest, HandlesVariousCommands) {
     const auto& [input, expected] = GetParam();
-    const auto result = monitor::parse_command(input);
+    const auto result = parse_command(input);
     ASSERT_EQ(result.has_value(), expected.has_value());
 
     if (result && expected) {
