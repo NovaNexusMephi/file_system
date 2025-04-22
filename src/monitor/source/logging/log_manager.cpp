@@ -1,7 +1,7 @@
-#include "monitor/logging/log_manager.h"
+#include "monitor/logging/log_manager.hpp"
 #include <memory>
-#include "monitor/logging/history_logger.h"
-#include "monitor/logging/result_logger.h"
+#include "monitor/logging/history_logger.hpp"
+#include "monitor/logging/result_logger.hpp"
 using monitor::logging::HistoryLogger;
 using monitor::logging::LogManager;
 using monitor::logging::ResultLogger;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "monitor/logging/log_manager.h"
+#include "monitor/logging/log_manager.hpp"
 
 namespace monitor {
 class Monitor final {

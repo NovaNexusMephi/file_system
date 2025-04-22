@@ -2,8 +2,8 @@
 
 #include <filesystem>
 #include <memory>
-#include "monitor/logging/history_logger.h"
-#include "monitor/logging/result_logger.h"
+#include "monitor/logging/history_logger.hpp"
+#include "monitor/logging/result_logger.hpp"
 namespace fs = std::filesystem;
 
 namespace monitor::logging {

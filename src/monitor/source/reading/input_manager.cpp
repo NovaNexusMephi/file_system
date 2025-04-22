@@ -3,7 +3,7 @@
 #include <nlohmann/json.hpp>
 #include <optional>
 #include <string>
-#include "monitor/reading/command_parsing.h"
+#include "monitor/reading/command_parsing.hpp"
 using monitor::reading::InputManager;
 
 std::optional<nlohmann::json> InputManager::read_command() {

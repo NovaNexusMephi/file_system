@@ -1,4 +1,4 @@
-#include "monitor/logging/result_logger.h"
+#include "monitor/logging/result_logger.hpp"
 #include "spdlog/sinks/basic_file_sink.h"
 using monitor::logging::ResultLogger;
 
