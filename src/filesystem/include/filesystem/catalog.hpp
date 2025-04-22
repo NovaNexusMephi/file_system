@@ -24,25 +24,25 @@ class Catalog final {
         : header_(count, 0, records_count * count, volume_size), segments_(count, Segment(0, 0, records_count))
         {}
 
-    Error create(const std::string& filename, size_t size) noexcept;
+    [[nodiscard]] Error create(const std::string& filename, size_t size) noexcept;
 
-    Error remove(const std::string& filename) noexcept;
+    [[nodiscard]] Error remove(const std::string& filename) noexcept;
 
-    Error rename(const std::string& old_filename, const std::string& new_filename) noexcept;
+    [[nodiscard]] Error rename(const std::string& old_filename, const std::string& new_filename) noexcept;
 
-    Error copy(const std::string& filename, const std::string& dist_filename) noexcept;
+    [[nodiscard]] Error copy(const std::string& filename, const std::string& dist_filename) noexcept;
 
-    Error move(const std::string& filename, const std::string& dist_filename) noexcept;
+    [[nodiscard]] Error move(const std::string& filename, const std::string& dist_filename) noexcept;
 
-    Error squeeze();
+    [[nodiscard]] Error squeeze();
 
-    Error add(const std::string& filename, size_t size) noexcept;
+    [[nodiscard]] Error add(const std::string& filename, size_t size) noexcept;
 
-    Error free() const;
+    [[nodiscard]] Error free() const;
 
-    Error vol() const;
+    [[nodiscard]] Error vol() const;
 
-    Error attr();
+    [[nodiscard]] Error attr();
 
     [[nodiscard]] std::vector<std::string> dir(bool full = false) const noexcept;
 
@@ -55,7 +55,7 @@ class Catalog final {
     inline void set_counter(size_t counter) noexcept { header_.counter_ = counter; }
 
    private:
-    [[nodiscard]]FileRecord* find_record(const std::string& filename) noexcept;
+    [[nodiscard]] FileRecord* find_record(const std::string& filename) noexcept;
 
     struct CatalogHeader {
         size_t count_;
