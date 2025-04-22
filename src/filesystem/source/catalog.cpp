@@ -7,7 +7,7 @@
 
 namespace filesystem {
 
-Error Catalog::create(const std::string& filename, size_t size) {
+Error Catalog::create(const std::string& filename, size_t size) noexcept {
     if (size > header_.free_space_) {
         return Error::NO_FREE_SPACE;
     }
@@ -44,12 +44,13 @@ Error Catalog::create(const std::string& filename, size_t size) {
         }
         --header_.free_records_;
         header_.free_space_ -= size;
+        files_.insert(filename);
         return Error::NO_ERROR;
     }
     return Error::NO_FREE_SPACE;
 }
 
-Error Catalog::remove(const std::string& filename) {
+Error Catalog::remove(const std::string& filename) noexcept {
     auto record = find_record(filename);
     if (record) {
         record->set_type(FileType::FREE);
@@ -61,7 +62,7 @@ Error Catalog::remove(const std::string& filename) {
     return Error::FILE_NOT_FOUND;
 }
 
-Error Catalog::rename(const std::string& old_filename, const std::string& new_filename) {
+Error Catalog::rename(const std::string& old_filename, const std::string& new_filename) noexcept {
     auto record = find_record(old_filename);
     if (record) {
         record->set_filename(new_filename);
@@ -72,16 +73,22 @@ Error Catalog::rename(const std::string& old_filename, const std::string& new_fi
     return Error::FILE_NOT_FOUND;
 }
 
-Error Catalog::copy(const std::string& filename, const std::string& dist_filename) {
+Error Catalog::copy(const std::string& filename, const std::string& dist_filename) noexcept {
+    if (files_.contains(dist_filename)) {
+        return Error::FILE_ALREADY_EXISTS;
+    }
     auto record = find_record(filename);
     if (record) {
-        create(dist_filename, record->get_size());
-        return Error::NO_ERROR;
+        auto rec = create(dist_filename, record->get_size());
+        return rec;
     }
     return Error::FILE_NOT_FOUND;
 }
 
-Error Catalog::move(const std::string& filename, const std::string& dist_filename) {
+Error Catalog::move(const std::string& filename, const std::string& dist_filename) noexcept {
+    if (files_.contains(dist_filename)) {
+        return Error::FILE_ALREADY_EXISTS;
+    }
     auto record = find_record(filename);
     if (record) {
         create(dist_filename, record->get_size());
@@ -91,7 +98,21 @@ Error Catalog::move(const std::string& filename, const std::string& dist_filenam
     return Error::FILE_NOT_FOUND;
 }
 
-FileRecord* Catalog::find_record(const std::string& filename) {
+Error Catalog::add(const std::string& filename, size_t new_size) noexcept {
+    auto record = find_record(filename);
+    if(record) {
+        auto size = record->get_size();
+        if (new_size > header_.free_space_) {
+            return Error::NO_FREE_SPACE;
+        }
+        record->set_size(size + new_size);
+        header_.free_space_ -= new_size;
+        return Error::NO_ERROR;
+    }
+    return Error::FILE_NOT_FOUND;
+}
+
+FileRecord* Catalog::find_record(const std::string& filename) noexcept {
     for (auto& segment : segments_) {
         for (auto& record : segment.get_records()) {
             if (record.get_type() != FileType::FREE && record.get_type() != FileType::BLOCKED &&
@@ -103,7 +124,7 @@ FileRecord* Catalog::find_record(const std::string& filename) {
     return nullptr;
 }
 
-std::vector<std::string> Catalog::dir(bool full) const {
+std::vector<std::string> Catalog::dir(bool full) const noexcept {
     std::vector<std::string> result;
     std::string temp;
     for (const auto& segment : segments_) {

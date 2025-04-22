@@ -25,7 +25,7 @@ class Segment final {
 
     [[nodiscard]] inline std::vector<FileRecord>& get_records() noexcept { return records_; }
 
-    bool add_record(const std::string& filename, size_t size);
+    bool add_record(const std::string& filename, size_t size) noexcept;
 
    private:
     struct SegmentHeader {
