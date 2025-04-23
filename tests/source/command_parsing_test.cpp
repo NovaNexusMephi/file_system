@@ -4,7 +4,7 @@
 #include <vector>
 #include "gtest/gtest.h"
 
-#include <monitor/reading/command_parsing.h>
+#include <monitor/reading/command_parsing.hpp>
 using monitor::reading::make_opt;
 using monitor::reading::make_opt_obj;
 using monitor::reading::name_params;

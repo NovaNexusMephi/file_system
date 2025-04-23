@@ -9,9 +9,11 @@ ResultLogger::ResultLogger(const fs::path& session_path) {
 }
 
 void ResultLogger::log_success(const std::string& command_id, const std::string& result) {
-    logger_->info("SUCCESS | ID {} | RESULT {}", command_id, result);
+    logger_->info("SUCCESS ID {} RESULT {}", command_id, result);
+    logger_->flush();
 }
 
 void ResultLogger::log_error(const std::string& command_id, const std::string& error) {
-    logger_->info("ERROR | ID {} | DETAILS {}", command_id, error);
+    logger_->info("ERROR ID {} DETAILS {}", command_id, error);
+    logger_->flush();
 }

@@ -21,6 +21,6 @@ add_subdirectory(src/monitor)
 add_subdirectory(tests)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE monitor)
+target_link_libraries(${PROJECT_NAME} PUBLIC monitor)
 
 add_dependencies(${PROJECT_NAME} CopyConfigFiles)

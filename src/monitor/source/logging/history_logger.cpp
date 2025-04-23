@@ -9,13 +9,16 @@ HistoryLogger::HistoryLogger(const fs::path& session_path) {
 }
 
 void HistoryLogger::log_start(const std::string& command_id, const std::string& command) {
-    logger_->info("START | ID {} | CMD {}", command_id, command);
+    logger_->info("START  ID {} CMD {}", command_id, command);
+    logger_->flush();
 }
 
 void HistoryLogger::log_commit(const std::string& command_id) {
-    logger_->info("COMMIT | ID {}", command_id);
+    logger_->info("COMMIT ID {}", command_id);
+    logger_->flush();
 }
 
 void HistoryLogger::log_rollback(const std::string& command_id, const std::string& error) {
-    logger_->info("ROLLBACK | ID {} | ERROR {}", command_id, error);
+    logger_->info("ROLLBACK ID {} ERROR {}", command_id, error);
+    logger_->flush();
 }
