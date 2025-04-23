@@ -15,6 +15,6 @@ void filesystem::FileRecord::set_type(FileType type) noexcept {
 [[nodiscard]] std::string filesystem::FileRecord::get_timestamp_as_string() const noexcept {
     std::time_t time = std::chrono::system_clock::to_time_t(timestamp_);
     std::ostringstream oss;
-    oss << std::put_time(std::localtime(&time), "%Y-%m-%d %H:%M:%S");
+    oss << std::put_time(std::localtime(&time), "%d-%m-%Y");
     return oss.str();
 }

@@ -64,6 +64,12 @@ Error Catalog::remove(const std::string& filename) noexcept {
 }
 
 Error Catalog::rename(const std::string& old_filename, const std::string& new_filename) noexcept {
+    if(old_filename == new_filename) {
+        return Error::NO_ERROR;
+    }
+    if (files_.contains(new_filename)) {
+        return Error::FILE_ALREADY_EXISTS;
+    }
     auto record = find_record(old_filename);
     if (record) {
         record->set_filename(new_filename);
@@ -137,6 +143,50 @@ std::vector<std::string> Catalog::dir() const noexcept {
             }
         }
     }
+    return result;
+}
+
+std::vector<std::string> Catalog::sort(bool by_name, bool by_ext, bool by_date, bool by_size, bool inverse) const noexcept {
+    std::vector<std::string> result = dir();
+
+    auto compare = [&](const std::string& a, const std::string& b) -> bool {
+        if (by_name) {
+            return a < b;  
+        } 
+        else if (by_ext) {
+            auto get_extension = [](const std::string& line) -> std::string {
+                size_t pos = line.find_last_of('.');
+                return (pos == std::string::npos) ? "" : line.substr(pos);
+            };
+            return get_extension(a) < get_extension(b);
+        } 
+        else if (by_date) {
+            auto extract_date = [](const std::string& line) -> std::string {
+                size_t pos = line.rfind(' ');
+                return (pos == std::string::npos) ? "" : line.substr(pos + 1);
+            };
+            return extract_date(a) < extract_date(b);
+        } 
+        else if (by_size) {
+            auto extract_size = [](const std::string& line) -> size_t {
+                size_t pos = line.find(" Blocks");
+                if (pos == std::string::npos)
+                    return 0;
+                std::string size_str = line.substr(0, pos);
+                size_t space_pos = size_str.find_last_of(' ');
+                return std::stoul(size_str.substr(space_pos + 1));
+            };
+            return extract_size(a) < extract_size(b);
+        }
+        return false;  
+    };
+
+    std::sort(result.begin(), result.end(), compare);
+
+    if (inverse) {
+        std::reverse(result.begin(), result.end());
+    }
+
     return result;
 }
 

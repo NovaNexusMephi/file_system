@@ -16,6 +16,8 @@ enum class Error {
     NO_FREE_SPACE,
     FILE_NOT_FOUND,
     FILE_ALREADY_EXISTS,
+    NO_MEMORY,
+    ERROR_EXCEPTION
 };
 
 class Catalog final {
