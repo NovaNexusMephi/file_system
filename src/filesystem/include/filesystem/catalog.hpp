@@ -23,8 +23,7 @@ enum class Error {
 class Catalog final {
    public:
     Catalog(size_t count, size_t records_count, size_t volume_size)
-        : header_(count, 0, records_count * count, volume_size), segments_(count, Segment(0, 0, records_count))
-        {}
+        : header_(count, 0, records_count * count, volume_size), segments_(count, Segment(0, records_count)) {}
 
     [[nodiscard]] Error create(const std::string& filename, size_t size) noexcept;
 
@@ -48,16 +47,22 @@ class Catalog final {
 
     [[nodiscard]] std::vector<std::string> dir() const noexcept;
 
-    [[nodiscard]] std::vector<std::string> sort(bool by_name = false, bool by_ext = false, bool by_date = false, 
-                bool by_size = false, bool inverse = false) const noexcept;
+    [[nodiscard]] std::vector<std::string> sort(bool by_name = false, bool by_ext = false, bool by_date = false,
+                                                bool by_size = false, bool inverse = false) const noexcept;
 
     [[nodiscard]] inline const std::vector<Segment>& get_segments() const noexcept { return segments_; }
 
     [[nodiscard]] inline std::vector<Segment>& get_segments() noexcept { return segments_; }
 
-    inline void set_count(size_t count) noexcept { header_.count_ = count; }
+    [[nodiscard]] inline size_t get_free_records() const noexcept { return header_.free_records_; }
 
-    inline void set_counter(size_t counter) noexcept { header_.counter_ = counter; }
+    [[nodiscard]] inline size_t get_free_space() const noexcept { return header_.free_space_; }
+
+    [[nodiscard]] inline size_t get_busy_segments_count() const noexcept { return header_.counter_; }
+
+    [[nodiscard]] inline size_t get_used_segments_count() const noexcept {
+        return header_.counter_ + ((segments_[header_.counter_].get_counter() == 0) ? 0 : 1);
+    }
 
    private:
     [[nodiscard]] FileRecord* find_record(const std::string& filename) noexcept;
@@ -75,7 +80,6 @@ class Catalog final {
     CatalogHeader header_;
     std::vector<Segment> segments_;
     std::unordered_set<std::string> files_;
-
 };
 
 }  // namespace filesystem

@@ -1,7 +1,8 @@
 #include "filesystem/filesystem.hpp"
-#include "filesystem/catalog.hpp"
 
 #include <iostream>
+
+#include "filesystem/catalog.hpp"
 
 namespace filesystem {
 

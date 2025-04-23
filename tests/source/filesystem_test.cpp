@@ -1,7 +1,8 @@
+#include "filesystem/filesystem.hpp"
+
 #include <gtest/gtest.h>
 
 #include "filesystem/catalog.hpp"
-#include "filesystem/filesystem.hpp"
 
 using filesystem::Catalog;
 using filesystem::Error;
@@ -63,16 +64,30 @@ TEST(CatalogTest, RenameToExistingFile) {
 TEST(CatalogTest, RenameWithDifferentExtension) {
     Catalog catalog(3, 2, 10);
 
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+
     EXPECT_EQ(catalog.create("data.bin", 5), Error::NO_ERROR);
     EXPECT_EQ(catalog.rename("data.bin", "data.txt"), Error::NO_ERROR);
 
     std::vector<std::string> result = catalog.dir();
     EXPECT_EQ(result.size(), 1);
-    EXPECT_EQ(result[0], "data.txt 5 Blocks 23-04-2025");
+    EXPECT_EQ(result[0], "data.txt 5 Blocks " + today);
 }
 
 TEST(CatalogTest, RenameToSameName) {
     Catalog catalog(3, 2, 10);
+
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
 
     EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
 
@@ -80,7 +95,7 @@ TEST(CatalogTest, RenameToSameName) {
 
     std::vector<std::string> result = catalog.dir();
     EXPECT_EQ(result.size(), 1);
-    EXPECT_EQ(result[0], "test1.txt 2 Blocks 23-04-2025");
+    EXPECT_EQ(result[0], "test1.txt 2 Blocks " + today);
 }
 
 TEST(CatalogTest, AddTest) {
@@ -139,8 +154,14 @@ TEST(CatalogTest, DirTest) {
     EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
     EXPECT_EQ(catalog.create("test2.txt", 1), Error::NO_ERROR);
 
-    std::vector<std::string> expected = {"test1.txt 2 Blocks 2025-04-23 11:09:20",
-                                         "test2.txt 1 Blocks 2025-04-23 11:09:20"};
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+
+    std::vector<std::string> expected = {"test1.txt 2 Blocks " + today, "test2.txt 1 Blocks " + today};
 
     auto result = catalog.dir();
 
@@ -160,17 +181,24 @@ TEST(CatalogTest, DirTest2) {
     EXPECT_EQ(catalog.create("temp.log", 2), Error::NO_ERROR);
     EXPECT_EQ(catalog.create("report.txt", 3), Error::NO_ERROR);
 
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+
     std::vector<std::string> result = catalog.dir();
     EXPECT_EQ(result.size(), 3);
-    EXPECT_EQ(result[0], "data.bin 5 Blocks 23-04-2025");
-    EXPECT_EQ(result[1], "temp.log 2 Blocks 23-04-2025");
-    EXPECT_EQ(result[2], "report.txt 3 Blocks 23-04-2025");
+    EXPECT_EQ(result[0], "data.bin 5 Blocks " + today);
+    EXPECT_EQ(result[1], "temp.log 2 Blocks " + today);
+    EXPECT_EQ(result[2], "report.txt 3 Blocks " + today);
 
     EXPECT_EQ(catalog.remove("report.txt"), Error::NO_ERROR);
     auto res = catalog.dir();
     EXPECT_EQ(res.size(), 2);
-    EXPECT_EQ(res[0], "data.bin 5 Blocks 23-04-2025");
-    EXPECT_EQ(res[1], "temp.log 2 Blocks 23-04-2025");
+    EXPECT_EQ(res[0], "data.bin 5 Blocks " + today);
+    EXPECT_EQ(res[1], "temp.log 2 Blocks " + today);
 }
 
 TEST(CatalogTest, DirEmptyCatalog) {
@@ -185,9 +213,16 @@ TEST(CatalogTest, DirSingleFile) {
 
     EXPECT_EQ(catalog.create("data.bin", 5), Error::NO_ERROR);
 
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+
     std::vector<std::string> result = catalog.dir();
     EXPECT_EQ(result.size(), 1);
-    EXPECT_EQ(result[0], "data.bin 5 Blocks 23-04-2025");
+    EXPECT_EQ(result[0], "data.bin 5 Blocks " + today);
 }
 
 TEST(CatalogTest, SortTest) {
@@ -197,15 +232,22 @@ TEST(CatalogTest, SortTest) {
     EXPECT_EQ(catalog.create("temp.log", 2), Error::NO_ERROR);
     EXPECT_EQ(catalog.create("report.txt", 3), Error::NO_ERROR);
 
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+
     std::vector<std::string> sorted_by_ext = catalog.sort(false, true, false, false, false);
-    EXPECT_EQ(sorted_by_ext[0], "data.bin 5 Blocks 23-04-2025");
-    EXPECT_EQ(sorted_by_ext[1], "temp.log 2 Blocks 23-04-2025");
-    EXPECT_EQ(sorted_by_ext[2], "report.txt 3 Blocks 23-04-2025");
+    EXPECT_EQ(sorted_by_ext[0], "data.bin 5 Blocks " + today);
+    EXPECT_EQ(sorted_by_ext[1], "temp.log 2 Blocks " + today);
+    EXPECT_EQ(sorted_by_ext[2], "report.txt 3 Blocks " + today);
 
     std::vector<std::string> sorted_by_size_inv = catalog.sort(false, false, false, true, true);
-    EXPECT_EQ(sorted_by_size_inv[0], "data.bin 5 Blocks 23-04-2025");
-    EXPECT_EQ(sorted_by_size_inv[1], "report.txt 3 Blocks 23-04-2025");
-    EXPECT_EQ(sorted_by_size_inv[2], "temp.log 2 Blocks 23-04-2025");
+    EXPECT_EQ(sorted_by_size_inv[0], "data.bin 5 Blocks " + today);
+    EXPECT_EQ(sorted_by_size_inv[1], "report.txt 3 Blocks " + today);
+    EXPECT_EQ(sorted_by_size_inv[2], "temp.log 2 Blocks " + today);
 }
 
 TEST(CatalogTest, SortByName) {
@@ -215,10 +257,17 @@ TEST(CatalogTest, SortByName) {
     EXPECT_EQ(catalog.create("temp.log", 2), Error::NO_ERROR);
     EXPECT_EQ(catalog.create("report.txt", 3), Error::NO_ERROR);
 
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+
     std::vector<std::string> sorted = catalog.sort(true, false, false, false, false);
-    EXPECT_EQ(sorted[0], "data.bin 5 Blocks 23-04-2025");
-    EXPECT_EQ(sorted[1], "report.txt 3 Blocks 23-04-2025");
-    EXPECT_EQ(sorted[2], "temp.log 2 Blocks 23-04-2025");
+    EXPECT_EQ(sorted[0], "data.bin 5 Blocks " + today);
+    EXPECT_EQ(sorted[1], "report.txt 3 Blocks " + today);
+    EXPECT_EQ(sorted[2], "temp.log 2 Blocks " + today);
 }
 
 TEST(CatalogTest, SortByDate) {
@@ -228,10 +277,17 @@ TEST(CatalogTest, SortByDate) {
     EXPECT_EQ(catalog.create("temp.log", 2), Error::NO_ERROR);
     EXPECT_EQ(catalog.create("report.txt", 3), Error::NO_ERROR);
 
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+
     std::vector<std::string> sorted = catalog.sort(false, false, true, false, false);
-    EXPECT_EQ(sorted[0], "data.bin 5 Blocks 23-04-2025");
-    EXPECT_EQ(sorted[1], "temp.log 2 Blocks 23-04-2025");
-    EXPECT_EQ(sorted[2], "report.txt 3 Blocks 23-04-2025");
+    EXPECT_EQ(sorted[0], "data.bin 5 Blocks " + today);
+    EXPECT_EQ(sorted[1], "temp.log 2 Blocks " + today);
+    EXPECT_EQ(sorted[2], "report.txt 3 Blocks " + today);
 }
 
 TEST(CatalogTest, SortWithInverse) {
@@ -241,10 +297,17 @@ TEST(CatalogTest, SortWithInverse) {
     EXPECT_EQ(catalog.create("temp.log", 2), Error::NO_ERROR);
     EXPECT_EQ(catalog.create("report.txt", 3), Error::NO_ERROR);
 
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+
     std::vector<std::string> sorted = catalog.sort(true, false, false, false, true);
-    EXPECT_EQ(sorted[0], "temp.log 2 Blocks 23-04-2025");
-    EXPECT_EQ(sorted[1], "report.txt 3 Blocks 23-04-2025");
-    EXPECT_EQ(sorted[2], "data.bin 5 Blocks 23-04-2025");
+    EXPECT_EQ(sorted[0], "temp.log 2 Blocks " + today);
+    EXPECT_EQ(sorted[1], "report.txt 3 Blocks " + today);
+    EXPECT_EQ(sorted[2], "data.bin 5 Blocks " + today);
 }
 
 TEST(CatalogTest, SortEmptyCatalog) {
@@ -259,9 +322,49 @@ TEST(CatalogTest, SortSingleFile) {
 
     EXPECT_EQ(catalog.create("data.bin", 5), Error::NO_ERROR);
 
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+
     std::vector<std::string> sorted = catalog.sort(true, false, false, false, false);
     EXPECT_EQ(sorted.size(), 1);
-    EXPECT_EQ(sorted[0], "data.bin 5 Blocks 23-04-2025");
+    EXPECT_EQ(sorted[0], "data.bin 5 Blocks " + today);
+}
+
+TEST(CatalogTest, SqueezeTest1) {
+    Catalog catalog(3, 2, 10);
+    EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
+    EXPECT_EQ(catalog.create("test2.txt", 2), Error::NO_ERROR);
+    EXPECT_EQ(catalog.create("test3.txt", 5), Error::NO_ERROR);
+    EXPECT_EQ(catalog.remove("test2.txt"), Error::NO_ERROR);
+    EXPECT_EQ(catalog.get_busy_segments_count(), 1);
+    EXPECT_EQ(catalog.get_used_segments_count(), 2);
+    EXPECT_EQ(catalog.create("test2.txt", 3), Error::NO_FREE_SPACE);
+    EXPECT_EQ(catalog.squeeze(), Error::NO_ERROR);
+    EXPECT_EQ(catalog.get_busy_segments_count(), 1);
+    EXPECT_EQ(catalog.get_used_segments_count(), 1);
+    EXPECT_EQ(catalog.create("test2.txt", 3), Error::NO_ERROR);
+    EXPECT_EQ(catalog.create("test4.txt", 2), Error::NO_FREE_SPACE);
+}
+
+TEST(CatalogTest, SqueezeTest2) {
+    Catalog catalog(3, 3, 20);
+    EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
+    EXPECT_EQ(catalog.create("test2.txt", 2), Error::NO_ERROR);
+    EXPECT_EQ(catalog.create("test3.txt", 2), Error::NO_ERROR);
+    EXPECT_EQ(catalog.create("test4.txt", 2), Error::NO_ERROR);
+    EXPECT_EQ(catalog.create("test5.txt", 2), Error::NO_ERROR);
+    EXPECT_EQ(catalog.create("test6.txt", 2), Error::NO_ERROR);
+    EXPECT_EQ(catalog.remove("test2.txt"), Error::NO_ERROR);
+    EXPECT_EQ(catalog.remove("test5.txt"), Error::NO_ERROR);
+    EXPECT_EQ(catalog.get_busy_segments_count(), 2);
+    EXPECT_EQ(catalog.get_used_segments_count(), 2);
+    EXPECT_EQ(catalog.squeeze(), Error::NO_ERROR);
+    EXPECT_EQ(catalog.get_busy_segments_count(), 1);
+    EXPECT_EQ(catalog.get_used_segments_count(), 2);
 }
 
 TEST(FileSystem, InitTest) {
@@ -271,17 +374,24 @@ TEST(FileSystem, InitTest) {
 }
 
 TEST(FileSystem, DirTest) {
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+
     FileSystem filesystem;
     filesystem.init("VOL", "OWNER", 3, 2, 10);
-    EXPECT_EQ(filesystem.get_catalog()->create("test1.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(filesystem.get_catalog()->create("test2.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(filesystem.get_catalog()->create("test3.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(filesystem.get_catalog()->create("test4.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(filesystem.get_catalog()->remove("test3.txt"), Error::NO_ERROR);
-    EXPECT_EQ(filesystem.get_catalog()->remove("test4.txt"), Error::NO_ERROR);
+    EXPECT_EQ(filesystem.create("test1.txt", 2), Error::NO_ERROR);
+    EXPECT_EQ(filesystem.create("test2.txt", 1), Error::NO_ERROR);
+    EXPECT_EQ(filesystem.create("test3.txt", 2), Error::NO_ERROR);
+    EXPECT_EQ(filesystem.create("test4.txt", 1), Error::NO_ERROR);
+    EXPECT_EQ(filesystem.remove("test3.txt"), Error::NO_ERROR);
+    EXPECT_EQ(filesystem.remove("test4.txt"), Error::NO_ERROR);
     auto res = filesystem.dir(true);
     std::vector<std::string> expected = {"Volume:VOL, Owner:OWNER", "Free blocks:2", "Bad blocks:0",
-                                         "test1.txt 2 Blocks 2025-04-23", "test2.txt 1 Blocks 2025-04-23"};
+                                         "test1.txt 2 Blocks " + today, "test2.txt 1 Blocks " + today};
     ASSERT_EQ(res.size(), expected.size());
     for (size_t i = 0; i < res.size(); ++i) {
         size_t pos;

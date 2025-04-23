@@ -145,45 +145,80 @@ std::vector<std::string> Catalog::dir() const noexcept {
     return result;
 }
 
+Error Catalog::squeeze() {
+    if (header_.free_space_ == 0) {
+        return Error::NO_ERROR;
+    }
+    size_t records_count = segments_[0].get_size();
+    std::vector<Segment> new_segments(header_.count_, Segment(0, records_count));
+    size_t k = 0;
+    for (size_t i = 0; i < header_.count_; ++i) {
+        auto& segment = segments_[i];
+        for (size_t j = 0; j < segment.get_counter(); ++j) {
+            auto& record = segment.get_records()[j];
+            if (record.get_type() == FileType::PERMANENT) {
+                if (new_segments[k].add_record(record.get_filename(), record.get_size())) {
+                    ++k;
+                }
+            }
+        }
+    }
+    header_.counter_ = k;
+    header_.free_records_ = (header_.count_ - k) * records_count - new_segments[k].get_counter();
+    segments_.swap(new_segments);
+    return Error::NO_ERROR;
+}
+
+auto get_extension = [](const std::string& line) -> std::string {
+    size_t pos = line.find_last_of('.');
+    return (pos == std::string::npos) ? "" : line.substr(pos);
+};
+
+auto extract_date = [](const std::string& line) -> std::string {
+    size_t pos = line.rfind(' ');
+    return (pos == std::string::npos) ? "" : line.substr(pos + 1);
+};
+
+auto extract_size = [](const std::string& line) -> size_t {
+    size_t pos = line.find(" Blocks");
+    if (pos == std::string::npos) return 0;
+    std::string size_str = line.substr(0, pos);
+    size_t space_pos = size_str.find_last_of(' ');
+    return std::stoul(size_str.substr(space_pos + 1));
+};
+
+auto name_compare = [](const std::string& a, const std::string& b) -> bool { return a < b; };
+
+auto extension_compare = [](const std::string& a, const std::string& b) -> bool {
+    return get_extension(a) < get_extension(b);
+};
+
+auto date_compare = [](const std::string& a, const std::string& b) -> bool {
+    return extract_date(a) < extract_date(b);
+};
+
+auto size_compare = [](const std::string& a, const std::string& b) -> bool {
+    return extract_size(a) < extract_size(b);
+};
+
 std::vector<std::string> Catalog::sort(bool by_name, bool by_ext, bool by_date, bool by_size,
                                        bool inverse) const noexcept {
     std::vector<std::string> result = dir();
-
-    auto compare = [&](const std::string& a, const std::string& b) -> bool {
-        if (by_name) {
-            return a < b;
-        } else if (by_ext) {
-            auto get_extension = [](const std::string& line) -> std::string {
-                size_t pos = line.find_last_of('.');
-                return (pos == std::string::npos) ? "" : line.substr(pos);
-            };
-            return get_extension(a) < get_extension(b);
-        } else if (by_date) {
-            auto extract_date = [](const std::string& line) -> std::string {
-                size_t pos = line.rfind(' ');
-                return (pos == std::string::npos) ? "" : line.substr(pos + 1);
-            };
-            return extract_date(a) < extract_date(b);
-        } else if (by_size) {
-            auto extract_size = [](const std::string& line) -> size_t {
-                size_t pos = line.find(" Blocks");
-                if (pos == std::string::npos)
-                    return 0;
-                std::string size_str = line.substr(0, pos);
-                size_t space_pos = size_str.find_last_of(' ');
-                return std::stoul(size_str.substr(space_pos + 1));
-            };
-            return extract_size(a) < extract_size(b);
-        }
-        return false;
-    };
-
-    std::sort(result.begin(), result.end(), compare);
-
+    if (by_name) {
+        std::sort(result.begin(), result.end(), name_compare);
+    }
+    if (by_ext) {
+        std::sort(result.begin(), result.end(), extension_compare);
+    }
+    if (by_date) {
+        std::sort(result.begin(), result.end(), date_compare);
+    }
+    if (by_size) {
+        std::sort(result.begin(), result.end(), size_compare);
+    }
     if (inverse) {
         std::reverse(result.begin(), result.end());
     }
-
     return result;
 }
 
