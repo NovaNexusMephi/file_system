@@ -1,8 +1,8 @@
 #include "filesystem/catalog.hpp"
 
+#include <algorithm>
 #include <format>
 #include <iostream>
-#include <algorithm>
 
 #include "filesystem/file_record.hpp"
 
@@ -64,7 +64,7 @@ Error Catalog::remove(const std::string& filename) noexcept {
 }
 
 Error Catalog::rename(const std::string& old_filename, const std::string& new_filename) noexcept {
-    if(old_filename == new_filename) {
+    if (old_filename == new_filename) {
         return Error::NO_ERROR;
     }
     if (files_.contains(new_filename)) {
@@ -107,7 +107,7 @@ Error Catalog::move(const std::string& filename, const std::string& dist_filenam
 
 Error Catalog::add(const std::string& filename, size_t new_size) noexcept {
     auto record = find_record(filename);
-    if(record) {
+    if (record) {
         auto size = record->get_size();
         if (new_size > header_.free_space_) {
             return Error::NO_FREE_SPACE;
@@ -137,8 +137,7 @@ std::vector<std::string> Catalog::dir() const noexcept {
     for (const auto& segment : segments_) {
         for (const auto& record : segment.get_records()) {
             if (record.get_type() != FileType::FREE && record.get_type() != FileType::BLOCKED) {
-                temp = 
-                    std::format("{} {} Blocks {}", record.get_filename(), record.get_size(), record.get_timestamp());
+                temp = std::format("{} {} Blocks {}", record.get_filename(), record.get_size(), record.get_timestamp());
                 result.emplace_back(std::move(temp));
             }
         }
@@ -146,28 +145,26 @@ std::vector<std::string> Catalog::dir() const noexcept {
     return result;
 }
 
-std::vector<std::string> Catalog::sort(bool by_name, bool by_ext, bool by_date, bool by_size, bool inverse) const noexcept {
+std::vector<std::string> Catalog::sort(bool by_name, bool by_ext, bool by_date, bool by_size,
+                                       bool inverse) const noexcept {
     std::vector<std::string> result = dir();
 
     auto compare = [&](const std::string& a, const std::string& b) -> bool {
         if (by_name) {
-            return a < b;  
-        } 
-        else if (by_ext) {
+            return a < b;
+        } else if (by_ext) {
             auto get_extension = [](const std::string& line) -> std::string {
                 size_t pos = line.find_last_of('.');
                 return (pos == std::string::npos) ? "" : line.substr(pos);
             };
             return get_extension(a) < get_extension(b);
-        } 
-        else if (by_date) {
+        } else if (by_date) {
             auto extract_date = [](const std::string& line) -> std::string {
                 size_t pos = line.rfind(' ');
                 return (pos == std::string::npos) ? "" : line.substr(pos + 1);
             };
             return extract_date(a) < extract_date(b);
-        } 
-        else if (by_size) {
+        } else if (by_size) {
             auto extract_size = [](const std::string& line) -> size_t {
                 size_t pos = line.find(" Blocks");
                 if (pos == std::string::npos)
@@ -178,7 +175,7 @@ std::vector<std::string> Catalog::sort(bool by_name, bool by_ext, bool by_date, 
             };
             return extract_size(a) < extract_size(b);
         }
-        return false;  
+        return false;
     };
 
     std::sort(result.begin(), result.end(), compare);

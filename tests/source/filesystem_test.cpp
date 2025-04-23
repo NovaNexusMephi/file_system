@@ -139,10 +139,8 @@ TEST(CatalogTest, DirTest) {
     EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
     EXPECT_EQ(catalog.create("test2.txt", 1), Error::NO_ERROR);
 
-    std::vector<std::string> expected = {
-        "test1.txt 2 Blocks 2025-04-23 11:09:20",  
-        "test2.txt 1 Blocks 2025-04-23 11:09:20"  
-    };
+    std::vector<std::string> expected = {"test1.txt 2 Blocks 2025-04-23 11:09:20",
+                                         "test2.txt 1 Blocks 2025-04-23 11:09:20"};
 
     auto result = catalog.dir();
 
@@ -282,24 +280,19 @@ TEST(FileSystem, DirTest) {
     EXPECT_EQ(filesystem.get_catalog()->remove("test3.txt"), Error::NO_ERROR);
     EXPECT_EQ(filesystem.get_catalog()->remove("test4.txt"), Error::NO_ERROR);
     auto res = filesystem.dir(true);
-    std::vector<std::string> expected = {
-        "Volume:VOL, Owner:OWNER",
-        "Free blocks:2",
-        "Bad blocks:0",
-        "test1.txt 2 Blocks 2025-04-23",  
-        "test2.txt 1 Blocks 2025-04-23"  
-    };
+    std::vector<std::string> expected = {"Volume:VOL, Owner:OWNER", "Free blocks:2", "Bad blocks:0",
+                                         "test1.txt 2 Blocks 2025-04-23", "test2.txt 1 Blocks 2025-04-23"};
     ASSERT_EQ(res.size(), expected.size());
     for (size_t i = 0; i < res.size(); ++i) {
         size_t pos;
-        if(i == 0) {
+        if (i == 0) {
             pos = res[i].find("VOL");
             EXPECT_EQ(pos, 7);
             pos = res[i].find("OWNER");
             EXPECT_EQ(pos, 18);
             continue;
         }
-        if(i == 1) {
+        if (i == 1) {
             pos = res[i].find("2");
             EXPECT_EQ(pos, 12);
             continue;
