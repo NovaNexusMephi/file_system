@@ -2,6 +2,8 @@
 
 #include <chrono>
 #include <cstddef>
+#include <iomanip>
+#include <sstream>
 #include <string>
 
 namespace filesystem {
@@ -11,7 +13,7 @@ enum class FileType { FREE, PERMANENT, BLOCKED };
 class FileRecord final {
    public:
     FileRecord(const std::string& name, size_t size, FileType type = FileType::PERMANENT)
-        : type_(type), name_(name), size_(size) {}
+        : type_(type), name_(name), size_(size), timestamp_(std::chrono::system_clock::now()) {}
 
     void set_filename(std::string) noexcept;
 
@@ -25,13 +27,15 @@ class FileRecord final {
 
     [[nodiscard]] inline FileType get_type() const noexcept { return type_; }
 
-    [[nodiscard]] inline std::chrono::system_clock::time_point get_timestamp() const noexcept { return timestamp_; }
+    [[nodiscard]] std::string get_timestamp() const noexcept { return get_timestamp_as_string(); }
 
    private:
     FileType type_;
     std::string name_;
     size_t size_;
     std::chrono::system_clock::time_point timestamp_;
+   private:
+    [[nodiscard]] std::string get_timestamp_as_string() const noexcept;
 };
 
 }  // namespace filesystem

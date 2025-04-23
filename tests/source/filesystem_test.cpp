@@ -100,6 +100,27 @@ TEST(CatalogTest, CopyTest) {
     EXPECT_EQ(catalog.copy("test1.txt", "test6.txt"), Error::NO_ERROR);
 }
 
+TEST(CatalogTest, DirTest) {
+    Catalog catalog(3, 2, 10);
+    EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
+    EXPECT_EQ(catalog.create("test2.txt", 1), Error::NO_ERROR);
+
+    std::vector<std::string> expected = {
+        "test1.txt 2 Blocks 2025-04-23 11:09:20",  
+        "test2.txt 1 Blocks 2025-04-23 11:09:20"  
+    };
+
+    std::vector<std::string> result = catalog.dir();
+
+    ASSERT_EQ(result.size(), expected.size());
+    for (size_t i = 0; i < result.size(); ++i) {
+        size_t pos = result[i].find("Blocks");
+        EXPECT_EQ(pos, 12);
+        pos = result[i].find("test" + std::to_string(i + 1) + ".txt");
+        EXPECT_EQ(pos, 0);
+    }
+}
+
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

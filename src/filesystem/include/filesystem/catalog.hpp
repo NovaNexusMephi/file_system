@@ -38,13 +38,16 @@ class Catalog final {
 
     [[nodiscard]] Error add(const std::string& filename, size_t size) noexcept;
 
-    [[nodiscard]] Error free() const;
+    [[nodiscard]] Error free() const noexcept;
 
     [[nodiscard]] Error vol() const;
 
     [[nodiscard]] Error attr();
 
-    [[nodiscard]] std::vector<std::string> dir(bool full = false) const noexcept;
+    [[nodiscard]] std::vector<std::string> dir() const noexcept;
+
+    [[nodiscard]] std::vector<std::string> sort(bool by_name = false, bool by_ext = false, bool by_date = false, 
+                bool by_size = false, bool inverse = false) const noexcept;
 
     [[nodiscard]] inline const std::vector<Segment>& get_segments() const noexcept { return segments_; }
 
@@ -71,7 +74,6 @@ class Catalog final {
     std::vector<Segment> segments_;
     std::unordered_set<std::string> files_;
 
-    //SystemInformation information_; //for command dir
 };
 
 }  // namespace filesystem

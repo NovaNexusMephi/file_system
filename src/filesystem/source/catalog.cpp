@@ -2,6 +2,7 @@
 
 #include <format>
 #include <iostream>
+#include <algorithm>
 
 #include "filesystem/file_record.hpp"
 
@@ -124,14 +125,15 @@ FileRecord* Catalog::find_record(const std::string& filename) noexcept {
     return nullptr;
 }
 
-std::vector<std::string> Catalog::dir(bool full) const noexcept {
+std::vector<std::string> Catalog::dir() const noexcept {
     std::vector<std::string> result;
     std::string temp;
     for (const auto& segment : segments_) {
         for (const auto& record : segment.get_records()) {
-            if (record.get_type() != FileType::FREE) {
-                temp = std::format("{} {} {}", record.get_timestamp(), record.get_size(), record.get_filename());
-                result.push_back(temp);
+            if (record.get_type() != FileType::FREE && record.get_type() != FileType::BLOCKED) {
+                temp = 
+                    std::format("{} {} Blocks {}", record.get_filename(), record.get_size(), record.get_timestamp());
+                result.emplace_back(std::move(temp));
             }
         }
     }
