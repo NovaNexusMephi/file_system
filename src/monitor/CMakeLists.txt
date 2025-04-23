@@ -9,7 +9,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(spdlog)
 
 file(GLOB MONITOR_HEADER_FILES "include/*.h")
-file(GLOB MONITOR_SOURCE_FILES "source/*.cpp" "source/logging/*.cpp" "source/reading/*.cpp")
+file(GLOB MONITOR_SOURCE_FILES "source/logging/*.cpp" "source/reading/*.cpp")
 
 
 add_library(monitor STATIC ${MONITOR_HEADER_FILES} ${MONITOR_SOURCE_FILES})
