@@ -1,25 +1,23 @@
 #include <exception>
 #include <iostream>
+#include <memory>
 #include <nlohmann/json.hpp>
-#include "monitor/logging/id_generator.hpp"
-#include "monitor/logging/log_manager.hpp"
-#include "monitor/reading/input_manager.hpp"
+#include "monitor/core/reader.hpp"
+#include "monitor/core/reader_manager.hpp"
+#include "monitor/readers/console_reader.hpp"
+
+using monitor::core::Reader;
+using monitor::core::ReaderManager;
+using monitor::readers::ConsoleReader;
 
 int main() {
     try {
-        monitor::reading::InputManager input_manager{};
-        monitor::logging::LogManager log_manager{};
+        std::unique_ptr<Reader> reader = std::make_unique<ConsoleReader>();
+        ReaderManager manager{std::move(reader)};
 
         while (true) {
-            auto precommand = input_manager.read_command();
-            if (precommand.has_value()) {
-                auto command_id = monitor::logging::IDGenerator::generate();
-                log_manager.get_history_logger()->log_start(command_id, precommand->dump());
-                log_manager.get_result_logger()->log_success(command_id, precommand->dump());
-                log_manager.get_history_logger()->log_commit(command_id);
-            } else {
-                break;
-            }
+            auto msg = manager.get();
+            std::cout << msg;
         }
 
     } catch (const std::exception& fatal_error) {
