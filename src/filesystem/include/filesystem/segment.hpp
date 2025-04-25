@@ -9,13 +9,9 @@ namespace filesystem {
 
 class Segment final {
    public:
-    Segment(size_t start, size_t size = 0) : header_(start, 0, size) {}
-
-    inline void set_start(size_t start) noexcept { header_.start_ = start; }
+    Segment(size_t size) : header_(size) {}
 
     [[nodiscard]] inline size_t get_size() const noexcept { return records_.size(); }
-
-    [[nodiscard]] inline size_t get_start() const noexcept { return header_.start_; }
 
     [[nodiscard]] inline const std::vector<FileRecord>& get_records() const noexcept { return records_; }
 
@@ -23,15 +19,16 @@ class Segment final {
 
     [[nodiscard]] inline size_t get_counter() const noexcept { return header_.counter_; }
 
-    bool add_record(const std::string& filename, size_t size) noexcept;
+    [[nodiscard]] bool add_record(const std::string& filename, size_t size) noexcept;
+
+    void remove_record() noexcept;
 
    private:
     struct SegmentHeader {
-        size_t start_;
-        size_t counter_;
         size_t size_;
+        size_t counter_;
 
-        SegmentHeader(size_t start, size_t counter, size_t size) : start_(start), counter_(counter), size_(size) {}
+        SegmentHeader(size_t size) : size_(size), counter_(0) {}
     };
 
     SegmentHeader header_;

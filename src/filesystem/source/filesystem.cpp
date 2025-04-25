@@ -25,19 +25,16 @@ std::vector<std::string> FileSystem::dir(bool full) const noexcept {
     }
     std::vector<std::string> result;
     std::string temp;
-    size_t free_block = 0, blocked_block = 0;
+    size_t blocked_block = 0;
     result.emplace_back("Volume:" + info_block_->get_volume_name() + ", Owner:" + info_block_->get_owner_name());
     for (const auto& segment : catalog_->get_segments()) {
         for (const auto& record : segment.get_records()) {
-            if (record.get_type() == FileType::FREE) {
-                ++free_block;
-            }
             if (record.get_type() == FileType::BLOCKED) {
-                ++blocked_block;
+                blocked_block += record.get_size();
             }
         }
     }
-    result.emplace_back("Free blocks:" + std::to_string(free_block));
+    result.emplace_back("Free blocks:" + std::to_string(catalog_->get_free_space()));
     result.emplace_back("Bad blocks:" + std::to_string(blocked_block));
     auto vec = catalog_->dir();
     for (auto i : vec) {

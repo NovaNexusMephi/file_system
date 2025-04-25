@@ -72,9 +72,14 @@ class Catalog final {
         size_t counter_;
         size_t free_records_;
         size_t free_space_;
+        size_t free_direct_space_;
 
         CatalogHeader(size_t count, size_t counter, size_t records_count, size_t volume_size)
-            : count_(count), counter_(counter), free_records_(records_count), free_space_(volume_size) {}
+            : count_(count),
+              counter_(counter),
+              free_records_(records_count),
+              free_space_(volume_size),
+              free_direct_space_(volume_size) {}
     };
 
     CatalogHeader header_;

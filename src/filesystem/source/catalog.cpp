@@ -20,7 +20,7 @@ Error Catalog::create(const std::string& filename, size_t size) noexcept {
     }
     for (size_t i = 0, segsize = segments_.size(); i < segsize; ++i) {
         for (size_t j = 0, recsize = segments_[i].get_records().size(); j < recsize; ++j) {
-            FileRecord record = segments_[i].get_records()[j];
+            auto& record = segments_[i].get_records()[j];
             if (record.get_type() == FileType::FREE) {
                 size_t sum = record.get_size();
                 for (size_t k = j + 1; k < recsize && segments_[i].get_records()[k].get_type() == FileType::FREE; ++k) {
@@ -39,10 +39,12 @@ Error Catalog::create(const std::string& filename, size_t size) noexcept {
             }
         }
     }
-    if (header_.counter_ < header_.count_) {
-        if (segments_[header_.counter_].add_record(filename, size)) {
+    auto& last_segment = segments_[header_.counter_];
+    if (header_.counter_ < header_.count_ && size <= header_.free_direct_space_) {
+        if (last_segment.add_record(filename, size)) {
             ++header_.counter_;
         }
+        header_.free_direct_space_ -= size;
         --header_.free_records_;
         header_.free_space_ -= size;
         files_.insert(filename);
@@ -56,8 +58,18 @@ Error Catalog::remove(const std::string& filename) noexcept {
     if (record) {
         record->set_type(FileType::FREE);
         ++header_.free_records_;
-        header_.free_space_ += record->get_size();
+        size_t size = record->get_size();
+        header_.free_space_ += size;
         files_.erase(filename);
+        Segment& last_segment = segments_[header_.counter_];
+        if (last_segment.get_counter() == 0) {
+            last_segment = segments_[header_.counter_ - 1];
+        }
+        if (last_segment.get_records().back().get_type() == FileType::FREE) {
+            last_segment.remove_record();
+            header_.free_direct_space_ += size;
+            --header_.counter_;
+        }
         return Error::NO_ERROR;
     }
     return Error::FILE_NOT_FOUND;
@@ -86,8 +98,7 @@ Error Catalog::copy(const std::string& filename, const std::string& dist_filenam
     }
     auto record = find_record(filename);
     if (record) {
-        auto rec = create(dist_filename, record->get_size());
-        return rec;
+        return create(dist_filename, record->get_size());
     }
     return Error::FILE_NOT_FOUND;
 }
@@ -150,12 +161,11 @@ Error Catalog::squeeze() {
         return Error::NO_ERROR;
     }
     size_t records_count = segments_[0].get_size();
+    std::cout << "records_count = " << records_count << std::endl;
     std::vector<Segment> new_segments(header_.count_, Segment(0, records_count));
     size_t k = 0;
-    for (size_t i = 0; i < header_.count_; ++i) {
-        auto& segment = segments_[i];
-        for (size_t j = 0; j < segment.get_counter(); ++j) {
-            auto& record = segment.get_records()[j];
+    for (auto& segment : segments_) {
+        for (auto& record : segment.get_records()) {
             if (record.get_type() == FileType::PERMANENT) {
                 if (new_segments[k].add_record(record.get_filename(), record.get_size())) {
                     ++k;
@@ -165,6 +175,7 @@ Error Catalog::squeeze() {
     }
     header_.counter_ = k;
     header_.free_records_ = (header_.count_ - k) * records_count - new_segments[k].get_counter();
+    header_.free_direct_space_ = header_.free_space_;
     segments_.swap(new_segments);
     return Error::NO_ERROR;
 }

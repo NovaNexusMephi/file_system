@@ -15,4 +15,9 @@ bool Segment::add_record(const std::string& filename, size_t size) noexcept {
     return false;
 }
 
+void Segment::remove_record() noexcept {
+    records_.pop_back();
+    --header_.counter_;
+}
+
 }  // namespace filesystem
