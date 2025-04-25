@@ -1,13 +1,12 @@
 #include <gtest/gtest.h>
-#include <sstream>
-#include <streambuf>
+#include <iostream>
+#include <string>
+#include <vector>
 
-#include "monitor/scanners/console_scanner.hpp"
-
-using monitor::scanners::ConsoleScanner;
+#include "monitor/io/console/console_scanner.hpp"
+using monitor::io::console::ConsoleScanner;
 
 struct ConsoleScannerTestParams {
-    std::string description;
     std::string input;
     std::vector<std::string> expected;
 };
@@ -35,17 +34,27 @@ TEST_P(ConsoleScannerTestFixture, NextReturnsExpectedCommands) {
     EXPECT_FALSE(scanner.has_next()) << "Expected no more commands";
 }
 
-const std::vector<ConsoleScannerTestParams> console_scanner_tests_cases{
-    {"Single command", "cmd;", {"cmd"}},
-    {"Multiple commands with spaces", "  cmd1 ; cmd2  ;  cmd3 ;", {"cmd1", "cmd2", "cmd3"}},
-    {"Previously comments now commands", "#cmd1; #cmd2;", {"#cmd1", "#cmd2"}},
-    {"Mixed content", "  ; #comment ; cmd ; ; #comment2", {"#comment", "cmd", "#comment2"}},
-    {"No commands", "", {}},
-    {"Command without semicolon", "cmd", {"cmd"}},
-    {"Previously comments now valid",
-     "# comment1 ;  cmd  ; # comment2 ; cmd2 ;",
-     {"# comment1", "cmd", "# comment2", "cmd2"}},
+std::vector<ConsoleScannerTestParams> console_scanner_test_cases = {
+    {"cmd1;cmd2;cmd3", {"cmd1", "cmd2", "cmd3"}},
+    {"  cmd1  ;  cmd2  ;  cmd3  ", {"cmd1", "cmd2", "cmd3"}},
+    {";;;cmd1;;cmd2;", {"cmd1", "cmd2"}},
+    {"single_command", {"single_command"}},
+    {"\t\tcmd1\t\t;\t\tcmd2\t\t", {"cmd1", "cmd2"}},
+    {"cmd1\n;\ncmd2\n;\ncmd3", {"cmd1", "cmd2", "cmd3"}},
+    {"   \t   cmd1   \t   ;   \t   cmd2   \t   ", {"cmd1", "cmd2"}},
+    {"", {}},
+    {"cmd1; ; ;cmd2; ;cmd3", {"cmd1", "cmd2", "cmd3"}},
+    {"привет;мир;!", {"привет", "мир", "!"}},
+    {"\"quoted\";'single';@special", {"\"quoted\"", "'single'", "@special"}},
+    {"cmd1;\n\ncmd2;\n\ncmd3", {"cmd1", "cmd2", "cmd3"}},
+    {"cmd1;", {"cmd1"}},
+    {"cmd1;cmd2;cmd3   ", {"cmd1", "cmd2", "cmd3"}},
+    {"   cmd1;cmd2;cmd3", {"cmd1", "cmd2", "cmd3"}},
+    {"   \t   cmd1   \t   ;\n\ncmd2\n;\tcmd3\t", {"cmd1", "cmd2", "cmd3"}},
+    {"cmd1;cmd2;cmd3", {"cmd1", "cmd2", "cmd3"}},
+    {"this_is_a_very_long_command_without_semicolon", {"this_is_a_very_long_command_without_semicolon"}},
+    {"cmd1 ;cmd2; cmd3 ; cmd4", {"cmd1", "cmd2", "cmd3", "cmd4"}},
 };
 
 INSTANTIATE_TEST_SUITE_P(ConsoleScannerTests, ConsoleScannerTestFixture,
-                         ::testing::ValuesIn(console_scanner_tests_cases));
+                         ::testing::ValuesIn(console_scanner_test_cases));

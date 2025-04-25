@@ -1,9 +1,7 @@
-#include "monitor/scanners/console_scanner.hpp"
+#include "monitor/io/console/console_scanner.hpp"
 #include <algorithm>
 #include <iostream>
-#include <istream>
-#include <string>
-using monitor::scanners::ConsoleScanner;
+using monitor::io::console::ConsoleScanner;
 
 std::string ConsoleScanner::next() {
     std::string line;
