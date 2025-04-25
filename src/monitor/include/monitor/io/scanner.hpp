@@ -3,11 +3,18 @@
 #include <string>
 namespace monitor::io {
 /**
- * @brief An abstract interface for reading input.
+ * @brief An abstract class for reading input.
  */
 class Scanner {
    public:
+    Scanner() = default;
+    explicit Scanner(const std::string& s_name);
+
     virtual ~Scanner() = default;
+
+    [[nodiscard]] std::string get_name() const noexcept;
+
+    void set_name(const std::string& name);
 
     /**
      * @brief Reads the next input.
@@ -23,5 +30,8 @@ class Scanner {
      * @return false If there is no more input available.
      */
     virtual bool has_next() const = 0;
+
+   protected:
+    std::string name_;
 };
 }  // namespace monitor::io

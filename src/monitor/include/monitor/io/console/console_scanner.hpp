@@ -13,6 +13,9 @@ namespace monitor::io::console {
  */
 class ConsoleScanner final : public io::Scanner {
    public:
+    ConsoleScanner() : io::Scanner() {}
+    explicit ConsoleScanner(const std::string& name) : io::Scanner(name) {}
+
     ~ConsoleScanner() override = default;
 
     /**

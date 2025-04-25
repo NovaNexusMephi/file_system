@@ -18,13 +18,13 @@ class IOFactory {
      * 
      * @return std::unique_ptr<Printer> A unique pointer to a Printer instance.
      */
-    virtual std::unique_ptr<Printer> create_printer() const = 0;
+    virtual std::unique_ptr<Printer> create_printer(const std::string& p_name) const = 0;
 
     /**
      * @brief Creates a Scanner object.
      * 
      * @return std::unique_ptr<Scanner> A unique pointer to a Scanner instance.
      */
-    virtual std::unique_ptr<Scanner> create_scanner() const = 0;
+    virtual std::unique_ptr<Scanner> create_scanner(const std::string& s_name) const = 0;
 };
 }  // namespace monitor::io

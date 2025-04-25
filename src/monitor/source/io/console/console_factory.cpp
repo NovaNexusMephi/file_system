@@ -9,10 +9,10 @@ using monitor::io::Printer;
 using monitor::io::Scanner;
 using monitor::io::console::ConsoleFactory;
 
-std::unique_ptr<Printer> ConsoleFactory::create_printer() const {
-    return std::make_unique<ConsolePrinter>();
+std::unique_ptr<Printer> ConsoleFactory::create_printer(const std::string& p_name) const {
+    return std::make_unique<ConsolePrinter>(p_name);
 }
 
-std::unique_ptr<Scanner> ConsoleFactory::create_scanner() const {
-    return std::make_unique<ConsoleScanner>();
+std::unique_ptr<Scanner> ConsoleFactory::create_scanner(const std::string& s_name) const {
+    return std::make_unique<ConsoleScanner>(s_name);
 }

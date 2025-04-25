@@ -9,6 +9,9 @@ namespace monitor::io::console {
  */
 class ConsolePrinter final : public io::Printer {
    public:
+    ConsolePrinter() : io::Printer() {}
+    explicit ConsolePrinter(const std::string& name) : io::Printer(name) {}
+
     ~ConsolePrinter() = default;
 
     /**

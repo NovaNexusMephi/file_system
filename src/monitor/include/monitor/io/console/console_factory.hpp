@@ -15,13 +15,13 @@ class ConsoleFactory final : public IOFactory {
      * 
      * @return std::unique_ptr<Printer> A unique pointer to a Printer instance.
      */
-    std::unique_ptr<Printer> create_printer() const override;
+    std::unique_ptr<Printer> create_printer(const std::string& p_name) const override;
 
     /**
      * @brief Creates a console-based Scanner object.
      * 
      * @return std::unique_ptr<Scanner> A unique pointer to a Scanner instance.
      */
-    std::unique_ptr<Scanner> create_scanner() const override;
+    std::unique_ptr<Scanner> create_scanner(const std::string& s_name) const override;
 };
 }  // namespace monitor::io::console
