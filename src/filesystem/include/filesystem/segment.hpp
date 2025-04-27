@@ -11,7 +11,7 @@ class Segment final {
    public:
     Segment(size_t size) : header_(size) {}
 
-    [[nodiscard]] inline size_t get_size() const noexcept { return records_.size(); }
+    [[nodiscard]] inline size_t get_size() const noexcept { return header_.size_; }
 
     [[nodiscard]] inline const std::vector<FileRecord>& get_records() const noexcept { return records_; }
 

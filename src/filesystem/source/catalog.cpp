@@ -18,21 +18,23 @@ Error Catalog::create(const std::string& filename, size_t size) noexcept {
     if (files_.contains(filename)) {
         return Error::FILE_ALREADY_EXISTS;
     }
-    for (size_t i = 0, segsize = segments_.size(); i < segsize; ++i) {
-        for (size_t j = 0, recsize = segments_[i].get_records().size(); j < recsize; ++j) {
+    for (size_t i = 0; i < header_.count_; ++i) {
+        for (size_t j = 0, recsize = segments_[i].get_counter(); j < recsize; ++j) {
             auto& record = segments_[i].get_records()[j];
             if (record.get_type() == FileType::FREE) {
-                size_t sum = record.get_size();
-                for (size_t k = j + 1; k < recsize && segments_[i].get_records()[k].get_type() == FileType::FREE; ++k) {
+                size_t sum = 0;
+                for (size_t k = j; k < recsize && segments_[i].get_records()[k].get_type() == FileType::FREE; ++k) {
                     sum += segments_[i].get_records()[k].get_size();
                     if (sum >= size) {
                         segments_[i].get_records()[j].set_size(size);
                         files_.insert(filename);
+                        record.set_type(FileType::PERMANENT);
                         header_.free_space_ -= size;
                         --header_.free_records_;
                         for (size_t l = j + 1; l <= k; ++l) {
                             segments_[i].get_records()[l].set_type(FileType::BLOCKED);
                         }
+                        header_.blocked_space_ += sum - size;
                         return Error::NO_ERROR;
                     }
                 }
@@ -61,14 +63,13 @@ Error Catalog::remove(const std::string& filename) noexcept {
         size_t size = record->get_size();
         header_.free_space_ += size;
         files_.erase(filename);
-        Segment& last_segment = segments_[header_.counter_];
-        if (last_segment.get_counter() == 0) {
-            last_segment = segments_[header_.counter_ - 1];
+        auto* last_segment = &segments_[header_.counter_];
+        if (last_segment->get_counter() == 0) {
+            last_segment = &segments_[header_.counter_ - 1];
         }
-        if (last_segment.get_records().back().get_type() == FileType::FREE) {
-            last_segment.remove_record();
+        if (last_segment->get_records().back().get_type() == FileType::FREE) {
+            last_segment->remove_record();
             header_.free_direct_space_ += size;
-            --header_.counter_;
         }
         return Error::NO_ERROR;
     }
@@ -161,8 +162,7 @@ Error Catalog::squeeze() {
         return Error::NO_ERROR;
     }
     size_t records_count = segments_[0].get_size();
-    std::cout << "records_count = " << records_count << std::endl;
-    std::vector<Segment> new_segments(header_.count_, Segment(0, records_count));
+    std::vector<Segment> new_segments(header_.count_, Segment(records_count));
     size_t k = 0;
     for (auto& segment : segments_) {
         for (auto& record : segment.get_records()) {
@@ -176,6 +176,7 @@ Error Catalog::squeeze() {
     header_.counter_ = k;
     header_.free_records_ = (header_.count_ - k) * records_count - new_segments[k].get_counter();
     header_.free_direct_space_ = header_.free_space_;
+    header_.blocked_space_ = 0;
     segments_.swap(new_segments);
     return Error::NO_ERROR;
 }
@@ -231,6 +232,31 @@ std::vector<std::string> Catalog::sort(bool by_name, bool by_ext, bool by_date, 
         std::reverse(result.begin(), result.end());
     }
     return result;
+}
+
+void Catalog::print_catalog() const noexcept {
+    for (const auto& segment : segments_) {
+        size_t total_size = segment.get_size();
+        size_t used_records = segment.get_counter();
+
+        // Сначала выводим существующие записи
+        for (size_t i = 0; i < used_records; ++i) {
+            const auto& record = segment.get_records()[i];
+            if (record.get_type() == FileType::FREE) {
+                std::cout << "[FREE]";
+            } else if (record.get_type() == FileType::BLOCKED) {
+                std::cout << "[BLOCKED]";
+            } else {
+                std::cout << "[PERMANENT]";
+            }
+        }
+
+        // Выводим [EMPTY] для оставшихся неиспользованных записей в сегменте
+        for (size_t i = used_records; i < total_size; ++i) {
+            std::cout << "[EMPTY]";
+        }
+    }
+    std::cout << std::endl;
 }
 
 }  // namespace filesystem

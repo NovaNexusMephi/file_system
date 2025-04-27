@@ -34,6 +34,7 @@ class FileRecord final {
     std::string name_;
     size_t size_;
     std::chrono::system_clock::time_point timestamp_;
+
    private:
     [[nodiscard]] std::string get_timestamp_as_string() const noexcept;
 };
