@@ -1,6 +1,6 @@
-#include "config/filesystem_config.h"
+#include "config/filesystem_config.hpp"
 #include <stdexcept>
-#include "config/lookup.h"
+#include "config/lookup.hpp"
 using config::FilesystemConfig;
 
 FilesystemConfig::FilesystemConfig(const libconfig::Setting& settings) {

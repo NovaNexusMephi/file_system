@@ -5,13 +5,12 @@ set(CMAKE_CXX_STANDARD 20)
 
 find_package(GTest REQUIRED)
 
-file(GLOB TESTS_SOURCE_FILES "source/*.cpp")
+file(GLOB_RECURSE TESTS_SOURCE_FILES "source/*.cpp")
 
 add_executable(Tests ${TESTS_SOURCE_FILES})
 
 target_link_libraries(Tests gtest
                             gtest_main
-                            monitor
                             config
                             ${LIBCONFIG_LIBRARIES}
 )

@@ -16,11 +16,10 @@ add_subdirectory(configs)
 add_subdirectory(src/lib)
 add_subdirectory(src/config)
 
-add_subdirectory(src/monitor)
+# add_subdirectory(src/monitor)
 
 add_subdirectory(tests)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} PUBLIC monitor)
 
 add_dependencies(${PROJECT_NAME} CopyConfigFiles)
