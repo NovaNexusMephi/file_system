@@ -193,16 +193,13 @@ auto extract_date = [](const std::string& line) -> std::string {
 
 auto extract_size = [](const std::string& line) -> size_t {
     size_t pos = line.find(" Blocks");
-    if (pos == std::string::npos)
-        return 0;
+    if (pos == std::string::npos) return 0;
     std::string size_str = line.substr(0, pos);
     size_t space_pos = size_str.find_last_of(' ');
     return std::stoul(size_str.substr(space_pos + 1));
 };
 
-auto name_compare = [](const std::string& a, const std::string& b) -> bool {
-    return a < b;
-};
+auto name_compare = [](const std::string& a, const std::string& b) -> bool { return a < b; };
 
 auto extension_compare = [](const std::string& a, const std::string& b) -> bool {
     return get_extension(a) < get_extension(b);
@@ -241,8 +238,6 @@ void Catalog::print_catalog() const noexcept {
     for (const auto& segment : segments_) {
         size_t total_size = segment.get_size();
         size_t used_records = segment.get_counter();
-
-        // Сначала выводим существующие записи
         for (size_t i = 0; i < used_records; ++i) {
             const auto& record = segment.get_records()[i];
             if (record.get_type() == FileType::FREE) {
@@ -253,8 +248,6 @@ void Catalog::print_catalog() const noexcept {
                 std::cout << "[PERMANENT]";
             }
         }
-
-        // Выводим [EMPTY] для оставшихся неиспользованных записей в сегменте
         for (size_t i = used_records; i < total_size; ++i) {
             std::cout << "[EMPTY]";
         }
