@@ -16,7 +16,7 @@ add_subdirectory(configs)
 add_subdirectory(src/lib)
 add_subdirectory(src/config)
 
-# add_subdirectory(src/monitor)
+ add_subdirectory(src/monitor)
 
 add_subdirectory(tests)
 
