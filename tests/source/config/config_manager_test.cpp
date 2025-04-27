@@ -11,8 +11,8 @@ using config::ConfigManager;
 
 // Структура для хранения тестовых случаев
 struct ConfigManagerTestCase {
-    std::string file_content;        // Содержимое файла конфигурации
-    bool should_throw;               // Должен ли конструктор выбросить исключение
+    std::string file_content;  // Содержимое файла конфигурации
+    bool should_throw;         // Должен ли конструктор выбросить исключение
     std::string expected_exception;  // Ожидаемое сообщение исключения (если выбрасывается)
 };
 
