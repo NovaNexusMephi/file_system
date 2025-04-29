@@ -9,6 +9,11 @@ using monitor::Monitor;
 
 #include <nlohmann/json.hpp>
 
+#include <monitor/monitor.hpp>
+using monitor::Monitor;
+
+#include <nlohmann/json.hpp>
+
 int main(int argc, char* argv[]) {
     try {
         Config cfg = Config::prepare(argc, argv);

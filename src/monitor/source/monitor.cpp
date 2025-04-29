@@ -9,7 +9,6 @@
 using monitor::Monitor;
 
 Monitor::Monitor(const std::string& prompt, const std::string& logs) {
-    std::cout << "prompt: " << prompt << " " << "logs: " << logs << "\n";
     std::filesystem::path s_dir = create_session_dir(logs);
     create_log_files(s_dir);
 
