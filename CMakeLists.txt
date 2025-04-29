@@ -19,7 +19,7 @@ add_subdirectory(src/monitor)
 add_subdirectory(tests)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} config)
+target_link_libraries(${PROJECT_NAME} config monitor)
 
 
 add_dependencies(${PROJECT_NAME} CopyConfigFiles)
