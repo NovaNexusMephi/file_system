@@ -1,5 +1,3 @@
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(LIBCONFIG REQUIRED libconfig++)
 
 file(GLOB CONFIG_LIB_HEADER_FILES "include/*.hpp")
 file(GLOB CONFIG_LIB_SOURCE_FILES "source/*.cpp")

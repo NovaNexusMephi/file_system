@@ -1,12 +1,17 @@
-#include <cstdlib>
 #include <exception>
 #include <iostream>
 
-int main() {
+#include <config/config.hpp>
+using config::Config;
+
+int main(int argc, char* argv[]) {
     try {
+        Config cfg = Config::prepare(argc, argv);
+        std::cout << cfg.prompt << " " << cfg.logs << "\n";
+
     } catch (const std::exception& fatal_error) {
         std::cerr << fatal_error.what() << "\n";
-        return EXIT_FAILURE;
+        return 1;
     }
-    return EXIT_SUCCESS;
+    return 0;
 }
