@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
-#include <monitor/utils/command_parser.hpp>
-using namespace monitor::utils;
+#include <monitor/parser.hpp>
+using namespace monitor;
 
-class CommandParserTest : public ::testing::Test {};
+class ParserTest : public ::testing::Test {};
 
 struct ParseTestCase {
     std::string input;
@@ -15,7 +15,7 @@ class ParseTest : public ::testing::TestWithParam<ParseTestCase> {};
 
 TEST_P(ParseTest, ParsesCommandLineCorrectly) {
     auto param = GetParam();
-    auto result = CommandParser::parse(param.input);
+    auto result = Parser::parse(param.input);
 
     if (param.expect_success) {
         ASSERT_TRUE(result.has_value());

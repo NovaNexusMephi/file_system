@@ -5,14 +5,14 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
-namespace monitor::utils {
+namespace monitor {
 /**
  * @brief A utility class for parsing command-line inputs into structured JSON objects.
  * 
  * The CommandParser class provides static methods to parse a command-line string, split it into tokens,
  * and organize the tokens into a JSON object representing the command name, arguments, and options.
  */
-class CommandParser {
+class Parser {
    public:
     /**
      * @brief Parses a command-line string into a structured JSON object.
@@ -74,4 +74,4 @@ class CommandParser {
     [[nodiscard]] static std::pair<std::string, std::vector<std::string>> make_argv(
         const std::vector<std::string>& arg_tokens) noexcept;
 };
-}  // namespace monitor::utils
+}  // namespace monitor

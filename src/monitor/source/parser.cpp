@@ -1,12 +1,12 @@
-#include "monitor/utils/command_parser.hpp"
+#include "monitor/parser.hpp"
 #include <nlohmann/json_fwd.hpp>
 #include <optional>
 #include <string>
 #include <utility>
 #include <vector>
-using monitor::utils::CommandParser;
+using monitor::Parser;
 
-std::optional<nlohmann::json> CommandParser::parse(const std::string& cmd) noexcept {
+std::optional<nlohmann::json> Parser::parse(const std::string& cmd) noexcept {
     auto tokens = split(cmd, " ;\t\n\r");
     if (tokens.empty())
         return std::nullopt;
@@ -36,7 +36,7 @@ std::optional<nlohmann::json> CommandParser::parse(const std::string& cmd) noexc
     return parsed_command;
 }
 
-std::vector<std::string> CommandParser::split(const std::string& str, const std::string& delims) noexcept {
+std::vector<std::string> Parser::split(const std::string& str, const std::string& delims) noexcept {
     std::vector<std::string> tokens{};
     size_t start = 0, end = 0;
 
@@ -54,7 +54,7 @@ std::vector<std::string> CommandParser::split(const std::string& str, const std:
     return tokens;
 }
 
-std::pair<std::string, std::string> CommandParser::parse_opt(const std::string& opt_token) noexcept {
+std::pair<std::string, std::string> Parser::parse_opt(const std::string& opt_token) noexcept {
     if (!opt_token.starts_with('/'))
         return {"", ""};
     const size_t delim_pos = opt_token.find_first_of(":");
@@ -63,7 +63,7 @@ std::pair<std::string, std::string> CommandParser::parse_opt(const std::string& 
     return {opt_token.substr(1, delim_pos - 1), opt_token.substr(delim_pos + 1)};
 }
 
-nlohmann::json CommandParser::make_opt_obj(const std::vector<std::string>& opt_tokens) noexcept {
+nlohmann::json Parser::make_opt_obj(const std::vector<std::string>& opt_tokens) noexcept {
     nlohmann::json options = R"({})"_json;
     for (auto& opt_token : opt_tokens) {
         auto [key, value] = parse_opt(opt_token);
@@ -81,7 +81,7 @@ nlohmann::json CommandParser::make_opt_obj(const std::vector<std::string>& opt_t
     return options;
 }
 
-std::pair<std::string, std::vector<std::string>> CommandParser::make_argv(
+std::pair<std::string, std::vector<std::string>> Parser::make_argv(
     const std::vector<std::string>& arg_tokens) noexcept {
     std::string name_token = arg_tokens[0];
     std::vector<std::string> param_tokens{};
