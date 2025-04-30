@@ -6,7 +6,7 @@ namespace filesystem {
 
 class SystemInformation final {
    public:
-    SystemInformation() = delete;
+    SystemInformation() = default;
 
     SystemInformation(std::string vol, std::string owner)
         : volume_name_(std::move(vol)), owner_name_(std::move(owner)) {}

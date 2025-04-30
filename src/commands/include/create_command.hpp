@@ -1,14 +1,12 @@
 #pragma once
 
 #include "abstract_command.hpp"
+#include "commands_constants.hpp"
 
 class CreateCommand : public AbstractCommand {
 public:
 
-    explicit CreateCommand(const filesystem::FileSystem& file) : AbstractCommand(file) {};
+    explicit CreateCommand(filesystem::FileSystem& file) : AbstractCommand(file) {};
 
-    /*inline void execute() override {
-        receiver_.
-    }*/
-
+    std::string execute(const nlohmann::json& json) override;
 };

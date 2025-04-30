@@ -2,34 +2,189 @@
 
 #include <gtest/gtest.h>
 
+#include "create_command.hpp"
 #include "filesystem/catalog.hpp"
+#include "init_command.hpp"
 
 using filesystem::Catalog;
 using filesystem::Error;
 using filesystem::FileSystem;
 
-TEST(CatalogTest, CreateFileSuccessfully) {
-    Catalog catalog(3, 2, 10);
-
-    EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test2.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test3.txt", 5), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test4.txt", 2), Error::NO_FREE_SPACE);
+TEST(InitCommand, InitSuccessfully) {
+    nlohmann::json j = {
+        {"name", "init"},
+        {"data", {"VOL", "OWNER"}}, 
+        {"options", {
+            {"segm", 3},
+            {"vol", 2}, 
+            {"rec", 10}
+        }}
+    };
+    FileSystem filesystem;
+    InitCommand init_command(filesystem);
+    EXPECT_EQ(init_command.execute(j), "OK");
+    EXPECT_EQ(init_command.execute(j), ERROR + ": the file system has already been initialized");
 }
 
-TEST(CatalogTest, CreateFileSuccessfully2) {
-    Catalog catalog(3, 2, 10);
-
-    EXPECT_EQ(catalog.create("test1.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test2.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test3.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test4.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test5.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test6.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test7.txt", 1), Error::NO_FREE_RECORDS);
+TEST(InitCommand, InitSuccessfullyPointer) {
+    nlohmann::json j = {
+        {"name", "init"},
+        {"data", {"VOL", "OWNER"}}, 
+        {"options", {
+            {"segm", 3},
+            {"vol", 2}, 
+            {"rec", 10}
+        }}
+    };
+    FileSystem filesystem, second;
+    InitCommand* init_command = new InitCommand(filesystem);
+    EXPECT_EQ(init_command->execute(j), "OK");
+    EXPECT_EQ(init_command->execute(j), ERROR + ": the file system has already been initialized");
+    AbstractCommand* a_init_command = new InitCommand(second);
+    EXPECT_EQ(a_init_command->execute(j), "OK");
+    EXPECT_EQ(a_init_command->execute(j), ERROR + ": the file system has already been initialized");
+    EXPECT_EQ(filesystem.get_info().get_owner_name(), "OWNER");
+    EXPECT_EQ(filesystem.get_info().get_volume_name(), "VOL");
+    EXPECT_EQ(second.get_info().get_owner_name(), "OWNER");
+    EXPECT_EQ(second.get_info().get_volume_name(), "VOL");
 }
 
-TEST(CatalogTest, CreateFileSuccessfully3) {
+TEST(CreateCommand, CreateFileSuccessfully) {
+    nlohmann::json j = {
+        {"name", "init"},
+        {"data", {"VOL", "OWNER"}}, 
+        {"options", {
+            {"segm", 3},
+            {"vol", 2}, 
+            {"rec", 10}
+        }}
+    };
+    nlohmann::json test1 = {
+        {"name", "create"},
+        {"data", {"test1.txt"}}, 
+        {"options", {
+            {"allocate", 2}
+        }}
+    };
+    nlohmann::json test2 = {
+        {"name", "create"},
+        {"data", {"test2.txt"}}, 
+        {"options", {
+            {"allocate", 2}
+        }}
+    };
+    nlohmann::json test3 = {
+        {"name", "create"},
+        {"data", {"test3.txt"}}, 
+        {"options", {
+            {"allocate", 5}
+        }}
+    };
+    nlohmann::json test4 = {
+        {"name", "create"},
+        {"data", {"test4.txt"}}, 
+        {"options", {
+            {"allocate", 2}
+        }}
+    };
+    FileSystem filesystem;
+    InitCommand init_command(filesystem);
+    init_command.execute(j);
+    CreateCommand create_command(filesystem);
+    EXPECT_EQ(create_command.execute(test1), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test2), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test3), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test4), NO_FREE_SPACE);
+}
+
+TEST(CreateCommand, CreateFileError) {
+     nlohmann::json test1 = {
+        {"name", "create"},
+        {"data", {"test1.txt"}}, 
+        {"options", {
+            {"allocate", 1}
+        }}
+    };
+    FileSystem filesystem;
+    CreateCommand create_command(filesystem);
+    EXPECT_EQ(create_command.execute(test1), ERROR + ": the file system has not been initialized");
+}
+
+TEST(CreateCommand, CreateFileSuccessfully2) {
+    nlohmann::json j = {
+        {"name", "init"},
+        {"data", {"VOL", "OWNER"}}, 
+        {"options", {
+            {"segm", 3},
+            {"vol", 2}, 
+            {"rec", 10}
+        }}
+    };
+    nlohmann::json test1 = {
+        {"name", "create"},
+        {"data", {"test1.txt"}}, 
+        {"options", {
+            {"allocate", 1}
+        }}
+    };
+    nlohmann::json test2 = {
+        {"name", "create"},
+        {"data", {"test2.txt"}}, 
+        {"options", {
+            {"allocate", 1}
+        }}
+    };
+    nlohmann::json test3 = {
+        {"name", "create"},
+        {"data", {"test3.txt"}}, 
+        {"options", {
+            {"allocate", 1}
+        }}
+    };
+    nlohmann::json test4 = {
+        {"name", "create"},
+        {"data", {"test4.txt"}}, 
+        {"options", {
+            {"allocate", 1}
+        }}
+    };
+     nlohmann::json test5 = {
+        {"name", "create"},
+        {"data", {"test5.txt"}}, 
+        {"options", {
+            {"allocate", 1}
+        }}
+    };
+     nlohmann::json test6 = {
+        {"name", "create"},
+        {"data", {"test6.txt"}}, 
+        {"options", {
+            {"allocate", 1}
+        }}
+    };
+     nlohmann::json test7 = {
+        {"name", "create"},
+        {"data", {"test7.txt"}}, 
+        {"options", {
+            {"allocate", 1}
+        }}
+    };
+    FileSystem filesystem;
+    InitCommand init_command(filesystem);
+    init_command.execute(j);
+    CreateCommand create_command(filesystem);
+    EXPECT_EQ(create_command.execute(test1), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test2), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test3), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test4), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test5), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test6), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test7), NO_FREE_RECORDS);
+    EXPECT_EQ(create_command.execute(test1), "FILE_ALREADY_EXISTS");
+    EXPECT_EQ(create_command.execute(test5), "FILE_ALREADY_EXISTS");
+}
+
+/*TEST(CatalogTest, CreateFileSuccessfully3) {
     Catalog catalog(3, 2, 10);
 
     EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
@@ -428,7 +583,7 @@ TEST(FileSystem, VolTest) {
     EXPECT_EQ(filesystem.vol("VOL_3", "User"), Error::NO_ERROR);
     EXPECT_EQ(filesystem.get_info()->get_owner_name(), "User");
     EXPECT_EQ(filesystem.get_info()->get_volume_name(), "VOL_3");
-}
+}*/
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

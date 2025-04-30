@@ -22,6 +22,7 @@ foreach(test_source ${TESTS_SOURCE_FILES})
         GTest::gtest_main
         monitor
         filesystem
+        commands
     )
     
     add_test(NAME ${test_name} COMMAND ${test_name})

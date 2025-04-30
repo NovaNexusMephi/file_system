@@ -29,12 +29,11 @@ class FileSystem {
         valid_ = flag; 
     }
 
-    //вот тут хуй знает
-    inline void set_catalog(const Catalog& catalog) noexcept {
-        catalog_ = catalog;
-    }
-    
-   private:
+   void inline init_catalog(size_t segm, size_t vol, size_t rec) noexcept {
+       catalog_ = Catalog(segm, rec, vol);
+   }
+
+private: 
     SystemInformation info_block_;
     Catalog catalog_;
     bool valid_ = false; //flag

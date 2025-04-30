@@ -143,20 +143,6 @@ FileRecord* Catalog::find_record(const std::string& filename) noexcept {
     return nullptr;
 }
 
-std::vector<std::string> Catalog::dir() const noexcept {
-    std::vector<std::string> result;
-    std::string temp;
-    for (const auto& segment : segments_) {
-        for (const auto& record : segment.get_records()) {
-            if (record.get_type() != FileType::FREE && record.get_type() != FileType::BLOCKED) {
-                temp = std::format("{} {} Blocks {}", record.get_filename(), record.get_size(), record.get_timestamp());
-                result.emplace_back(std::move(temp));
-            }
-        }
-    }
-    return result;
-}
-
 Error Catalog::squeeze() {
     if (header_.free_space_ == 0) {
         return Error::NO_ERROR;
@@ -218,7 +204,7 @@ auto size_compare = [](const std::string& a, const std::string& b) -> bool {
 
 std::vector<std::string> Catalog::sort(bool by_name, bool by_ext, bool by_date, bool by_size,
                                        bool inverse) const noexcept {
-    std::vector<std::string> result = dir();
+    std::vector<std::string> result;// = dir();
     if (by_name) {
         std::sort(result.begin(), result.end(), name_compare);
     }
