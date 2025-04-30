@@ -7,10 +7,12 @@
 class AbstractCommand {
    public:
     virtual void execute() = 0;
+
     virtual ~AbstractCommand() = default;
-    bool validate();
 
    protected:
-    nlohmann::json validation_schema_;
+
+    explicit AbstractCommand(filesystem::Filesystem& receiver) : receiver_(receiver) {}
+
     filesystem::Filesystem& receiver_;
 };
