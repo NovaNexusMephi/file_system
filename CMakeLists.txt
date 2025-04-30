@@ -19,6 +19,7 @@ add_subdirectory(src/lib)
 add_subdirectory(src/config)
 add_subdirectory(src/filesystem)
 add_subdirectory(src/monitor)
+add_subdirectory(src/commands)
 
 add_subdirectory(tests)
 

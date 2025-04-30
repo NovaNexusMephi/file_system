@@ -4,9 +4,14 @@
 
 #include "filesystem/filesystem.hpp"
 
+//пока что будут здесь константы, я за то, чтобы вынести их в отдельный файл
+
+static const std::string OK = "OK";
+static const std::string ERROR = "ERROR";
+
 class AbstractCommand {
    public:
-    virtual void execute() = 0;
+    virtual std::string execute(const nlohmann::json& json) = 0;
 
     virtual ~AbstractCommand() = default;
 
