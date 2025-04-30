@@ -4,6 +4,4 @@
 
 #include "filesystem/catalog.hpp"
 
-namespace filesystem {
-
-}  // namespace filesystem
+namespace filesystem {}  // namespace filesystem

@@ -204,7 +204,7 @@ auto size_compare = [](const std::string& a, const std::string& b) -> bool {
 
 std::vector<std::string> Catalog::sort(bool by_name, bool by_ext, bool by_date, bool by_size,
                                        bool inverse) const noexcept {
-    std::vector<std::string> result;// = dir();
+    std::vector<std::string> result;  // = dir();
     if (by_name) {
         std::sort(result.begin(), result.end(), name_compare);
     }

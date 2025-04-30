@@ -8,11 +8,12 @@ std::string DirCommand::execute(const nlohmann::json& json) {
     auto flag = json["options"]["full"].get<bool>();
     std::string response = OK + " :\n", temp;
     if (flag) {
-        response += ("Volume:" + receiver_.get_info().get_volume_name() + ", Owner:" + receiver_.get_info().get_volume_name() + "\n");
+        response += ("Volume:" + receiver_.get_info().get_volume_name() +
+                     ", Owner:" + receiver_.get_info().get_volume_name() + "\n");
         response += ("Free blocks:" + std::to_string(receiver_.get_catalog().get_free_space()) + "\n");
         response += ("Bad blocks:" + std::to_string(receiver_.get_catalog().get_blocked_space()) + "\n");
     }
-    
+
     for (const auto& segment : receiver_.get_catalog().get_segments()) {
         for (const auto& record : segment.get_records()) {
             if (record.get_type() != filesystem::FileType::FREE && record.get_type() != filesystem::FileType::BLOCKED) {

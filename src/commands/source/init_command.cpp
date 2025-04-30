@@ -1,16 +1,16 @@
 #include "init_command.hpp"
 
 std::string InitCommand::execute(const nlohmann::json& json) {
-    
-    if(receiver_.get_valid()) {
+
+    if (receiver_.get_valid()) {
         return ERROR + ": the file system has already been initialized";
     }
     auto data = json["data"].get<std::vector<std::string>>();
-    if(data.empty()) {  //in validate
+    if (data.empty()) {  //in validate
         return ERROR + ": the volume ID was not transmitted";
     }
     std::string volume = data[0], name = "";
-    if(data.size() == 2) {   
+    if (data.size() == 2) {
         name = data[1];
     }
     size_t segm = json["options"]["segm"].get<size_t>();

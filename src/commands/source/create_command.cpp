@@ -1,7 +1,7 @@
 #include "create_command.hpp"
 #include "filesystem/file_record.hpp"
 
-std::string CreateCommand::execute(const nlohmann::json &json) {
+std::string CreateCommand::execute(const nlohmann::json& json) {
     if (!receiver_.get_valid()) {
         return ERROR + ": the file system has not been initialized";
     }
@@ -26,7 +26,10 @@ std::string CreateCommand::execute(const nlohmann::json &json) {
             auto& record = receiver_.get_catalog().get_segments()[i].get_records()[j];
             if (record.get_type() == filesystem::FileType::FREE) {
                 size_t sum = 0;
-                for (size_t k = j; k < recsize && receiver_.get_catalog().get_segments()[i].get_records()[k].get_type() == filesystem::FileType::FREE; ++k) {
+                for (size_t k = j;
+                     k < recsize && receiver_.get_catalog().get_segments()[i].get_records()[k].get_type() ==
+                                        filesystem::FileType::FREE;
+                     ++k) {
                     sum += receiver_.get_catalog().get_segments()[i].get_records()[k].get_size();
                     if (sum >= size) {
                         receiver_.get_catalog().get_segments()[i].get_records()[j].set_size(size);
@@ -35,7 +38,8 @@ std::string CreateCommand::execute(const nlohmann::json &json) {
                         receiver_.get_catalog().get_free_space() -= size;
                         --receiver_.get_catalog().get_free_records();
                         for (size_t l = j + 1; l <= k; ++l) {
-                            receiver_.get_catalog().get_segments()[i].get_records()[l].set_type(filesystem::FileType::BLOCKED);
+                            receiver_.get_catalog().get_segments()[i].get_records()[l].set_type(
+                                filesystem::FileType::BLOCKED);
                         }
                         receiver_.get_catalog().get_blocked_space() += sum - size;
                         return OK + ": the file has been added";
@@ -45,8 +49,8 @@ std::string CreateCommand::execute(const nlohmann::json &json) {
         }
     }
     auto& last_segment = receiver_.get_catalog().get_segments()[receiver_.get_catalog().get_busy_segments_count()];
-    if (receiver_.get_catalog().get_busy_segments_count() < receiver_.get_catalog().get_count() 
-        && size <= receiver_.get_catalog().get_free_direct_space()) {
+    if (receiver_.get_catalog().get_busy_segments_count() < receiver_.get_catalog().get_count() &&
+        size <= receiver_.get_catalog().get_free_direct_space()) {
         if (last_segment.add_record(filename, size)) {
             ++receiver_.get_catalog().get_busy_segments_count();
         }

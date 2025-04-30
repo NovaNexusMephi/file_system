@@ -12,14 +12,7 @@ using filesystem::FileSystem;
 
 TEST(InitCommand, InitSuccessfully) {
     nlohmann::json j = {
-        {"name", "init"},
-        {"data", {"VOL", "OWNER"}}, 
-        {"options", {
-            {"segm", 3},
-            {"vol", 2}, 
-            {"rec", 10}
-        }}
-    };
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
     FileSystem filesystem;
     InitCommand init_command(filesystem);
     EXPECT_EQ(init_command.execute(j), "OK");
@@ -28,14 +21,7 @@ TEST(InitCommand, InitSuccessfully) {
 
 TEST(InitCommand, InitSuccessfullyPointer) {
     nlohmann::json j = {
-        {"name", "init"},
-        {"data", {"VOL", "OWNER"}}, 
-        {"options", {
-            {"segm", 3},
-            {"vol", 2}, 
-            {"rec", 10}
-        }}
-    };
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
     FileSystem filesystem, second;
     InitCommand* init_command = new InitCommand(filesystem);
     EXPECT_EQ(init_command->execute(j), "OK");
@@ -51,42 +37,11 @@ TEST(InitCommand, InitSuccessfullyPointer) {
 
 TEST(CreateCommand, CreateFileSuccessfully) {
     nlohmann::json j = {
-        {"name", "init"},
-        {"data", {"VOL", "OWNER"}}, 
-        {"options", {
-            {"segm", 3},
-            {"vol", 2}, 
-            {"rec", 10}
-        }}
-    };
-    nlohmann::json test1 = {
-        {"name", "create"},
-        {"data", {"test1.txt"}}, 
-        {"options", {
-            {"allocate", 2}
-        }}
-    };
-    nlohmann::json test2 = {
-        {"name", "create"},
-        {"data", {"test2.txt"}}, 
-        {"options", {
-            {"allocate", 2}
-        }}
-    };
-    nlohmann::json test3 = {
-        {"name", "create"},
-        {"data", {"test3.txt"}}, 
-        {"options", {
-            {"allocate", 5}
-        }}
-    };
-    nlohmann::json test4 = {
-        {"name", "create"},
-        {"data", {"test4.txt"}}, 
-        {"options", {
-            {"allocate", 2}
-        }}
-    };
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
+    nlohmann::json test1 = {{"name", "create"}, {"data", {"test1.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test2 = {{"name", "create"}, {"data", {"test2.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test3 = {{"name", "create"}, {"data", {"test3.txt"}}, {"options", {{"allocate", 5}}}};
+    nlohmann::json test4 = {{"name", "create"}, {"data", {"test4.txt"}}, {"options", {{"allocate", 2}}}};
     FileSystem filesystem;
     InitCommand init_command(filesystem);
     init_command.execute(j);
@@ -98,13 +53,7 @@ TEST(CreateCommand, CreateFileSuccessfully) {
 }
 
 TEST(CreateCommand, CreateFileError) {
-     nlohmann::json test1 = {
-        {"name", "create"},
-        {"data", {"test1.txt"}}, 
-        {"options", {
-            {"allocate", 1}
-        }}
-    };
+    nlohmann::json test1 = {{"name", "create"}, {"data", {"test1.txt"}}, {"options", {{"allocate", 1}}}};
     FileSystem filesystem;
     CreateCommand create_command(filesystem);
     EXPECT_EQ(create_command.execute(test1), ERROR + ": the file system has not been initialized");
@@ -112,63 +61,14 @@ TEST(CreateCommand, CreateFileError) {
 
 TEST(CreateCommand, CreateFileSuccessfully2) {
     nlohmann::json j = {
-        {"name", "init"},
-        {"data", {"VOL", "OWNER"}}, 
-        {"options", {
-            {"segm", 3},
-            {"vol", 2}, 
-            {"rec", 10}
-        }}
-    };
-    nlohmann::json test1 = {
-        {"name", "create"},
-        {"data", {"test1.txt"}}, 
-        {"options", {
-            {"allocate", 1}
-        }}
-    };
-    nlohmann::json test2 = {
-        {"name", "create"},
-        {"data", {"test2.txt"}}, 
-        {"options", {
-            {"allocate", 1}
-        }}
-    };
-    nlohmann::json test3 = {
-        {"name", "create"},
-        {"data", {"test3.txt"}}, 
-        {"options", {
-            {"allocate", 1}
-        }}
-    };
-    nlohmann::json test4 = {
-        {"name", "create"},
-        {"data", {"test4.txt"}}, 
-        {"options", {
-            {"allocate", 1}
-        }}
-    };
-     nlohmann::json test5 = {
-        {"name", "create"},
-        {"data", {"test5.txt"}}, 
-        {"options", {
-            {"allocate", 1}
-        }}
-    };
-     nlohmann::json test6 = {
-        {"name", "create"},
-        {"data", {"test6.txt"}}, 
-        {"options", {
-            {"allocate", 1}
-        }}
-    };
-     nlohmann::json test7 = {
-        {"name", "create"},
-        {"data", {"test7.txt"}}, 
-        {"options", {
-            {"allocate", 1}
-        }}
-    };
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
+    nlohmann::json test1 = {{"name", "create"}, {"data", {"test1.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json test2 = {{"name", "create"}, {"data", {"test2.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json test3 = {{"name", "create"}, {"data", {"test3.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json test4 = {{"name", "create"}, {"data", {"test4.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json test5 = {{"name", "create"}, {"data", {"test5.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json test6 = {{"name", "create"}, {"data", {"test6.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json test7 = {{"name", "create"}, {"data", {"test7.txt"}}, {"options", {{"allocate", 1}}}};
     FileSystem filesystem;
     InitCommand init_command(filesystem);
     init_command.execute(j);
