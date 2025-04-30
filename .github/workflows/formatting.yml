@@ -19,7 +19,7 @@ jobs:
       - name: Updating
         run: sudo apt update -y
       
-      - name: Installing doxygen and clang
+      - name: Installing clang
         run: sudo apt install -y clang
       
       - name: Formatting all .cpp and .h files
