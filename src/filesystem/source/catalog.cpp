@@ -111,13 +111,16 @@ auto extract_date = [](const std::string& line) -> std::string {
 
 auto extract_size = [](const std::string& line) -> size_t {
     size_t pos = line.find(" Blocks");
-    if (pos == std::string::npos) return 0;
+    if (pos == std::string::npos)
+        return 0;
     std::string size_str = line.substr(0, pos);
     size_t space_pos = size_str.find_last_of(' ');
     return std::stoul(size_str.substr(space_pos + 1));
 };
 
-auto name_compare = [](const std::string& a, const std::string& b) -> bool { return a < b; };
+auto name_compare = [](const std::string& a, const std::string& b) -> bool {
+    return a < b;
+};
 
 auto extension_compare = [](const std::string& a, const std::string& b) -> bool {
     return get_extension(a) < get_extension(b);
