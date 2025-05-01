@@ -21,22 +21,18 @@ class FileSystem {
 
     [[nodiscard]] inline Catalog& get_catalog() noexcept { return catalog_; }
 
-    [[nodiscard]] inline bool get_valid() noexcept {
-        return valid_; 
-    }
+    [[nodiscard]] inline bool is_valid() const noexcept { return valid_; }
 
-    inline void set_valid(bool flag) noexcept { 
-        valid_ = flag; 
-    }
+    inline void validate() noexcept { valid_ = true; }
 
-   void inline init_catalog(size_t segm, size_t vol, size_t rec) noexcept {
-       catalog_ = Catalog(segm, rec, vol);
-   }
+    inline void invalidate() noexcept { valid_ = false; }
 
-private: 
+    void inline init_catalog(size_t segm, size_t vol, size_t rec) noexcept { catalog_ = Catalog(segm, rec, vol); }
+
+   private:
     SystemInformation info_block_;
     Catalog catalog_;
-    bool valid_ = false; //flag
+    bool valid_ = false;
 };
 
 }  // namespace filesystem

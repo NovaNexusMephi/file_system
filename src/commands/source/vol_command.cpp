@@ -1,8 +1,9 @@
-#include "vol_command.hpp"
-#include "commands_constants.hpp"
+#include "commands/vol_command.hpp"
+
+#include "commands/commands_constants.hpp"
 
 std::string VolCommand::execute(const nlohmann::json& json) {
-    if (!receiver_.get_valid()) {
+    if (!receiver_.is_valid()) {
         return ERROR + ": the file system has not been initialized";
     }
     auto data = json["data"].get<std::vector<std::string>>();

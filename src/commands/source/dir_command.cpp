@@ -1,8 +1,9 @@
-#include "dir_command.hpp"
+#include "commands/dir_command.hpp"
+
 #include "filesystem/file_record.hpp"
 
 std::string DirCommand::execute(const nlohmann::json& json) {
-    if (!receiver_.get_valid()) {
+    if (!receiver_.is_valid()) {
         return ERROR + ": the file system has not been initialized";
     }
     auto flag = json["options"]["full"].get<bool>();

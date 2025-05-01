@@ -2,9 +2,9 @@
 
 #include <gtest/gtest.h>
 
-#include "create_command.hpp"
+#include "commands/create_command.hpp"
+#include "commands/init_command.hpp"
 #include "filesystem/catalog.hpp"
-#include "init_command.hpp"
 
 using filesystem::Catalog;
 using filesystem::Error;

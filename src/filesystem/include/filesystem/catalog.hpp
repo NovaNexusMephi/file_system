@@ -26,24 +26,20 @@ class Catalog final {
     Catalog(size_t count, size_t records_count, size_t volume_size)
         : header_(count, 0, records_count * count, volume_size), segments_(count, Segment(records_count)) {}
 
-    [[nodiscard]] Error create(const std::string& filename, size_t size) noexcept;
+    // [[nodiscard]] Error rename(const std::string& old_filename, const std::string& new_filename) noexcept;
 
-    [[nodiscard]] Error remove(const std::string& filename) noexcept;
+    // [[nodiscard]] Error copy(const std::string& filename, const std::string& dist_filename) noexcept;
 
-    [[nodiscard]] Error rename(const std::string& old_filename, const std::string& new_filename) noexcept;
+    // [[nodiscard]] Error move(const std::string& filename, const std::string& dist_filename) noexcept;
 
-    [[nodiscard]] Error copy(const std::string& filename, const std::string& dist_filename) noexcept;
+    // [[nodiscard]] Error squeeze();
 
-    [[nodiscard]] Error move(const std::string& filename, const std::string& dist_filename) noexcept;
+    // [[nodiscard]] Error add(const std::string& filename, size_t size) noexcept;
 
-    [[nodiscard]] Error squeeze();
+    // [[nodiscard]] Error free() const noexcept;
 
-    [[nodiscard]] Error add(const std::string& filename, size_t size) noexcept;
-
-    [[nodiscard]] Error free() const noexcept;
-
-    [[nodiscard]] std::vector<std::string> sort(bool by_name = false, bool by_ext = false, bool by_date = false,
-                                                bool by_size = false, bool inverse = false) const noexcept;
+    // [[nodiscard]] std::vector<std::string> sort(bool by_name = false, bool by_ext = false, bool by_date = false,
+    //                                             bool by_size = false, bool inverse = false) const noexcept;
 
     void print_catalog() const noexcept;
 
@@ -61,28 +57,20 @@ class Catalog final {
         return header_.counter_ + ((segments_[header_.counter_].get_counter() == 0) ? 0 : 1);
     }
 
-    [[nodiscard]] inline size_t get_count() const noexcept {
-        return header_.count_;
-    }
+    [[nodiscard]] inline size_t get_count() const noexcept { return header_.count_; }
 
-    [[nodiscard]] inline size_t& get_free_direct_space() noexcept {
-        return header_.free_direct_space_;
-    }
+    [[nodiscard]] inline size_t& get_free_direct_space() noexcept { return header_.free_direct_space_; }
 
     [[nodiscard]] inline size_t& get_blocked_space() noexcept { return header_.blocked_space_; }
 
     //??????
-    [[nodiscard]] inline std::unordered_set<std::string>& get_files() noexcept {
-        return files_;
-    }
+    [[nodiscard]] inline std::unordered_set<std::string>& get_files() noexcept { return files_; }
 
-     [[nodiscard]] inline const std::unordered_set<std::string>& get_files() const noexcept {
-        return files_;
-    }
+    [[nodiscard]] inline const std::unordered_set<std::string>& get_files() const noexcept { return files_; }
 
-   private:
     [[nodiscard]] FileRecord* find_record(const std::string& filename) noexcept;
 
+   private:
     struct CatalogHeader {
         size_t count_;
         size_t counter_;

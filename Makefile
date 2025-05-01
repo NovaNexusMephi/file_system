@@ -1,11 +1,8 @@
 config:
-	mkdir build
+	mkdir -p build
 	cd build && cmake ..
 
 build: config
-	cd build && cmake --build . -j${nproc}
-
-quick_build:
 	cd build && cmake --build . -j${nproc}
 
 run: build
