@@ -2,8 +2,14 @@
 
 #include <gtest/gtest.h>
 
+#include "commands/add_command.hpp"
+#include "commands/copy_command.hpp"
 #include "commands/create_command.hpp"
+#include "commands/delete_command.hpp"
 #include "commands/init_command.hpp"
+#include "commands/move_command.hpp"
+#include "commands/rename_command.hpp"
+#include "commands/vol_command.hpp"
 #include "filesystem/catalog.hpp"
 
 using filesystem::Catalog;
@@ -84,39 +90,224 @@ TEST(CreateCommand, CreateFileSuccessfully2) {
     EXPECT_EQ(create_command.execute(test5), "FILE_ALREADY_EXISTS");
 }
 
-/*TEST(CatalogTest, CreateFileSuccessfully3) {
-    Catalog catalog(3, 2, 10);
-
-    EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test2.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test3.txt", 3), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test4.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test5.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.remove("test3.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.remove("test4.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test6.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test7.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test8.txt", 1), Error::NO_ERROR);
+TEST(CreateAndDeleteCommand, CreateFileSuccessfully3) {
+    nlohmann::json j = {
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
+    nlohmann::json test1 = {{"name", "create"}, {"data", {"test1.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test2 = {{"name", "create"}, {"data", {"test2.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json test3 = {{"name", "create"}, {"data", {"test3.txt"}}, {"options", {{"allocate", 3}}}};
+    nlohmann::json test4 = {{"name", "create"}, {"data", {"test4.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json test5 = {{"name", "create"}, {"data", {"test5.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test6 = {{"name", "create"}, {"data", {"test6.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test7 = {{"name", "create"}, {"data", {"test7.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json test8 = {{"name", "create"}, {"data", {"test8.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json delete_test3 = {{"name", "delete"}, {"data", {"test3.txt"}}};
+    nlohmann::json delete_test4 = {{"name", "delete"}, {"data", {"test4.txt"}}};
+    FileSystem filesystem;
+    InitCommand init_command(filesystem);
+    init_command.execute(j);
+    CreateCommand create_command(filesystem);
+    DeleteCommand delete_command(filesystem);
+    EXPECT_EQ(create_command.execute(test1), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test2), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test3), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test4), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test5), OK + ": the file has been added");
+    EXPECT_EQ(delete_command.execute(delete_test3), OK + ": the file has been removed");
+    EXPECT_EQ(delete_command.execute(delete_test4), OK + ": the file has been removed");
+    EXPECT_EQ(create_command.execute(test6), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test7), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test8), OK + ": the file has been added");
 }
 
-TEST(CatalogTest, RenameFile) {
-    Catalog catalog(3, 2, 10);
-    EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.rename("test1.txt", "test2.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.remove("test2.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.rename("test2.txt", "test1.txt"), Error::FILE_NOT_FOUND);
+TEST(DeleteTestCommand, DeleteError) {
+    nlohmann::json j = {
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
+    nlohmann::json test1 = {{"name", "create"}, {"data", {"test1.txt"}}, {"options", {{"allocate", 2}}}};
+    FileSystem filesystem;
+    InitCommand init_command(filesystem);
+    CreateCommand create_command(filesystem);
+    DeleteCommand delete_command(filesystem);
+    EXPECT_EQ(create_command.execute(test1), ERROR + ": the file system has not been initialized");
+    nlohmann::json delete_test1 = {{"name", "delete"}, {"data", {"test1.txt"}}};
+    EXPECT_EQ(delete_command.execute(delete_test1),ERROR + ": the file system has not been initialized");
+    init_command.execute(j);
+    EXPECT_EQ(delete_command.execute(delete_test1), FILE_NOT_FOUND);
+    EXPECT_EQ(create_command.execute(test1), OK + ": the file has been added");
+    EXPECT_EQ(delete_command.execute(delete_test1), OK + ": the file has been removed");
 }
 
-TEST(CatalogTest, RenameToExistingFile) {
-    Catalog catalog(3, 2, 10);
-
-    EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test2.txt", 3), Error::NO_ERROR);
-
-    EXPECT_EQ(catalog.rename("test1.txt", "test2.txt"), Error::FILE_ALREADY_EXISTS);
+TEST(RenameTestCommand, RenameFile) {
+    nlohmann::json j = {
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
+    nlohmann::json test1 = {{"name", "create"}, {"data", {"test1.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json delete_test1 = {{"name", "delete"}, {"data", {"test1.txt"}}};
+    nlohmann::json delete_test2 = {{"name", "delete"}, {"data", {"test2.txt"}}};
+    nlohmann::json rename_test1 = {{"name", "rename"}, {"data", {"test1.txt", "test2.txt"}}};
+    FileSystem filesystem;
+    InitCommand init_command(filesystem);
+    CreateCommand create_command(filesystem);
+    RenameCommand rename_command(filesystem);
+    DeleteCommand delete_command(filesystem);
+    EXPECT_EQ(create_command.execute(test1), ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(rename_command.execute(rename_test1), ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(init_command.execute(j), "OK");
+    EXPECT_EQ(rename_command.execute(rename_test1), FILE_NOT_FOUND);
+    EXPECT_EQ(create_command.execute(test1), OK + ": the file has been added");
+    EXPECT_EQ(rename_command.execute(rename_test1), OK + ": the file has been renamed");
+    EXPECT_EQ(delete_command.execute(delete_test1), FILE_NOT_FOUND);
+    EXPECT_EQ(delete_command.execute(delete_test2), OK + ": the file has been removed");
+    EXPECT_EQ(rename_command.execute(rename_test1), FILE_NOT_FOUND);
 }
 
-TEST(CatalogTest, RenameWithDifferentExtension) {
+TEST(RenameTestCommand, RenameToExistingFile) {
+    nlohmann::json j = {
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
+    nlohmann::json test1 = {{"name", "create"}, {"data", {"test1.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test2 = {{"name", "create"}, {"data", {"test2.txt"}}, {"options", {{"allocate", 3}}}};
+    nlohmann::json rename_test1 = {{"name", "rename"}, {"data", {"test1.txt", "test2.txt"}}};
+    FileSystem filesystem;
+    InitCommand init_command(filesystem);
+    CreateCommand create_command(filesystem);
+    RenameCommand rename_command(filesystem);
+    EXPECT_EQ(init_command.execute(j), "OK");
+    EXPECT_EQ(create_command.execute(test1), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test2), OK + ": the file has been added");
+    EXPECT_EQ(rename_command.execute(rename_test1), FILE_ALREADY_EXISTS);
+}
+
+TEST(CopyTestCommand, CopyTest) {
+    FileSystem filesystem;
+    nlohmann::json j = {
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
+    nlohmann::json test1 = {{"name", "create"}, {"data", {"test1.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test2 = {{"name", "create"}, {"data", {"test2.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json copy_test1 = {{"name", "copy"}, {"data", {"test3.txt", "test1.txt"}}};
+    nlohmann::json copy_test2 = {{"name", "copy"}, {"data", {"test3.txt", "test5.txt"}}};
+    nlohmann::json copy_test3 = {{"name", "copy"}, {"data", {"test1.txt", "test2.txt"}}};
+    nlohmann::json copy_test4 = {{"name", "copy"}, {"data", {"test1.txt", "test3.txt"}}};
+    nlohmann::json copy_test5 = {{"name", "copy"}, {"data", {"test1.txt", "test4.txt"}}};
+    nlohmann::json copy_test6 = {{"name", "copy"}, {"data", {"test1.txt", "test5.txt"}}};
+    nlohmann::json copy_test7 = {{"name", "copy"}, {"data", {"test1.txt", "test6.txt"}}};
+    nlohmann::json delete_test1 = {{"name", "delete"}, {"data", {"test3.txt"}}};
+    InitCommand init_command(filesystem);
+    CreateCommand create_command(filesystem);
+    CopyCommand copy_command(filesystem);
+    DeleteCommand delete_command(filesystem);
+    EXPECT_EQ(create_command.execute(test1), ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(copy_command.execute(copy_test1), ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(init_command.execute(j), "OK");
+    EXPECT_EQ(create_command.execute(test1), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test2), OK + ": the file has been added");
+    EXPECT_EQ(copy_command.execute(copy_test1), FILE_ALREADY_EXISTS);
+    EXPECT_EQ(copy_command.execute(copy_test2), FILE_NOT_FOUND);
+    EXPECT_EQ(copy_command.execute(copy_test3), FILE_ALREADY_EXISTS);
+    EXPECT_EQ(copy_command.execute(copy_test4), OK + ": the file has been added");
+    EXPECT_EQ(copy_command.execute(copy_test5), OK + ": the file has been added");
+    EXPECT_EQ(copy_command.execute(copy_test6), OK + ": the file has been added");
+    EXPECT_EQ(copy_command.execute(copy_test7), NO_FREE_SPACE);
+    EXPECT_EQ(delete_command.execute(delete_test1), OK + ": the file has been removed");
+    EXPECT_EQ(copy_command.execute(copy_test7), OK + ": the file has been added");
+}
+
+TEST(MoveTestCommand, MoveTest) {
+    FileSystem filesystem;
+    nlohmann::json j = {
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
+    nlohmann::json test1 = {{"name", "create"}, {"data", {"test1.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test2 = {{"name", "create"}, {"data", {"test2.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json move_test1 = {{"name", "move"}, {"data", {"test3.txt", "test1.txt"}}};
+    nlohmann::json move_test2 = {{"name", "move"}, {"data", {"test3.txt", "test5.txt"}}};
+    nlohmann::json move_test3 = {{"name", "move"}, {"data", {"test1.txt", "test2.txt"}}};
+    nlohmann::json move_test4 = {{"name", "move"}, {"data", {"test1.txt", "test3.txt"}}};
+    nlohmann::json move_test5 = {{"name", "move"}, {"data", {"test1.txt", "test4.txt"}}};
+    nlohmann::json move_test6 = {{"name", "move"}, {"data", {"test3.txt", "test1.txt"}}};
+    nlohmann::json move_test7 = {{"name", "move"}, {"data", {"test1.txt", "test3.txt"}}};
+    nlohmann::json delete_test1 = {{"name", "delete"}, {"data", {"test1.txt"}}};
+    nlohmann::json delete_test2 = {{"name", "delete"}, {"data", {"test3.txt"}}};
+    InitCommand init_command(filesystem);
+    CreateCommand create_command(filesystem);
+    MoveCommand move_command(filesystem);
+    DeleteCommand delete_command(filesystem);
+    EXPECT_EQ(create_command.execute(test1), ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(move_command.execute(move_test1), ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(init_command.execute(j), "OK");
+    EXPECT_EQ(create_command.execute(test1), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test2), OK + ": the file has been added");
+    EXPECT_EQ(move_command.execute(move_test1), FILE_ALREADY_EXISTS);
+    EXPECT_EQ(move_command.execute(move_test2), FILE_NOT_FOUND);
+    EXPECT_EQ(move_command.execute(move_test3), FILE_ALREADY_EXISTS);
+    EXPECT_EQ(move_command.execute(move_test4), OK + " the file has been moved");
+    EXPECT_EQ(move_command.execute(move_test5), FILE_NOT_FOUND);
+    EXPECT_EQ(move_command.execute(move_test6), OK + " the file has been moved");
+    EXPECT_EQ(move_command.execute(move_test7), OK + " the file has been moved");
+    EXPECT_EQ(delete_command.execute(delete_test1), FILE_NOT_FOUND);
+    EXPECT_EQ(delete_command.execute(delete_test2), OK + ": the file has been removed");
+}
+
+TEST(VolTestCommand, VolTest) {
+    FileSystem filesystem;
+    nlohmann::json j = {
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
+    nlohmann::json vol_test1 {{"name", "vol"}, {"data", {"VOL_1"}}};
+    nlohmann::json vol_test2{{"name", "vol"}, {"data", {"VOL_3", "User"}}};
+    InitCommand init_command(filesystem);
+    VolCommand vol_command(filesystem);
+    EXPECT_EQ(vol_command.execute(vol_test1), ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(init_command.execute(j), "OK");
+    EXPECT_EQ(filesystem.get_info().get_owner_name(), "OWNER");
+    EXPECT_EQ(filesystem.get_info().get_volume_name(), "VOL");
+    EXPECT_EQ(vol_command.execute(vol_test1), OK + ": the volume ID has been changed");
+    EXPECT_EQ(filesystem.get_info().get_volume_name(), "VOL_1");
+    EXPECT_EQ(vol_command.execute(vol_test2), OK + ": the volume ID has been changed");
+    EXPECT_EQ(filesystem.get_info().get_owner_name(), "User");
+    EXPECT_EQ(filesystem.get_info().get_volume_name(), "VOL_3");
+}
+
+TEST(CatalogTest, AddTest) {
+    FileSystem filesystem;
+    nlohmann::json j = {
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
+    nlohmann::json test1 = {{"name", "create"}, {"data", {"test1.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test2 = {{"name", "create"}, {"data", {"test2.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json test3 = {{"name", "create"}, {"data", {"test3.txt"}}, {"options", {{"allocate", 3}}}};
+    nlohmann::json test4 = {{"name", "create"}, {"data", {"test4.txt"}}, {"options", {{"allocate", 1}}}};
+    nlohmann::json test5 = {{"name", "create"}, {"data", {"test5.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json add_test1 = {{"name", "add"}, {"data", {"test123.txt"}}, {"options", {{"size", 1}}}};
+    nlohmann::json add_test2 = {{"name", "add"}, {"data", {"test1.txt"}}, {"options", {{"size", 10}}}};
+    nlohmann::json add_test3 = {{"name", "add"}, {"data", {"test1.txt"}}, {"options", {{"size", 1}}}};
+    nlohmann::json add_test4 = {{"name", "add"}, {"data", {"test2.txt"}}, {"options", {{"size", 1}}}};
+    nlohmann::json add_test5 = {{"name", "add"}, {"data", {"test3.txt"}}, {"options", {{"size", 1}}}};
+    nlohmann::json delete_test1 = {{"name", "delete"}, {"data", {"test2.txt"}}};
+    nlohmann::json delete_test2 = {{"name", "delete"}, {"data", {"test3.txt"}}};
+    nlohmann::json add_test6 = {{"name", "add"}, {"data", {"test5.txt"}}, {"options", {{"size", 4}}}};
+    nlohmann::json add_test7 = {{"name", "add"}, {"data", {"test5.txt"}}, {"options", {{"size", 3}}}};
+    InitCommand init_command(filesystem);
+    CreateCommand create_command(filesystem);
+    AddCommand add_command(filesystem);
+    DeleteCommand delete_command(filesystem);
+    EXPECT_EQ(add_command.execute(add_test1), ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(init_command.execute(j), "OK");
+    EXPECT_EQ(create_command.execute(test1), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test2), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test3), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test4), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test5), OK + ": the file has been added");
+    EXPECT_EQ(add_command.execute(add_test1), FILE_NOT_FOUND);
+    EXPECT_EQ(add_command.execute(add_test2), NO_FREE_SPACE);
+    EXPECT_EQ(add_command.execute(add_test3), OK + ": the file size has been increased");
+    EXPECT_EQ(add_command.execute(add_test3), NO_FREE_SPACE);
+    EXPECT_EQ(add_command.execute(add_test4), NO_FREE_SPACE);
+    EXPECT_EQ(add_command.execute(add_test5), NO_FREE_SPACE);
+    EXPECT_EQ(delete_command.execute(delete_test1), OK + ": the file has been removed");
+    EXPECT_EQ(delete_command.execute(delete_test2), OK + ": the file has been removed");
+    EXPECT_EQ(add_command.execute(add_test5), FILE_NOT_FOUND);
+    EXPECT_EQ(add_command.execute(add_test3), OK + ": the file size has been increased");
+    EXPECT_EQ(add_command.execute(add_test6), NO_FREE_SPACE);
+    EXPECT_EQ(add_command.execute(add_test7), OK + ": the file size has been increased");
+}
+
+/*TEST(CatalogTest, RenameWithDifferentExtension) {
     Catalog catalog(3, 2, 10);
 
     auto now = std::chrono::system_clock::now();
@@ -151,57 +342,6 @@ TEST(CatalogTest, RenameToSameName) {
     std::vector<std::string> result = catalog.dir();
     EXPECT_EQ(result.size(), 1);
     EXPECT_EQ(result[0], "test1.txt 2 Blocks " + today);
-}
-
-TEST(CatalogTest, AddTest) {
-    Catalog catalog(3, 2, 10);
-    EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test2.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test3.txt", 3), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test4.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test5.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.add("test123.txt", 1), Error::FILE_NOT_FOUND);
-    EXPECT_EQ(catalog.add("test1.txt", 10), Error::NO_FREE_SPACE);
-    EXPECT_EQ(catalog.add("test1.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.add("test1.txt", 1), Error::NO_FREE_SPACE);
-    EXPECT_EQ(catalog.add("test2.txt", 1), Error::NO_FREE_SPACE);
-    EXPECT_EQ(catalog.add("test3.txt", 1), Error::NO_FREE_SPACE);
-    EXPECT_EQ(catalog.remove("test2.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.remove("test3.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.add("test3.txt", 1), Error::FILE_NOT_FOUND);
-    EXPECT_EQ(catalog.add("test1.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.add("test5.txt", 4), Error::NO_FREE_SPACE);
-    EXPECT_EQ(catalog.add("test5.txt", 3), Error::NO_ERROR);
-}
-
-TEST(CatalogTest, MoveTest) {
-    Catalog catalog(3, 2, 10);
-    EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test2.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.move("test3.txt", "test1.txt"), Error::FILE_ALREADY_EXISTS);
-    EXPECT_EQ(catalog.move("test3.txt", "test5.txt"), Error::FILE_NOT_FOUND);
-    EXPECT_EQ(catalog.move("test1.txt", "test2.txt"), Error::FILE_ALREADY_EXISTS);
-    EXPECT_EQ(catalog.move("test1.txt", "test3.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.move("test1.txt", "test4.txt"), Error::FILE_NOT_FOUND);
-    EXPECT_EQ(catalog.move("test3.txt", "test1.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.move("test1.txt", "test3.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.remove("test1.txt"), Error::FILE_NOT_FOUND);
-    EXPECT_EQ(catalog.remove("test3.txt"), Error::NO_ERROR);
-}
-
-TEST(CatalogTest, CopyTest) {
-    Catalog catalog(3, 2, 10);
-    EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test2.txt", 1), Error::NO_ERROR);
-    EXPECT_EQ(catalog.copy("test3.txt", "test1.txt"), Error::FILE_ALREADY_EXISTS);
-    EXPECT_EQ(catalog.copy("test3.txt", "test5.txt"), Error::FILE_NOT_FOUND);
-    EXPECT_EQ(catalog.copy("test1.txt", "test2.txt"), Error::FILE_ALREADY_EXISTS);
-    EXPECT_EQ(catalog.copy("test1.txt", "test3.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.copy("test1.txt", "test4.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.copy("test1.txt", "test5.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.copy("test1.txt", "test6.txt"), Error::NO_FREE_SPACE);
-    EXPECT_EQ(catalog.remove("test3.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.copy("test1.txt", "test6.txt"), Error::NO_ERROR);
 }
 
 TEST(CatalogTest, DirTest) {
@@ -425,12 +565,6 @@ TEST(CatalogTest, SqueezeTest2) {
     EXPECT_EQ(catalog.get_used_segments_count(), 2);
 }
 
-TEST(FileSystem, InitTest) {
-    FileSystem filesystem;
-    EXPECT_EQ(filesystem.init("VOL", "OWNER", 1000000000072376370), Error::ERROR_EXCEPTION);
-    EXPECT_EQ(filesystem.init("VOL", "OWNER", 1, 1, 1), Error::NO_ERROR);
-}
-
 TEST(FileSystem, DirTest) {
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
@@ -473,16 +607,6 @@ TEST(FileSystem, DirTest) {
         pos = res[i].find("Blocks");
         EXPECT_EQ(pos, 12);
     }
-}
-
-TEST(FileSystem, VolTest) {
-    FileSystem filesystem;
-    filesystem.init("VOL", "OWNER", 3, 2, 10);
-    EXPECT_EQ(filesystem.get_info()->get_owner_name(), "OWNER");
-    EXPECT_EQ(filesystem.get_info()->get_volume_name(), "VOL");
-    EXPECT_EQ(filesystem.vol("VOL_3", "User"), Error::NO_ERROR);
-    EXPECT_EQ(filesystem.get_info()->get_owner_name(), "User");
-    EXPECT_EQ(filesystem.get_info()->get_volume_name(), "VOL_3");
 }*/
 
 int main(int argc, char** argv) {

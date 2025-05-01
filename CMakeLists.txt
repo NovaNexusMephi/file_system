@@ -7,20 +7,20 @@ project(
 
 include(FetchContent)
 
-FetchContent_Declare(
-  nlohmann_json
-  GIT_REPOSITORY https://github.com/nlohmann/json.git
-  GIT_TAG v3.11.3
-)
+#FetchContent_Declare(
+#  nlohmann_json
+#  GIT_REPOSITORY https://github.com/nlohmann/json.git
+#  GIT_TAG v3.11.3
+#) 
 
-FetchContent_MakeAvailable(nlohmann_json)
+#FetchContent_MakeAvailable(nlohmann_json)
 
-FetchContent_Declare(
-  json_schema_validator
-  GIT_REPOSITORY https://github.com/pboettch/json-schema-validator.git
-  GIT_TAG 2.3.0 # Use the correct tag format
-)
-FetchContent_MakeAvailable(json_schema_validator)
+#FetchContent_Declare(
+#  json_schema_validator
+#  GIT_REPOSITORY https://github.com/pboettch/json-schema-validator.git
+#  GIT_TAG 2.3.0 # Use the correct tag format
+#)
+#FetchContent_MakeAvailable(json_schema_validator)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -37,7 +37,7 @@ add_subdirectory(src/config)
 add_subdirectory(src/filesystem)
 add_subdirectory(src/monitor)
 add_subdirectory(src/commands)
-add_subdirectory(src/command_builder)
+#add_subdirectory(src/command_builder)
 
 add_subdirectory(tests)
 

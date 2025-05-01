@@ -23,8 +23,8 @@ foreach(test_source ${TESTS_SOURCE_FILES})
         monitor
         filesystem
         commands
-        command_builder
-        nlohmann_json_schema_validator
+        #command_builder
+        #nlohmann_json_schema_validator
     )
     
     add_test(NAME ${test_name} COMMAND ${test_name})

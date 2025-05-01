@@ -8,61 +8,6 @@
 
 namespace filesystem {
 
-// Error Catalog::rename(const std::string& old_filename, const std::string& new_filename) noexcept {
-//     if (old_filename == new_filename) {
-//         return Error::NO_ERROR;
-//     }
-//     if (files_.contains(new_filename)) {
-//         return Error::FILE_ALREADY_EXISTS;
-//     }
-//     auto record = find_record(old_filename);
-//     if (record) {
-//         record->set_filename(new_filename);
-//         files_.erase(old_filename);
-//         files_.insert(new_filename);
-//         return Error::NO_ERROR;
-//     }
-//     return Error::FILE_NOT_FOUND;
-// }
-
-// Error Catalog::copy(const std::string& filename, const std::string& dist_filename) noexcept {
-//     if (files_.contains(dist_filename)) {
-//         return Error::FILE_ALREADY_EXISTS;
-//     }
-//     auto record = find_record(filename);
-//     if (record) {
-//         return create(dist_filename, record->get_size());
-//     }
-//     return Error::FILE_NOT_FOUND;
-// }
-
-// Error Catalog::move(const std::string& filename, const std::string& dist_filename) noexcept {
-//     if (files_.contains(dist_filename)) {
-//         return Error::FILE_ALREADY_EXISTS;
-//     }
-//     auto record = find_record(filename);
-//     if (record) {
-//         create(dist_filename, record->get_size());
-//         remove(filename);
-//         return Error::NO_ERROR;
-//     }
-//     return Error::FILE_NOT_FOUND;
-// }
-
-// Error Catalog::add(const std::string& filename, size_t new_size) noexcept {
-//     auto record = find_record(filename);
-//     if (record) {
-//         auto size = record->get_size();
-//         if (new_size > header_.free_space_) {
-//             return Error::NO_FREE_SPACE;
-//         }
-//         record->set_size(size + new_size);
-//         header_.free_space_ -= new_size;
-//         return Error::NO_ERROR;
-//     }
-//     return Error::FILE_NOT_FOUND;
-// }
-
 FileRecord* Catalog::find_record(const std::string& filename) noexcept {
     for (auto& segment : segments_) {
         for (auto& record : segment.get_records()) {

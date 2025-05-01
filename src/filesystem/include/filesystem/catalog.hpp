@@ -26,12 +26,6 @@ class Catalog final {
     Catalog(size_t count, size_t records_count, size_t volume_size)
         : header_(count, 0, records_count * count, volume_size), segments_(count, Segment(records_count)) {}
 
-    // [[nodiscard]] Error rename(const std::string& old_filename, const std::string& new_filename) noexcept;
-
-    // [[nodiscard]] Error copy(const std::string& filename, const std::string& dist_filename) noexcept;
-
-    // [[nodiscard]] Error move(const std::string& filename, const std::string& dist_filename) noexcept;
-
     // [[nodiscard]] Error squeeze();
 
     // [[nodiscard]] Error add(const std::string& filename, size_t size) noexcept;
