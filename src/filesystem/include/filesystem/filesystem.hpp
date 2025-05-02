@@ -27,7 +27,7 @@ class FileSystem {
 
     inline void invalidate() noexcept { valid_ = false; }
 
-    void inline init_catalog(size_t segm, size_t vol, size_t rec) noexcept { catalog_ = Catalog(segm, rec, vol); }
+    void inline init_catalog(size_t segm, size_t rec, size_t vol) noexcept { catalog_ = Catalog(segm, rec, vol); }
 
    private:
     SystemInformation info_block_;

@@ -30,33 +30,66 @@ std::unique_ptr<AbstractCommand> CommandBuilder::build(const nlohmann::json& jso
     }
 
     if (name == "dir") {
-        return std::make_unique<DirCommand>(receiver_);
+        auto data = json["data"].get<std::vector<std::string>>();
+        bool full = !data.empty();
+        return std::make_unique<DirCommand>(receiver_, full);
     } else if (name == "init") {
-        return std::make_unique<InitCommand>(receiver_);
+        auto data = json["data"].get<std::vector<std::string>>();
+        std::string volume = data[0];
+        std::string owner = data.size() > 1 ? data[1] : "";
+        size_t segm = json["options"]["segm"].get<size_t>();
+        size_t rec = json["options"]["rec"].get<size_t>();
+        size_t vol = json["options"]["vol"].get<size_t>();
+        return std::make_unique<InitCommand>(receiver_, volume, owner, segm, rec, vol);
     } else if (name == "create") {
-        return std::make_unique<CreateCommand>(receiver_);
+        auto data = json["data"].get<std::vector<std::string>>();
+        std::string filename = data[0];
+        size_t size = json["options"]["allocate"].get<size_t>();
+        return std::make_unique<CreateCommand>(receiver_, filename, size);
     } else if (name == "delete") {
-        return std::make_unique<DeleteCommand>(receiver_);
+        auto data = json["data"].get<std::vector<std::string>>();
+        std::string filename = data[0];
+        return std::make_unique<DeleteCommand>(receiver_, filename);
     } else if (name == "rename") {
-        return std::make_unique<RenameCommand>(receiver_);
+        auto data = json["data"].get<std::vector<std::string>>();
+        std::string old_name = data[0];
+        std::string new_name = data[1];
+        return std::make_unique<RenameCommand>(receiver_, old_name, new_name);
     } else if (name == "copy") {
-        return std::make_unique<CopyCommand>(receiver_);
+        auto data = json["data"].get<std::vector<std::string>>();
+        std::string source = data[0];
+        std::string destination = data[1];
+        return std::make_unique<CopyCommand>(receiver_, source, destination);
     } else if (name == "move") {
-        return std::make_unique<MoveCommand>(receiver_);
+        auto data = json["data"].get<std::vector<std::string>>();
+        std::string source = data[0];
+        std::string destination = data[1];
+        return std::make_unique<MoveCommand>(receiver_, source, destination);
     } else if (name == "add") {
-        return std::make_unique<AddCommand>(receiver_);
+        auto data = json["data"].get<std::vector<std::string>>();
+        std::string filename = data[0];
+        size_t size = json["options"]["size"].get<size_t>();
+        return std::make_unique<AddCommand>(receiver_, filename, size);
     } else if (name == "squeeze") {
         return std::make_unique<SqueezeCommand>(receiver_);
     } else if (name == "sort") {
-        return std::make_unique<SortCommand>(receiver_);
+        auto data = json["data"].get<std::vector<std::string>>();
+        std::string sort_by = data[0];
+        std::string inv = data.size() > 1 ? data[1] : "";
+        return std::make_unique<SortCommand>(receiver_, sort_by, inv);
     } else if (name == "free") {
         return std::make_unique<FreeCommand>(receiver_);
     } else if (name == "vol") {
-        return std::make_unique<VolCommand>(receiver_);
+        auto data = json["data"].get<std::vector<std::string>>();
+        std::string volume = data[0];
+        std::string owner = data.size() > 1 ? data[1] : "";
+        return std::make_unique<VolCommand>(receiver_, volume, owner);
     } else if (name == "exit") {
         return std::make_unique<ExitCommand>(receiver_);
     } else if (name == "help") {
-        return std::make_unique<HelpCommand>(receiver_);
+        auto data = json["data"].get<std::vector<std::string>>();
+        std::string command = data.size() > 0 ? data[0] : "";
+        return std::make_unique<HelpCommand>(receiver_, command);
     }
 
     return nullptr;

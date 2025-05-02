@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "command_builder/command_builder.hpp"
+#include "commands/exit_command.hpp"
 #include "config/config.hpp"
 #include "filesystem/filesystem.hpp"
 #include "monitor/monitor.hpp"
@@ -19,11 +20,11 @@ int main(int argc, char* argv[]) {
                 continue;
             }
             auto command = builder.build(precommand.value());
-            auto msg = command->execute(precommand.value());
+            auto msg = command->execute();
             monitor.write(msg);
         }
 
-    } catch (const std::runtime_error& exit) {
+    } catch (const ExitException& exit) {
         std::cerr << exit.what() << "\n";
         return 1;
     } catch (const std::exception& fatal_error) {
