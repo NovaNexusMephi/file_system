@@ -132,7 +132,7 @@ TEST(DeleteTestCommand, DeleteError) {
     DeleteCommand delete_command(filesystem);
     EXPECT_EQ(create_command.execute(test1), ERROR + ": the file system has not been initialized");
     nlohmann::json delete_test1 = {{"name", "delete"}, {"data", {"test1.txt"}}};
-    EXPECT_EQ(delete_command.execute(delete_test1),ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(delete_command.execute(delete_test1), ERROR + ": the file system has not been initialized");
     init_command.execute(j);
     EXPECT_EQ(delete_command.execute(delete_test1), FILE_NOT_FOUND);
     EXPECT_EQ(create_command.execute(test1), OK + ": the file has been added");
@@ -251,7 +251,7 @@ TEST(VolTestCommand, VolTest) {
     FileSystem filesystem;
     nlohmann::json j = {
         {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
-    nlohmann::json vol_test1 {{"name", "vol"}, {"data", {"VOL_1"}}};
+    nlohmann::json vol_test1{{"name", "vol"}, {"data", {"VOL_1"}}};
     nlohmann::json vol_test2{{"name", "vol"}, {"data", {"VOL_3", "User"}}};
     InitCommand init_command(filesystem);
     VolCommand vol_command(filesystem);
@@ -367,7 +367,7 @@ TEST(SquezeeTestCommand, SqueezeTest2) {
     EXPECT_EQ(create_command.execute(test5), OK + ": the file has been added");
     EXPECT_EQ(create_command.execute(test6), OK + ": the file has been added");
     EXPECT_EQ(squeeze_command.execute(empty), OK + ": fragmentation was completed successfully");
-    auto& catalog = filesystem.get_catalog(); 
+    auto& catalog = filesystem.get_catalog();
     EXPECT_EQ(catalog.get_busy_segments_count(), 2);
     EXPECT_EQ(catalog.get_used_segments_count(), 2);
     EXPECT_EQ(delete_command.execute(delete_test1), OK + ": the file has been removed");
@@ -657,7 +657,7 @@ TEST(FileSystem, DirTest) {
     }
 }*/
 
-    int main(int argc, char** argv) {
+int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

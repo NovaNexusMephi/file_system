@@ -12,8 +12,9 @@ std::string CopyCommand::execute(const nlohmann::json& json) {
         return FILE_ALREADY_EXISTS;
     }
     auto record = catalog.find_record(filename);
-    if(record) {
-        nlohmann::json create_json = { {"name", "create"}, {"data", {dist_filename}}, {"options", {{"allocate", record->get_size()}}}};
+    if (record) {
+        nlohmann::json create_json = {
+            {"name", "create"}, {"data", {dist_filename}}, {"options", {{"allocate", record->get_size()}}}};
         CreateCommand create(receiver_);
         return create.execute(create_json);
     }

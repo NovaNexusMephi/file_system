@@ -9,9 +9,9 @@ std::string AddCommand::execute(const nlohmann::json& json) {
     size_t new_size = json["options"]["size"].get<size_t>();
     auto& catalog = receiver_.get_catalog();
     auto record = catalog.find_record(filename);
-    if(record) {
+    if (record) {
         auto size = record->get_size();
-        if(new_size > catalog.get_free_space()) {
+        if (new_size > catalog.get_free_space()) {
             return NO_FREE_SPACE;
         }
         record->set_size(size + new_size);
