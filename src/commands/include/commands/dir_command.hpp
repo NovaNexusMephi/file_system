@@ -8,8 +8,12 @@
 class DirCommand : public AbstractCommand {
 
 public:
-    explicit DirCommand(filesystem::FileSystem& file) : AbstractCommand(file) {};
+    explicit DirCommand(filesystem::FileSystem& file, bool full = false) : 
+        AbstractCommand(file), full_(full) {};
 
-    std::string execute(const nlohmann::json& json) override;
+    std::string execute() override;
+
+private:
+    bool full_;
 
 };

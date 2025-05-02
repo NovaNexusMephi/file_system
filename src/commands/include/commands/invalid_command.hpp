@@ -6,5 +6,5 @@ class InvalidCommand : public AbstractCommand {
    public:
     explicit InvalidCommand(filesystem::FileSystem& file) : AbstractCommand(file){};
 
-    std::string execute(const nlohmann::json& json) override;
+    std::string execute() override;
 };

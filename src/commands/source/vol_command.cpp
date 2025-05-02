@@ -2,15 +2,12 @@
 
 #include "commands/commands_constants.hpp"
 
-std::string VolCommand::execute(const nlohmann::json& json) {
+std::string VolCommand::execute() {
     if (!receiver_.is_valid()) {
         return ERROR + ": the file system has not been initialized";
     }
-    auto data = json["data"].get<std::vector<std::string>>();
-    receiver_.get_info().set_volume_name(data[0]);
-    if (data.size() == 2) {
-        receiver_.get_info().set_owner_name(data[1]);
-    }
+    receiver_.get_info().set_volume_name(volume_);
+    receiver_.get_info().set_owner_name(owner_);
 
     return OK + ": the volume ID has been changed";
 }

@@ -2,13 +2,13 @@
 
 #include "filesystem/file_record.hpp"
 
-std::string DirCommand::execute(const nlohmann::json& json) {
+std::string DirCommand::execute() {
     if (!receiver_.is_valid()) {
         return ERROR + ": the file system has not been initialized";
     }
 
     std::string response = OK + ":\n", temp;
-    if (!json["data"].get<std::vector<std::string>>().empty()) {
+    if (!full_) {
         response += ("Volume:" + receiver_.get_info().get_volume_name() +
                      ", Owner:" + receiver_.get_info().get_volume_name() + "\n");
         response += ("Free blocks:" + std::to_string(receiver_.get_catalog().get_free_space()) + "\n");

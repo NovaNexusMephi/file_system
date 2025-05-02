@@ -5,7 +5,11 @@
 
 class RenameCommand : public AbstractCommand {
    public:
-    explicit RenameCommand(filesystem::FileSystem& file) : AbstractCommand(file){};
+    explicit RenameCommand(filesystem::FileSystem& file, const std::string& old, const std::string& new_): 
+        AbstractCommand(file), old_filename_(old), new_filename_(new_) {};
 
-    std::string execute(const nlohmann::json& json) override;
+    std::string execute() override;
+private:
+    std::string old_filename_;
+    std::string new_filename_;
 };

@@ -6,5 +6,5 @@ class HelpCommand : public AbstractCommand {
    public:
     explicit HelpCommand(filesystem::FileSystem& file) : AbstractCommand(file){};
 
-    std::string execute(const nlohmann::json& json) override;
+    std::string execute() override;
 };

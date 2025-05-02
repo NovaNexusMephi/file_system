@@ -6,7 +6,11 @@
 class CreateCommand : public AbstractCommand {
 public:
 
-    explicit CreateCommand(filesystem::FileSystem& file) : AbstractCommand(file) {};
+    explicit CreateCommand(filesystem::FileSystem& file, const std::string& str, size_t size) : 
+            AbstractCommand(file), filename_(str), size_(size) {};
 
-    std::string execute(const nlohmann::json& json) override;
+    std::string execute() override;
+private:
+    std::string filename_;
+    size_t size_;
 };

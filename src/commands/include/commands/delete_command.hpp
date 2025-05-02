@@ -5,7 +5,10 @@
 
 class DeleteCommand : public AbstractCommand {
    public:
-    explicit DeleteCommand(filesystem::FileSystem& file) : AbstractCommand(file){};
+    explicit DeleteCommand(filesystem::FileSystem& file, const std::string& filename) : 
+        AbstractCommand(file), filename_(filename) {};
 
-    std::string execute(const nlohmann::json& json) override;
+    std::string execute() override;
+private:
+    std::string filename_;
 };

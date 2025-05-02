@@ -6,7 +6,7 @@
 
 class AbstractCommand {
    public:
-    virtual std::string execute(const nlohmann::json& json) = 0;
+    virtual std::string execute() = 0;
 
     virtual ~AbstractCommand() = default;
 

@@ -2,7 +2,7 @@
 #include "filesystem/file_record.hpp"
 #include "filesystem/segment.hpp"
 
-std::string SqueezeCommand::execute(const nlohmann::json& json) {
+std::string SqueezeCommand::execute() {
     if (!receiver_.is_valid()) {
         return ERROR + ": the file system has not been initialized";
     }

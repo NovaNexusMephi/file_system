@@ -2,23 +2,21 @@
 
 #include "filesystem/file_record.hpp"
 
-std::string DeleteCommand::execute(const nlohmann::json& json) {
+std::string DeleteCommand::execute() {
     if (!receiver_.is_valid()) {
         return ERROR + ": the file system has not been initialized";
     }
 
-    auto data = json["data"].get<std::vector<std::string>>();
-    std::string filename = data[0];
 
     auto& catalog = receiver_.get_catalog();
-    auto* record = catalog.find_record(filename);
+    auto* record = catalog.find_record(filename_);
 
     if (record) {
         record->set_type(filesystem::FileType::FREE);
         ++catalog.get_free_records();
         size_t size = record->get_size();
         catalog.get_free_space() += size;
-        catalog.get_files().erase(filename);
+        catalog.get_files().erase(filename_);
         auto* last_segment = &catalog.get_segments()[catalog.get_busy_segments_count()];
         if (last_segment->get_counter() == 0) {
             last_segment = &catalog.get_segments()[catalog.get_busy_segments_count() - 1];
