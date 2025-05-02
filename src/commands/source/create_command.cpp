@@ -7,7 +7,6 @@ std::string CreateCommand::execute() {
         return ERROR + ": the file system has not been initialized";
     }
 
-
     auto& catalog = receiver_.get_catalog();
 
     if (catalog.get_files().contains(filename_)) {

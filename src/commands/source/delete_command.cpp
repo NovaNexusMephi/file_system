@@ -7,7 +7,6 @@ std::string DeleteCommand::execute() {
         return ERROR + ": the file system has not been initialized";
     }
 
-
     auto& catalog = receiver_.get_catalog();
     auto* record = catalog.find_record(filename_);
 
