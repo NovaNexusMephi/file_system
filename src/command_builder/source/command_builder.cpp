@@ -21,7 +21,7 @@
 std::unique_ptr<AbstractCommand> CommandBuilder::build(const nlohmann::json& json) {
     auto name = json["name"].get<std::string>();
 
-    auto validation_result = validator_.validate(name);
+    auto validation_result = validator_.validate(name, json);
 
     if (validation_result == ValidationResult::INVALID) {
         return std::make_unique<InvalidCommand>(receiver_);
