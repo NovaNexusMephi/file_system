@@ -20,30 +20,6 @@ FileRecord* Catalog::find_record(const std::string& filename) noexcept {
     return nullptr;
 }
 
-// Error Catalog::squeeze() {
-//     if (header_.free_space_ == 0) {
-//         return Error::NO_ERROR;
-//     }
-//     size_t records_count = segments_[0].get_size();
-//     std::vector<Segment> new_segments(header_.count_, Segment(records_count));
-//     size_t k = 0;
-//     for (auto& segment : segments_) {
-//         for (auto& record : segment.get_records()) {
-//             if (record.get_type() == FileType::PERMANENT) {
-//                 if (new_segments[k].add_record(record.get_filename(), record.get_size())) {
-//                     ++k;
-//                 }
-//             }
-//         }
-//     }
-//     header_.counter_ = k;
-//     header_.free_records_ = (header_.count_ - k) * records_count - new_segments[k].get_counter();
-//     header_.free_direct_space_ = header_.free_space_;
-//     header_.blocked_space_ = 0;
-//     segments_.swap(new_segments);
-//     return Error::NO_ERROR;
-// }
-
 auto get_extension = [](const std::string& line) -> std::string {
     size_t pos = line.find_last_of('.');
     return (pos == std::string::npos) ? "" : line.substr(pos);

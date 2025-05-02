@@ -9,6 +9,7 @@
 #include "commands/init_command.hpp"
 #include "commands/move_command.hpp"
 #include "commands/rename_command.hpp"
+#include "commands/squeeze_command.hpp"
 #include "commands/vol_command.hpp"
 #include "filesystem/catalog.hpp"
 
@@ -264,7 +265,7 @@ TEST(VolTestCommand, VolTest) {
     EXPECT_EQ(filesystem.get_info().get_volume_name(), "VOL_3");
 }
 
-TEST(CatalogTest, AddTest) {
+TEST(AddTestCommand, AddTest) {
     FileSystem filesystem;
     nlohmann::json j = {
         {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
@@ -307,7 +308,78 @@ TEST(CatalogTest, AddTest) {
     EXPECT_EQ(add_command.execute(add_test7), OK + ": the file size has been increased");
 }
 
-/*TEST(CatalogTest, RenameWithDifferentExtension) {
+TEST(SquezeeTestCommand, SqueezeTest1) {
+    FileSystem filesystem;
+    nlohmann::json j = {
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
+    nlohmann::json test1 = {{"name", "create"}, {"data", {"test1.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test2 = {{"name", "create"}, {"data", {"test2.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test3 = {{"name", "create"}, {"data", {"test3.txt"}}, {"options", {{"allocate", 5}}}};
+    nlohmann::json test4 = {{"name", "create"}, {"data", {"test2.txt"}}, {"options", {{"allocate", 3}}}};
+    nlohmann::json test5 = {{"name", "create"}, {"data", {"test4.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json delete_test1 = {{"name", "delete"}, {"data", {"test2.txt"}}};
+    nlohmann::json empty;
+    InitCommand init_command(filesystem);
+    CreateCommand create_command(filesystem);
+    DeleteCommand delete_command(filesystem);
+    SqueezeCommand squeeze_command(filesystem);
+    EXPECT_EQ(squeeze_command.execute(empty), ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(init_command.execute(j), "OK");
+    EXPECT_EQ(create_command.execute(test1), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test2), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test3), OK + ": the file has been added");
+    EXPECT_EQ(delete_command.execute(delete_test1), OK + ": the file has been removed");
+    auto& catalog = filesystem.get_catalog();
+    EXPECT_EQ(catalog.get_busy_segments_count(), 1);
+    EXPECT_EQ(catalog.get_used_segments_count(), 2);
+    EXPECT_EQ(create_command.execute(test4), NO_FREE_SPACE);
+    EXPECT_EQ(squeeze_command.execute(empty), OK + ": fragmentation was completed successfully");
+    EXPECT_EQ(catalog.get_busy_segments_count(), 1);
+    EXPECT_EQ(catalog.get_used_segments_count(), 1);
+    EXPECT_EQ(create_command.execute(test4), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test5), NO_FREE_SPACE);
+}
+
+TEST(SquezeeTestCommand, SqueezeTest2) {
+    FileSystem filesystem;
+    nlohmann::json j = {
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 3}, {"rec", 20}}}};
+    nlohmann::json test1 = {{"name", "create"}, {"data", {"test1.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test2 = {{"name", "create"}, {"data", {"test2.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test3 = {{"name", "create"}, {"data", {"test3.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test4 = {{"name", "create"}, {"data", {"test4.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test5 = {{"name", "create"}, {"data", {"test5.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json test6 = {{"name", "create"}, {"data", {"test6.txt"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json empty;
+    nlohmann::json delete_test1 = {{"name", "delete"}, {"data", {"test2.txt"}}};
+    nlohmann::json delete_test2 = {{"name", "delete"}, {"data", {"test5.txt"}}};
+    InitCommand init_command(filesystem);
+    CreateCommand create_command(filesystem);
+    DeleteCommand delete_command(filesystem);
+    SqueezeCommand squeeze_command(filesystem);
+    EXPECT_EQ(squeeze_command.execute(empty), ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(init_command.execute(j), "OK");
+    EXPECT_EQ(create_command.execute(test1), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test2), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test3), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test4), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test5), OK + ": the file has been added");
+    EXPECT_EQ(create_command.execute(test6), OK + ": the file has been added");
+    EXPECT_EQ(squeeze_command.execute(empty), OK + ": fragmentation was completed successfully");
+    auto& catalog = filesystem.get_catalog(); 
+    EXPECT_EQ(catalog.get_busy_segments_count(), 2);
+    EXPECT_EQ(catalog.get_used_segments_count(), 2);
+    EXPECT_EQ(delete_command.execute(delete_test1), OK + ": the file has been removed");
+    EXPECT_EQ(delete_command.execute(delete_test2), OK + ": the file has been removed");
+    EXPECT_EQ(catalog.get_busy_segments_count(), 2);
+    EXPECT_EQ(catalog.get_used_segments_count(), 2);
+    EXPECT_EQ(squeeze_command.execute(empty), OK + ": fragmentation was completed successfully");
+    EXPECT_EQ(catalog.get_busy_segments_count(), 1);
+    EXPECT_EQ(catalog.get_used_segments_count(), 2);
+}
+
+
+    /*TEST(CatalogTest, RenameWithDifferentExtension) {
     Catalog catalog(3, 2, 10);
 
     auto now = std::chrono::system_clock::now();
@@ -529,42 +601,6 @@ TEST(CatalogTest, SortSingleFile) {
     EXPECT_EQ(sorted[0], "data.bin 5 Blocks " + today);
 }
 
-TEST(CatalogTest, SqueezeTest1) {
-    Catalog catalog(3, 2, 10);
-    EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test2.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test3.txt", 5), Error::NO_ERROR);
-    EXPECT_EQ(catalog.remove("test2.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.get_busy_segments_count(), 1);
-    EXPECT_EQ(catalog.get_used_segments_count(), 2);
-    EXPECT_EQ(catalog.create("test2.txt", 3), Error::NO_FREE_SPACE);
-    EXPECT_EQ(catalog.squeeze(), Error::NO_ERROR);
-    EXPECT_EQ(catalog.get_busy_segments_count(), 1);
-    EXPECT_EQ(catalog.get_used_segments_count(), 1);
-    EXPECT_EQ(catalog.create("test2.txt", 3), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test4.txt", 2), Error::NO_FREE_SPACE);
-}
-
-TEST(CatalogTest, SqueezeTest2) {
-    Catalog catalog(3, 3, 20);
-    EXPECT_EQ(catalog.create("test1.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test2.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test3.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test4.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test5.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.create("test6.txt", 2), Error::NO_ERROR);
-    EXPECT_EQ(catalog.squeeze(), Error::NO_ERROR);
-    EXPECT_EQ(catalog.get_busy_segments_count(), 2);
-    EXPECT_EQ(catalog.get_used_segments_count(), 2);
-    EXPECT_EQ(catalog.remove("test2.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.remove("test5.txt"), Error::NO_ERROR);
-    EXPECT_EQ(catalog.get_busy_segments_count(), 2);
-    EXPECT_EQ(catalog.get_used_segments_count(), 2);
-    EXPECT_EQ(catalog.squeeze(), Error::NO_ERROR);
-    EXPECT_EQ(catalog.get_busy_segments_count(), 1);
-    EXPECT_EQ(catalog.get_used_segments_count(), 2);
-}
-
 TEST(FileSystem, DirTest) {
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
@@ -609,7 +645,7 @@ TEST(FileSystem, DirTest) {
     }
 }*/
 
-int main(int argc, char** argv) {
+    int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
