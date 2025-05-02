@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <monitor/reader.h>
+
 #include <nlohmann/json.hpp>
 #include <optional>
 #include <sstream>
@@ -98,4 +99,9 @@ TEST(ReaderTest, HandlesMalformedCommand) {
     ASSERT_TRUE(result.has_value());
     EXPECT_EQ(result->at("command_name"), "invalid");
     EXPECT_TRUE(result->at("options").empty());
+}
+
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

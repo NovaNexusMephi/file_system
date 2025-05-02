@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+#include <nlohmann/json.hpp>
+
 #include "commands/add_command.hpp"
 #include "commands/copy_command.hpp"
 #include "commands/create_command.hpp"

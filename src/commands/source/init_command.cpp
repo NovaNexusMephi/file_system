@@ -5,9 +5,6 @@ std::string InitCommand::execute(const nlohmann::json& json) {
         return ERROR + ": the file system has already been initialized";
     }
     auto data = json["data"].get<std::vector<std::string>>();
-    if (data.empty()) {  // in validate
-        return ERROR + ": the volume ID was not transmitted";
-    }
     std::string volume = data[0], name = "";
     if (data.size() == 2) {
         name = data[1];

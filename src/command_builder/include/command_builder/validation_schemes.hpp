@@ -4,18 +4,30 @@
 #include <string>
 #include <unordered_map>
 
-static const nlohmann::json dir_scheme = R"({})"_json;
-// {
-//      "$schema": "http://json-schema.org/draft-07/schema#",
-//      "title": "dir",
-//      "type": "object",
-//      "properties": {
-//         "path": {
-
-//         }
-//      }
-// }
-// )"_json;
+static const nlohmann::json dir_scheme = R"(
+{
+     "$schema": "http://json-schema.org/draft-07/schema#",
+     "title": "dir",
+     "type": "object",
+     "properties": {
+        "name": {
+            "type": "string"
+        },
+        "data": {
+            "type": "array",
+            "items": {
+                "enum": ["full"]
+            },
+            "minItems": 0,
+            "maxItems": 1
+        },
+        "options": {
+            "type": "object",
+            "maxProperties": 0
+        }
+     }
+}
+)"_json;
 
 static const nlohmann::json init_scheme = R"(
 {
@@ -36,6 +48,8 @@ static const nlohmann::json init_scheme = R"(
         },
         "options": {
             "type": "object",
+            "maxProperties": 3,
+            "minProperties": 3,
             "properties": {
                 "segm": {
                     "type": "integer",
@@ -67,13 +81,15 @@ static const nlohmann::json create_scheme = R"(
         "data": {
             "type": "array",
             "items": {
-                "type": "string",
+                "type": "string"
             },
             "minItems": 1,
             "maxItems": 1
         },
         "options": {
             "type": "object",
+            "maxProperties": 1,
+            "minProperties": 1,
             "properties": {
                 "allocate": {
                     "type": "integer",
@@ -205,6 +221,7 @@ static const nlohmann::json add_scheme = R"(
         "options": {
             "type": "object",
             "maxProperties": 1,
+            "minProperties": 1,
             "properties": {
                 "size": {
                     "type": "integer",
@@ -238,16 +255,30 @@ static const nlohmann::json squeeze_scheme = R"(
 }
 )"_json;
 
-static const nlohmann::json sort_scheme = R"({})"_json;
-// {
-//      "$schema": "http://json-schema.org/draft-07/schema#",
-//      "title": "sort",
-//      "type": "object",
-//      "properties": {
-//         "name": {
-//             "type": "string"
-// }
-// )"_json;
+static const nlohmann::json sort_scheme = R"(
+{
+     "$schema": "http://json-schema.org/draft-07/schema#",
+     "title": "sort",
+     "type": "object",
+     "properties": {
+        "name": {
+            "type": "string"
+        },
+        "data": {
+           "type": "array",
+            "items": {
+                "enum": ["name", "ext", "date", "size", "inv"]
+            },
+            "minItems": 0,
+            "maxItems": 2
+        },
+        "options": {
+            "type": "object",
+            "maxProperties": 0
+        }
+     }
+}
+)"_json;
 
 static const nlohmann::json free_scheme = R"(
 {
@@ -318,7 +349,31 @@ static const nlohmann::json exit_scheme = R"(
 }
 )"_json;
 
-static const nlohmann::json help_scheme = R"({})"_json;
+static const nlohmann::json help_scheme = R"(
+{
+     "$schema": "http://json-schema.org/draft-07/schema#",
+     "title": "help",
+     "type": "object",
+     "properties": {
+        "name": {
+            "type": "string"
+        },
+        "data": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 1,
+            "items": {
+                "enum": ["dir", "init", "create", "delete", "rename", "copy", "move", "add", "squeeze", "sort",
+                    "free", "vol", "exit", "help"]
+            }
+        },
+        "options": {
+            "type": "object",
+            "maxProperties": 0
+        }
+     }
+}
+)"_json;
 
 static const std::unordered_map<std::string, nlohmann::json> validation_schemes = {
     {"dir", dir_scheme},         {"init", init_scheme}, {"create", create_scheme}, {"delete", delete_scheme},

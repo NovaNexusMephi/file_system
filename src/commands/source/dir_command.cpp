@@ -6,17 +6,9 @@ std::string DirCommand::execute(const nlohmann::json& json) {
     if (!receiver_.is_valid()) {
         return ERROR + ": the file system has not been initialized";
     }
-    bool flag = false;
-    std::vector<std::string> data;
-    if (json.contains("data") && !json["data"].is_null()) {
-        data = json["data"].get<std::vector<std::string>>();
-        if (data.size() == 1) {
-            flag = true;
-        }
-    }
 
     std::string response = OK + ":\n", temp;
-    if (flag) {
+    if (!json["data"].get<std::vector<std::string>>().empty()) {
         response += ("Volume:" + receiver_.get_info().get_volume_name() +
                      ", Owner:" + receiver_.get_info().get_volume_name() + "\n");
         response += ("Free blocks:" + std::to_string(receiver_.get_catalog().get_free_space()) + "\n");
