@@ -8,61 +8,6 @@
 
 namespace filesystem {
 
-// Error Catalog::rename(const std::string& old_filename, const std::string& new_filename) noexcept {
-//     if (old_filename == new_filename) {
-//         return Error::NO_ERROR;
-//     }
-//     if (files_.contains(new_filename)) {
-//         return Error::FILE_ALREADY_EXISTS;
-//     }
-//     auto record = find_record(old_filename);
-//     if (record) {
-//         record->set_filename(new_filename);
-//         files_.erase(old_filename);
-//         files_.insert(new_filename);
-//         return Error::NO_ERROR;
-//     }
-//     return Error::FILE_NOT_FOUND;
-// }
-
-// Error Catalog::copy(const std::string& filename, const std::string& dist_filename) noexcept {
-//     if (files_.contains(dist_filename)) {
-//         return Error::FILE_ALREADY_EXISTS;
-//     }
-//     auto record = find_record(filename);
-//     if (record) {
-//         return create(dist_filename, record->get_size());
-//     }
-//     return Error::FILE_NOT_FOUND;
-// }
-
-// Error Catalog::move(const std::string& filename, const std::string& dist_filename) noexcept {
-//     if (files_.contains(dist_filename)) {
-//         return Error::FILE_ALREADY_EXISTS;
-//     }
-//     auto record = find_record(filename);
-//     if (record) {
-//         create(dist_filename, record->get_size());
-//         remove(filename);
-//         return Error::NO_ERROR;
-//     }
-//     return Error::FILE_NOT_FOUND;
-// }
-
-// Error Catalog::add(const std::string& filename, size_t new_size) noexcept {
-//     auto record = find_record(filename);
-//     if (record) {
-//         auto size = record->get_size();
-//         if (new_size > header_.free_space_) {
-//             return Error::NO_FREE_SPACE;
-//         }
-//         record->set_size(size + new_size);
-//         header_.free_space_ -= new_size;
-//         return Error::NO_ERROR;
-//     }
-//     return Error::FILE_NOT_FOUND;
-// }
-
 FileRecord* Catalog::find_record(const std::string& filename) noexcept {
     for (auto& segment : segments_) {
         for (auto& record : segment.get_records()) {
@@ -74,30 +19,6 @@ FileRecord* Catalog::find_record(const std::string& filename) noexcept {
     }
     return nullptr;
 }
-
-// Error Catalog::squeeze() {
-//     if (header_.free_space_ == 0) {
-//         return Error::NO_ERROR;
-//     }
-//     size_t records_count = segments_[0].get_size();
-//     std::vector<Segment> new_segments(header_.count_, Segment(records_count));
-//     size_t k = 0;
-//     for (auto& segment : segments_) {
-//         for (auto& record : segment.get_records()) {
-//             if (record.get_type() == FileType::PERMANENT) {
-//                 if (new_segments[k].add_record(record.get_filename(), record.get_size())) {
-//                     ++k;
-//                 }
-//             }
-//         }
-//     }
-//     header_.counter_ = k;
-//     header_.free_records_ = (header_.count_ - k) * records_count - new_segments[k].get_counter();
-//     header_.free_direct_space_ = header_.free_space_;
-//     header_.blocked_space_ = 0;
-//     segments_.swap(new_segments);
-//     return Error::NO_ERROR;
-// }
 
 auto get_extension = [](const std::string& line) -> std::string {
     size_t pos = line.find_last_of('.');
@@ -111,13 +32,16 @@ auto extract_date = [](const std::string& line) -> std::string {
 
 auto extract_size = [](const std::string& line) -> size_t {
     size_t pos = line.find(" Blocks");
-    if (pos == std::string::npos) return 0;
+    if (pos == std::string::npos)
+        return 0;
     std::string size_str = line.substr(0, pos);
     size_t space_pos = size_str.find_last_of(' ');
     return std::stoul(size_str.substr(space_pos + 1));
 };
 
-auto name_compare = [](const std::string& a, const std::string& b) -> bool { return a < b; };
+auto name_compare = [](const std::string& a, const std::string& b) -> bool {
+    return a < b;
+};
 
 auto extension_compare = [](const std::string& a, const std::string& b) -> bool {
     return get_extension(a) < get_extension(b);

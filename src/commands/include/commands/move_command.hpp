@@ -1,6 +1,9 @@
 #pragma once
 
 #include "abstract_command.hpp"
+#include "commands_constants.hpp"
+#include "create_command.hpp"
+#include "delete_command.hpp"
 
 class MoveCommand : public AbstractCommand {
    public:

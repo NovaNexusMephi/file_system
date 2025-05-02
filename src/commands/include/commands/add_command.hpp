@@ -1,6 +1,7 @@
 #pragma once
 
 #include "abstract_command.hpp"
+#include "commands_constants.hpp"
 
 class AddCommand : public AbstractCommand {
    public:
