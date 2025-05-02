@@ -6,6 +6,7 @@
 #include "commands/copy_command.hpp"
 #include "commands/create_command.hpp"
 #include "commands/delete_command.hpp"
+#include "commands/dir_command.hpp"
 #include "commands/init_command.hpp"
 #include "commands/move_command.hpp"
 #include "commands/rename_command.hpp"
@@ -378,26 +379,37 @@ TEST(SquezeeTestCommand, SqueezeTest2) {
     EXPECT_EQ(catalog.get_used_segments_count(), 2);
 }
 
-
-    /*TEST(CatalogTest, RenameWithDifferentExtension) {
-    Catalog catalog(3, 2, 10);
-
+TEST(CatalogTest, RenameWithDifferentExtension) {
+    FileSystem filesystem;
+    nlohmann::json j = {
+        {"name", "init"}, {"data", {"VOL", "OWNER"}}, {"options", {{"segm", 3}, {"vol", 2}, {"rec", 10}}}};
+    nlohmann::json test1 = {{"name", "create"}, {"data", {"data.bin"}}, {"options", {{"allocate", 2}}}};
+    nlohmann::json rename_test1 = {{"name", "rename"}, {"data", {"data.bin", "data.txt"}}};
+    nlohmann::json dir_test = {{"name", "dir"}, {"data", nullptr}};
+    InitCommand init_command(filesystem);
+    CreateCommand create_command(filesystem);
+    RenameCommand rename_command(filesystem);
+    DirCommand dir_command(filesystem);
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
     auto tm = std::localtime(&time);
     std::stringstream ss;
     ss << std::put_time(tm, "%d-%m-%Y");
     std::string today = ss.str();
+    EXPECT_EQ(dir_command.execute(dir_test), ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(init_command.execute(j), "OK");
+    EXPECT_EQ(create_command.execute(test1), OK + ": the file has been added");
+    EXPECT_EQ(rename_command.execute(rename_test1), OK + ": the file has been renamed");
+    auto res = dir_command.execute(dir_test);
 
-    EXPECT_EQ(catalog.create("data.bin", 5), Error::NO_ERROR);
-    EXPECT_EQ(catalog.rename("data.bin", "data.txt"), Error::NO_ERROR);
+    std::string expected_line = "data.txt 2 Blocks " + today;
 
-    std::vector<std::string> result = catalog.dir();
-    EXPECT_EQ(result.size(), 1);
-    EXPECT_EQ(result[0], "data.txt 5 Blocks " + today);
+    EXPECT_NE(res.find(expected_line), std::string::npos)
+        << "Expected line '" << expected_line << "' not found in result:\n"
+        << res;
 }
 
-TEST(CatalogTest, RenameToSameName) {
+/*TEST(CatalogTest, RenameToSameName) {
     Catalog catalog(3, 2, 10);
 
     auto now = std::chrono::system_clock::now();
