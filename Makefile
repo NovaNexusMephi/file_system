@@ -6,7 +6,6 @@ build: config
 	cd build && cmake --build . -j${nproc}
 
 run: build
-	./build/bin/filesystem
-
+	./build/src/dialog/FileSystemModel
 clean:
 	rm -rf build

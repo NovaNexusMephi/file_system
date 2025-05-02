@@ -7,16 +7,6 @@ find_package(GTest REQUIRED)
 
 file(GLOB_RECURSE TESTS_SOURCE_FILES "source/*.cpp")
 
-<<<<<<< HEAD
-add_executable(Tests ${TESTS_SOURCE_FILES})
-
-target_link_libraries(Tests gtest
-                            gtest_main
-                            config
-                            monitor
-                            ${LIBCONFIG_LIBRARIES}
-)
-=======
 foreach(test_source ${TESTS_SOURCE_FILES})
     get_filename_component(test_name ${test_source} NAME_WE)
     
@@ -39,4 +29,3 @@ foreach(test_source ${TESTS_SOURCE_FILES})
     
     add_test(NAME ${test_name} COMMAND ${test_name})
 endforeach() 
->>>>>>> origin/file_system_max

@@ -34,19 +34,11 @@ add_subdirectory(configs)
 
 add_subdirectory(src/lib)
 add_subdirectory(src/config)
-<<<<<<< HEAD
-add_subdirectory(src/monitor)
-=======
 add_subdirectory(src/filesystem)
 add_subdirectory(src/monitor)
 add_subdirectory(src/commands)
 add_subdirectory(src/command_builder)
 
->>>>>>> origin/file_system_max
 add_subdirectory(tests)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} config monitor)
-
-
-add_dependencies(${PROJECT_NAME} CopyConfigFiles)
+add_subdirectory(src/dialog)
