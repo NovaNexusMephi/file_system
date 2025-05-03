@@ -5,13 +5,13 @@
 #include "commands/create_command.hpp"
 #include "commands/delete_command.hpp"
 #include "commands/dir_command.hpp"
+#include "commands/free_command.hpp"
 #include "commands/init_command.hpp"
 #include "commands/move_command.hpp"
 #include "commands/rename_command.hpp"
 #include "commands/sort_command.hpp"
 #include "commands/squeeze_command.hpp"
 #include "commands/vol_command.hpp"
-#include "commands/free_command.hpp"
 #include "filesystem/catalog.hpp"
 #include "filesystem/filesystem.hpp"
 
@@ -437,8 +437,8 @@ TEST(DirTestCommand, DirTest1) {
     EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
     EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
     auto res = dir_command.execute();
-    std::string expected_line = OK + ":\n" + "data.bin 2 Blocks " + today + "\n" +
-        "data.txt 2 Blocks " + today + "\n" +  "test1.txt 3 Blocks " + today + "\n";
+    std::string expected_line = OK + ":\n" + "data.bin 2 Blocks " + today + "\n" + "data.txt 2 Blocks " + today + "\n" +
+                                "test1.txt 3 Blocks " + today + "\n";
     auto value = res == expected_line;
     EXPECT_TRUE(value);
 }
@@ -462,7 +462,7 @@ TEST(DirTestCommand, DirTest2) {
     EXPECT_EQ(dir_command.execute(), "ERROR: the file system has not been initialized");
     EXPECT_EQ(init_command.execute(), "OK");
     auto res = dir_command.execute();
-    std::string expected =  "OK:\nVolume:VOL, Owner:OWNER\nFree blocks:10\nBad blocks:0\n";
+    std::string expected = "OK:\nVolume:VOL, Owner:OWNER\nFree blocks:10\nBad blocks:0\n";
     auto value = res == expected;
     EXPECT_TRUE(value);
     EXPECT_EQ(dir_command.execute(), "OK:\nVolume:VOL, Owner:OWNER\nFree blocks:10\nBad blocks:0\n");
@@ -516,8 +516,8 @@ TEST(SortCommandTest, SortTest) {
     EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
     EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
     auto res = sort_command.execute();
-    std::string expected = OK + ":\ndata.bin 5 Blocks " + today + "\ntemp.log 2 Blocks " + today +
-        "\nreport.txt 3 Blocks " + today + "\n";
+    std::string expected =
+        OK + ":\ndata.bin 5 Blocks " + today + "\ntemp.log 2 Blocks " + today + "\nreport.txt 3 Blocks " + today + "\n";
     EXPECT_TRUE(res == expected);
 }
 
@@ -539,8 +539,8 @@ TEST(SortCommandTest, SortTestByDate) {
     EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
     EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
     auto res = sort_command.execute();
-    std::string expected = OK + ":\ndata.bin 5 Blocks " + today + "\ntemp.log 2 Blocks " + 
-            today + "\nreport.txt 3 Blocks " + today + "\n";
+    std::string expected =
+        OK + ":\ndata.bin 5 Blocks " + today + "\ntemp.log 2 Blocks " + today + "\nreport.txt 3 Blocks " + today + "\n";
     EXPECT_TRUE(res == expected);
 }
 
@@ -563,12 +563,12 @@ TEST(SortCommandTest, SortTestInverse) {
     EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
     EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
     auto res = sort_command.execute();
-    std::string expected = OK + ":\ndata.bin 5 Blocks " + today + "\nreport.txt 3 Blocks " 
-            + today + "\ntemp.log 2 Blocks " + today + "\n";
+    std::string expected =
+        OK + ":\ndata.bin 5 Blocks " + today + "\nreport.txt 3 Blocks " + today + "\ntemp.log 2 Blocks " + today + "\n";
     EXPECT_TRUE(res == expected);
     res = sort_command1.execute();
-    expected = OK + ":\ntemp.log 2 Blocks " + today + "\nreport.txt 3 Blocks " 
-            + today + "\ndata.bin 5 Blocks " + today + "\n";
+    expected =
+        OK + ":\ntemp.log 2 Blocks " + today + "\nreport.txt 3 Blocks " + today + "\ndata.bin 5 Blocks " + today + "\n";
     EXPECT_TRUE(res == expected);
 }
 
@@ -590,7 +590,8 @@ TEST(SortCommandTest, SortTestInverse1) {
     EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
     EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
     auto res = sort_command.execute();
-    std::string expected = OK + ":\ntemp.log 2 Blocks " + today + "\nreport.txt 3 Blocks " + today + "\ndata.bin 5 Blocks " + today + "\n";
+    std::string expected =
+        OK + ":\ntemp.log 2 Blocks " + today + "\nreport.txt 3 Blocks " + today + "\ndata.bin 5 Blocks " + today + "\n";
     EXPECT_TRUE(res == expected);
 }
 
@@ -612,8 +613,8 @@ TEST(SortCommandTest, SortTestSize) {
     EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
     EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
     auto res = sort_command.execute();
-    std::string expected = OK + ":\ntemp.log 2 Blocks " + today + "\nreport.txt 3 Blocks " 
-            + today + "\ndata.bin 5 Blocks " + today + "\n";
+    std::string expected =
+        OK + ":\ntemp.log 2 Blocks " + today + "\nreport.txt 3 Blocks " + today + "\ndata.bin 5 Blocks " + today + "\n";
     EXPECT_TRUE(res == expected);
 }
 

@@ -59,8 +59,7 @@ std::string SortCommand::execute() {
         std::sort(result.begin(), result.end(), date_compare);
     } else if (sort_by_ == "size") {
         std::sort(result.begin(), result.end(), size_compare);
-    }
-    else {
+    } else {
         std::sort(result.begin(), result.end(), name_compare);
     }
     if (inv_ == "inv") {

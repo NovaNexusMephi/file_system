@@ -77,10 +77,9 @@ std::unique_ptr<AbstractCommand> CommandBuilder::build(const nlohmann::json& jso
     } else if (name == "sort") {
         auto data = json["data"].get<std::vector<std::string>>();
         std::string sort_by, inv;
-        if(data.empty()) {
+        if (data.empty()) {
             sort_by = "name";
-        }
-        else {
+        } else {
             sort_by = data[0];
             inv = data.size() > 1 ? data[1] : "";
         }

@@ -7,8 +7,8 @@
 #include "monitor/monitor.hpp"
 
 using command_builder::CommandBuilder;
-using command_builder::Validator;
 using command_builder::ValidationResult;
+using command_builder::Validator;
 
 int main(int argc, char* argv[]) {
     try {
