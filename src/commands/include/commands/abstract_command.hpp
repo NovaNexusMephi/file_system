@@ -11,7 +11,6 @@ class AbstractCommand {
     virtual ~AbstractCommand() = default;
 
    protected:
-
     explicit AbstractCommand(filesystem::FileSystem& receiver) : receiver_(receiver) {}
 
     filesystem::FileSystem& receiver_;

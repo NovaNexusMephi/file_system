@@ -1,7 +1,0 @@
-init VAL /segm:3 /rec:2 /vol:10;
-create f1 /allocate:2;
-create f2 /allocate:3;
-БЛЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯя;
-EXIT
-l
-;

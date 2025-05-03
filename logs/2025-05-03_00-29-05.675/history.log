@@ -1,4 +1,0 @@
-init /segm:3 /rec:2 /vol:10
-;
-create f1 /allocate:2
-;
