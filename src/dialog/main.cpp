@@ -6,6 +6,10 @@
 #include "filesystem/filesystem.hpp"
 #include "monitor/monitor.hpp"
 
+using command_builder::CommandBuilder;
+using command_builder::Validator;
+using command_builder::ValidationResult;
+
 int main(int argc, char* argv[]) {
     try {
         config::Config cfg = config::Config::prepare(argc, argv);

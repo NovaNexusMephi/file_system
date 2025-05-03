@@ -18,6 +18,8 @@
 #include "commands/unknown_command.hpp"
 #include "commands/vol_command.hpp"
 
+using command_builder::CommandBuilder;
+
 std::unique_ptr<AbstractCommand> CommandBuilder::build(const nlohmann::json& json) {
     auto name = json["name"].get<std::string>();
 
@@ -74,8 +76,14 @@ std::unique_ptr<AbstractCommand> CommandBuilder::build(const nlohmann::json& jso
         return std::make_unique<SqueezeCommand>(receiver_);
     } else if (name == "sort") {
         auto data = json["data"].get<std::vector<std::string>>();
-        std::string sort_by = data[0];
-        std::string inv = data.size() > 1 ? data[1] : "";
+        std::string sort_by, inv;
+        if(data.empty()) {
+            sort_by = "name";
+        }
+        else {
+            sort_by = data[0];
+            inv = data.size() > 1 ? data[1] : "";
+        }
         return std::make_unique<SortCommand>(receiver_, sort_by, inv);
     } else if (name == "free") {
         return std::make_unique<FreeCommand>(receiver_);

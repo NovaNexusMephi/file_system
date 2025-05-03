@@ -8,6 +8,7 @@
 #include "commands/init_command.hpp"
 #include "commands/move_command.hpp"
 #include "commands/rename_command.hpp"
+#include "commands/sort_command.hpp"
 #include "commands/squeeze_command.hpp"
 #include "commands/vol_command.hpp"
 #include "filesystem/catalog.hpp"
@@ -412,6 +413,184 @@ TEST(RenameTestCommand, RenameWithDifferentExtension) {
     EXPECT_NE(res.find(expected_line), std::string::npos)
         << "Expected line '" << expected_line << "' not found in result:\n"
         << res;
+}
+
+TEST(DirTestCommand, DirTest1) {
+    FileSystem filesystem;
+    InitCommand init_command(filesystem, "VOL", "OWNER", 3, 2, 10);
+    CreateCommand create_test1(filesystem, "data.bin", 2);
+    CreateCommand create_test2(filesystem, "data.txt", 2);
+    CreateCommand create_test3(filesystem, "test1.txt", 3);
+    DirCommand dir_command(filesystem);
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+
+    EXPECT_EQ(dir_command.execute(), "ERROR: the file system has not been initialized");
+    EXPECT_EQ(init_command.execute(), "OK");
+    EXPECT_EQ(dir_command.execute(), "OK:\n");
+    EXPECT_EQ(create_test1.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
+    auto res = dir_command.execute();
+    std::string expected_line = OK + ":\n" + "data.bin 2 Blocks " + today + "\n" +
+        "data.txt 2 Blocks " + today + "\n" +  "test1.txt 3 Blocks " + today + "\n";
+    auto value = res == expected_line;
+    EXPECT_TRUE(value);
+}
+
+TEST(DirTestCommand, DirTest2) {
+    FileSystem filesystem;
+    InitCommand init_command(filesystem, "VOL", "OWNER", 3, 2, 10);
+    CreateCommand create_test1(filesystem, "data.bin", 2);
+    CreateCommand create_test2(filesystem, "data.txt", 2);
+    CreateCommand create_test3(filesystem, "test1.txt", 3);
+    DeleteCommand delete_command(filesystem, "test1.txt");
+    VolCommand vol_command(filesystem, "VOL_03");
+    VolCommand vol_command1(filesystem, "VOL", "User");
+    DirCommand dir_command(filesystem, true);
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+    EXPECT_EQ(dir_command.execute(), "ERROR: the file system has not been initialized");
+    EXPECT_EQ(init_command.execute(), "OK");
+    auto res = dir_command.execute();
+    std::string expected =  "OK:\nVolume:VOL, Owner:OWNER\nFree blocks:10\nBad blocks:0\n";
+    auto value = res == expected;
+    EXPECT_TRUE(value);
+    EXPECT_EQ(dir_command.execute(), "OK:\nVolume:VOL, Owner:OWNER\nFree blocks:10\nBad blocks:0\n");
+    EXPECT_EQ(create_test1.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
+    res = dir_command.execute();
+    std::string expected_line = expected + "data.bin 2 Blocks " + today + "\n" + "data.txt 2 Blocks " + today + "\n" +
+                                "test1.txt 3 Blocks " + today + "\n";
+    value = res == expected_line;
+    EXPECT_FALSE(value);
+    expected_line = "OK:\nVolume:VOL, Owner:OWNER\nFree blocks:3\nBad blocks:0\ndata.bin 2 Blocks " + today + "\n" +
+                    "data.txt 2 Blocks " + today + "\n" + "test1.txt 3 Blocks " + today + "\n";
+    value = res == expected_line;
+    EXPECT_TRUE(value);
+    EXPECT_EQ(delete_command.execute(), "OK: the file has been removed");
+    res = dir_command.execute();
+    expected_line = "OK:\nVolume:VOL, Owner:OWNER\nFree blocks:6\nBad blocks:0\ndata.bin 2 Blocks " + today + "\n" +
+                    "data.txt 2 Blocks " + today + "\n";
+    value = res == expected_line;
+    EXPECT_TRUE(value);
+    EXPECT_EQ(vol_command.execute(), OK + ": the volume ID has been changed");
+    res = dir_command.execute();
+    expected_line = "OK:\nVolume:VOL_03, Owner:OWNER\nFree blocks:6\nBad blocks:0\ndata.bin 2 Blocks " + today + "\n" +
+                    "data.txt 2 Blocks " + today + "\n";
+    value = res == expected_line;
+    EXPECT_TRUE(value);
+    EXPECT_EQ(vol_command1.execute(), OK + ": the volume ID has been changed");
+    res = dir_command.execute();
+    expected_line = "OK:\nVolume:VOL, Owner:User\nFree blocks:6\nBad blocks:0\ndata.bin 2 Blocks " + today + "\n" +
+                    "data.txt 2 Blocks " + today + "\n";
+    value = res == expected_line;
+    EXPECT_TRUE(value);
+}
+
+TEST(SortCommandTest, SortTest) {
+    FileSystem filesystem;
+    InitCommand init_command(filesystem, "VOL", "OWNER", 3, 2, 10);
+    CreateCommand create_test1(filesystem, "data.bin", 5);
+    CreateCommand create_test2(filesystem, "temp.log", 2);
+    CreateCommand create_test3(filesystem, "report.txt", 3);
+    SortCommand sort_command(filesystem, "ext");
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+    EXPECT_EQ(init_command.execute(), "OK");
+    EXPECT_EQ(create_test1.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
+    auto res = sort_command.execute();
+    std::string expected = OK + ":\ndata.bin 5 Blocks " + today + "\ntemp.log 2 Blocks " + today +
+        "\nreport.txt 3 Blocks " + today + "\n";
+    EXPECT_TRUE(res == expected);
+}
+
+TEST(SortCommandTest, SortTestByDate) {
+    FileSystem filesystem;
+    InitCommand init_command(filesystem, "VOL", "OWNER", 3, 2, 10);
+    CreateCommand create_test1(filesystem, "data.bin", 5);
+    CreateCommand create_test2(filesystem, "temp.log", 2);
+    CreateCommand create_test3(filesystem, "report.txt", 3);
+    SortCommand sort_command(filesystem, "date");
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+    EXPECT_EQ(init_command.execute(), "OK");
+    EXPECT_EQ(create_test1.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
+    auto res = sort_command.execute();
+    std::string expected = OK + ":\ndata.bin 5 Blocks " + today + "\ntemp.log 2 Blocks " + 
+            today + "\nreport.txt 3 Blocks " + today + "\n";
+    EXPECT_TRUE(res == expected);
+}
+
+TEST(SortCommandTest, SortTestInverse) {
+    FileSystem filesystem;
+    InitCommand init_command(filesystem, "VOL", "OWNER", 3, 2, 10);
+    CreateCommand create_test1(filesystem, "data.bin", 5);
+    CreateCommand create_test2(filesystem, "temp.log", 2);
+    CreateCommand create_test3(filesystem, "report.txt", 3);
+    SortCommand sort_command(filesystem, "name");
+    SortCommand sort_command1(filesystem, "name", "inv");
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+    EXPECT_EQ(init_command.execute(), "OK");
+    EXPECT_EQ(create_test1.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
+    auto res = sort_command.execute();
+    std::string expected = OK + ":\ndata.bin 5 Blocks " + today + "\nreport.txt 3 Blocks " 
+            + today + "\ntemp.log 2 Blocks " + today + "\n";
+    EXPECT_TRUE(res == expected);
+    res = sort_command1.execute();
+    expected = OK + ":\ntemp.log 2 Blocks " + today + "\nreport.txt 3 Blocks " 
+            + today + "\ndata.bin 5 Blocks " + today + "\n";
+    EXPECT_TRUE(res == expected);
+}
+
+TEST(SortCommandTest, SortTestInverse1) {
+    FileSystem filesystem;
+    InitCommand init_command(filesystem, "VOL", "OWNER", 3, 2, 10);
+    CreateCommand create_test1(filesystem, "data.bin", 5);
+    CreateCommand create_test2(filesystem, "temp.log", 2);
+    CreateCommand create_test3(filesystem, "report.txt", 3);
+    SortCommand sort_command(filesystem, "", "inv");
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+    EXPECT_EQ(init_command.execute(), "OK");
+    EXPECT_EQ(create_test1.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
+    auto res = sort_command.execute();
+    std::string expected = OK + ":\ntemp.log 2 Blocks " + today + "\nreport.txt 3 Blocks " + today + "\ndata.bin 5 Blocks " + today + "\n";
+    EXPECT_TRUE(res == expected);
 }
 
 int main(int argc, char** argv) {

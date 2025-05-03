@@ -8,9 +8,9 @@ std::string DirCommand::execute() {
     }
 
     std::string response = OK + ":\n", temp;
-    if (!full_) {
+    if (full_) {
         response += ("Volume:" + receiver_.get_info().get_volume_name() +
-                     ", Owner:" + receiver_.get_info().get_volume_name() + "\n");
+                     ", Owner:" + receiver_.get_info().get_owner_name() + "\n");
         response += ("Free blocks:" + std::to_string(receiver_.get_catalog().get_free_space()) + "\n");
         response += ("Bad blocks:" + std::to_string(receiver_.get_catalog().get_blocked_space()) + "\n");
     }

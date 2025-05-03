@@ -4,6 +4,9 @@
 
 #include "command_builder/validator.hpp"
 
+using command_builder::ValidationResult;
+using command_builder::Validator;
+
 TEST(Validator, DirCommandValid) {
     Validator validator;
     nlohmann::json regular = nlohmann::json::parse(R"(

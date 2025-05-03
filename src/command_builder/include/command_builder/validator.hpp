@@ -3,6 +3,8 @@
 #include <nlohmann/json-schema.hpp>
 #include <string>
 
+namespace command_builder {
+    
 enum class ValidationResult { VALID, INVALID, UNKNOWN_COMMAND };
 
 class Validator {
@@ -12,3 +14,4 @@ class Validator {
    private:
     nlohmann::json_schema::json_validator validator_;
 };
+}

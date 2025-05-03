@@ -2,6 +2,8 @@
 
 #include "commands/commands_constants.hpp"
 
+#include <iostream>
+
 auto get_extension = [](const std::string& line) -> std::string {
     size_t pos = line.find_last_of('.');
     return (pos == std::string::npos) ? "" : line.substr(pos);
@@ -51,14 +53,15 @@ std::string SortCommand::execute() {
             result.push_back(temp);
         }
     }
-    if (sort_by_ == "name") {
-        std::sort(result.begin(), result.end(), name_compare);
-    } else if (sort_by_ == "extension") {
+    if (sort_by_ == "ext") {
         std::sort(result.begin(), result.end(), extension_compare);
     } else if (sort_by_ == "date") {
         std::sort(result.begin(), result.end(), date_compare);
     } else if (sort_by_ == "size") {
         std::sort(result.begin(), result.end(), size_compare);
+    }
+    else {
+        std::sort(result.begin(), result.end(), name_compare);
     }
     if (inv_ == "inv") {
         std::reverse(result.begin(), result.end());
