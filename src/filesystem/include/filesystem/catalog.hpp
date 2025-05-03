@@ -26,11 +26,6 @@ class Catalog final {
     Catalog(size_t count, size_t records_count, size_t volume_size)
         : header_(count, 0, records_count * count, volume_size), segments_(count, Segment(records_count)) {}
 
-    // [[nodiscard]] Error free() const noexcept;
-
-    // [[nodiscard]] std::vector<std::string> sort(bool by_name = false, bool by_ext = false, bool by_date = false,
-    //                                             bool by_size = false, bool inverse = false) const noexcept;
-
     void print_catalog() const noexcept;
 
     [[nodiscard]] inline const std::vector<Segment>& get_segments() const noexcept { return segments_; }

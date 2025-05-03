@@ -5,6 +5,7 @@
 #include "commands/create_command.hpp"
 #include "commands/delete_command.hpp"
 #include "commands/dir_command.hpp"
+#include "commands/free_command.hpp"
 #include "commands/init_command.hpp"
 #include "commands/move_command.hpp"
 #include "commands/rename_command.hpp"
@@ -592,6 +593,55 @@ TEST(SortCommandTest, SortTestInverse1) {
     std::string expected =
         OK + ":\ntemp.log 2 Blocks " + today + "\nreport.txt 3 Blocks " + today + "\ndata.bin 5 Blocks " + today + "\n";
     EXPECT_TRUE(res == expected);
+}
+
+TEST(SortCommandTest, SortTestSize) {
+    FileSystem filesystem;
+    InitCommand init_command(filesystem, "VOL", "OWNER", 3, 2, 10);
+    CreateCommand create_test1(filesystem, "data.bin", 5);
+    CreateCommand create_test2(filesystem, "temp.log", 2);
+    CreateCommand create_test3(filesystem, "report.txt", 3);
+    SortCommand sort_command(filesystem, "size");
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = std::localtime(&time);
+    std::stringstream ss;
+    ss << std::put_time(tm, "%d-%m-%Y");
+    std::string today = ss.str();
+    EXPECT_EQ(init_command.execute(), "OK");
+    EXPECT_EQ(create_test1.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
+    auto res = sort_command.execute();
+    std::string expected =
+        OK + ":\ntemp.log 2 Blocks " + today + "\nreport.txt 3 Blocks " + today + "\ndata.bin 5 Blocks " + today + "\n";
+    EXPECT_TRUE(res == expected);
+}
+
+TEST(SortCommandTest, SortTestEmpty) {
+    FileSystem filesystem;
+    InitCommand init_command(filesystem, "VOL", "OWNER", 3, 2, 10);
+    SortCommand sort_command(filesystem, "size");
+    EXPECT_EQ(sort_command.execute(), ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(init_command.execute(), "OK");
+    auto res = sort_command.execute();
+    EXPECT_EQ(res, "OK:\n");
+}
+
+TEST(FreeCommandTest, FreeTest) {
+    FileSystem filesystem;
+    InitCommand init_command(filesystem, "VOL", "OWNER", 3, 2, 10);
+    CreateCommand create_test1(filesystem, "data.bin", 5);
+    CreateCommand create_test2(filesystem, "temp.log", 2);
+    CreateCommand create_test3(filesystem, "report.txt", 3);
+    FreeCommand free_command(filesystem);
+    EXPECT_EQ(free_command.execute(), ERROR + ": the file system has not been initialized");
+    EXPECT_EQ(init_command.execute(), "OK");
+    EXPECT_EQ(create_test1.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test2.execute(), "OK: the file has been added");
+    EXPECT_EQ(create_test3.execute(), "OK: the file has been added");
+    auto res = free_command.execute();
+    std::cout << res;
 }
 
 int main(int argc, char** argv) {

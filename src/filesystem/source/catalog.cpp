@@ -20,27 +20,6 @@ FileRecord* Catalog::find_record(const std::string& filename) noexcept {
     return nullptr;
 }
 
-// std::vector<std::string> Catalog::sort(bool by_name, bool by_ext, bool by_date, bool by_size,
-//                                        bool inverse) const noexcept {
-//     std::vector<std::string> result;  // = dir();
-//     if (by_name) {
-//         std::sort(result.begin(), result.end(), name_compare);
-//     }
-//     if (by_ext) {
-//         std::sort(result.begin(), result.end(), extension_compare);
-//     }
-//     if (by_date) {
-//         std::sort(result.begin(), result.end(), date_compare);
-//     }
-//     if (by_size) {
-//         std::sort(result.begin(), result.end(), size_compare);
-//     }
-//     if (inverse) {
-//         std::reverse(result.begin(), result.end());
-//     }
-//     return result;
-// }
-
 void Catalog::print_catalog() const noexcept {
     for (const auto& segment : segments_) {
         size_t total_size = segment.get_size();
