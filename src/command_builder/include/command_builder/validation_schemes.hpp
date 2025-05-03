@@ -63,7 +63,8 @@ static const nlohmann::json init_scheme = R"(
                     "type": "integer",
                     "minimum": 1
                 }
-            }
+            },
+            "additionalProperties": false
         }
      }
 }
@@ -95,7 +96,8 @@ static const nlohmann::json create_scheme = R"(
                     "type": "integer",
                     "minimum": 1
                 }
-            }
+            },
+            "additionalProperties": false
         }
      }
 }
@@ -227,7 +229,8 @@ static const nlohmann::json add_scheme = R"(
                     "type": "integer",
                     "minimum": 1
                 }
-            }
+            },
+            "additionalProperties": false
         }
      }
 }
@@ -266,9 +269,10 @@ static const nlohmann::json sort_scheme = R"(
         },
         "data": {
            "type": "array",
-            "items": {
-                "enum": ["name", "ext", "date", "size", "inv"]
-            },
+            "items": [
+                {"enum": ["name", "ext", "date", "size"]},
+                {"enum": ["inv"]}
+            ],
             "minItems": 0,
             "maxItems": 2
         },

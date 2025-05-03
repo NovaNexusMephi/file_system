@@ -196,6 +196,14 @@ TEST(Validator, InitCommandInvalid) {
         }
     )");
 
+    nlohmann::json options_invalid_option_name = nlohmann::json::parse(R"(
+        {
+            "name": "init",
+            "data": [ "VOL", "OWNER" ],
+            "options": { "segm": 3, "volume": 2, "rec": 10}
+        }
+    )");
+
     EXPECT_EQ(validator.validate("init", data_insufficient), ValidationResult::INVALID);
     EXPECT_EQ(validator.validate("init", data_excessive), ValidationResult::INVALID);
     EXPECT_EQ(validator.validate("init", options_excessive), ValidationResult::INVALID);
@@ -209,6 +217,7 @@ TEST(Validator, InitCommandInvalid) {
     EXPECT_EQ(validator.validate("init", option_invalid_segm_vol_rec), ValidationResult::INVALID);
     EXPECT_EQ(validator.validate("init", data_invalid_type), ValidationResult::INVALID);
     EXPECT_EQ(validator.validate("init", options_invalid_type), ValidationResult::INVALID);
+    EXPECT_EQ(validator.validate("init", options_invalid_option_name), ValidationResult::INVALID);
 }
 
 TEST(Validator, CreateCommandValid) {
@@ -279,6 +288,14 @@ TEST(Validator, CreateCommandInvalid) {
             "name": "create",
             "data": [ "f1.txt" ],
             "options": { "allocate": "10" }
+        }
+    )");
+
+    nlohmann::json options_invalid_option_name = nlohmann::json::parse(R"(
+        {
+            "name": "create",
+            "data": [ "f1.txt" ],
+            "options": { "alloc": 10 }
         }
     )");
 
@@ -569,6 +586,14 @@ TEST(Validator, AddCommandInvalid) {
         }
     )");
 
+    nlohmann::json options_invalid_option_name = nlohmann::json::parse(R"(
+        {
+            "name": "add",
+            "data": [ "f1.txt" ],
+            "options": { "siz": 10 }
+        }
+    )");
+
     EXPECT_EQ(validator.validate("add", data_insufficient), ValidationResult::INVALID);
     EXPECT_EQ(validator.validate("add", data_excessive), ValidationResult::INVALID);
     EXPECT_EQ(validator.validate("add", options_excessive), ValidationResult::INVALID);
@@ -576,6 +601,7 @@ TEST(Validator, AddCommandInvalid) {
     EXPECT_EQ(validator.validate("add", option_invalid_size), ValidationResult::INVALID);
     EXPECT_EQ(validator.validate("add", data_invalid_type), ValidationResult::INVALID);
     EXPECT_EQ(validator.validate("add", options_invalid_type), ValidationResult::INVALID);
+    EXPECT_EQ(validator.validate("add", options_invalid_option_name), ValidationResult::INVALID);
 }
 
 TEST(Validator, SqueezeCommandValid) {
@@ -655,14 +681,6 @@ TEST(Validator, SortCommandValid) {
         }
     )");
 
-    nlohmann::json sort_valid_inv = nlohmann::json::parse(R"(
-        {
-            "name": "sort",
-            "data": [ "inv" ],
-            "options": {}
-        }
-    )");
-
     nlohmann::json sort_valid_name_inv = nlohmann::json::parse(R"(
         {
             "name": "sort",
@@ -700,7 +718,6 @@ TEST(Validator, SortCommandValid) {
     EXPECT_EQ(validator.validate("sort", sort_valid_ext), ValidationResult::VALID);
     EXPECT_EQ(validator.validate("sort", sort_valid_date), ValidationResult::VALID);
     EXPECT_EQ(validator.validate("sort", sort_valid_size), ValidationResult::VALID);
-    EXPECT_EQ(validator.validate("sort", sort_valid_inv), ValidationResult::VALID);
     EXPECT_EQ(validator.validate("sort", sort_valid_name_inv), ValidationResult::VALID);
     EXPECT_EQ(validator.validate("sort", sort_valid_ext_inv), ValidationResult::VALID);
     EXPECT_EQ(validator.validate("sort", sort_valid_date_inv), ValidationResult::VALID);
@@ -733,9 +750,27 @@ TEST(Validator, SortCommandInvalid) {
         }
     )");
 
+    nlohmann::json invalid_data_name = nlohmann::json::parse(R"(
+        {
+            "name": "sort",
+            "data": [ "inv" ],
+            "options": {}
+        }
+    )");
+
+    nlohmann::json data_invalid_type = nlohmann::json::parse(R"(
+        {
+            "name": "sort",
+            "data": [ "inv", "name" ],
+            "options": {}
+        }
+    )");
+
     EXPECT_EQ(validator.validate("sort", data_excessive), ValidationResult::INVALID);
     EXPECT_EQ(validator.validate("sort", options_excessive), ValidationResult::INVALID);
     EXPECT_EQ(validator.validate("sort", data_invalid), ValidationResult::INVALID);
+    EXPECT_EQ(validator.validate("sort", invalid_data_name), ValidationResult::INVALID);
+    EXPECT_EQ(validator.validate("sort", data_invalid_type), ValidationResult::INVALID);
 }
 
 TEST(Validator, FreeCommandValid) {
