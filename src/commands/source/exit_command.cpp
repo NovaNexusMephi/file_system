@@ -4,4 +4,6 @@
 
 #include "commands/commands_constants.hpp"
 
-std::string ExitCommand::execute() { throw ExitException(OK); }
+std::string ExitCommand::execute() {
+    throw ExitException(OK);
+}
