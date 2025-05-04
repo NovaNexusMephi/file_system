@@ -13,7 +13,7 @@ std::string AddCommand::execute() {
         }
         record->set_size(size + size_);
         catalog.get_free_space() -= size_;
-        return OK + ": the file size has been increased";
+        return OK + std::format(": the {} size has been increased", filename_);
     }
     return FILE_NOT_FOUND;
 }

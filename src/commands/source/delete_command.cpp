@@ -24,7 +24,7 @@ std::string DeleteCommand::execute() {
             last_segment->remove_record();
             catalog.get_free_direct_space() += size;
         }
-        return OK + ": the file has been removed";
+        return OK + std::format(": the {} has been removed", filename_);
     }
     return FILE_NOT_FOUND;
 }

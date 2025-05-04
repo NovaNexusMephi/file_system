@@ -14,7 +14,7 @@ std::string MoveCommand::execute() {
         DeleteCommand delete_command(receiver_, filename_);
         create.execute();
         delete_command.execute();
-        return OK + ": the file has been moved";
+        return OK + std::format(": the {} has been moved", dist_filename_);
     }
     return FILE_NOT_FOUND;
 }

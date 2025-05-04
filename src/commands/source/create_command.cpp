@@ -38,7 +38,7 @@ std::string CreateCommand::execute() {
                             catalog.get_segments()[i].get_records()[l].set_type(filesystem::FileType::BLOCKED);
                         }
                         catalog.get_blocked_space() += sum - size_;
-                        return OK + ": the file has been added";
+                        return OK + std::format(": the {} has been added", filename_);
                     }
                 }
             }
@@ -53,7 +53,7 @@ std::string CreateCommand::execute() {
         --catalog.get_free_records();
         catalog.get_free_space() -= size_;
         catalog.get_files().insert(filename_);
-        return OK + ": the file has been added";
+        return OK + std::format(": the {} has been added", filename_);
     }
     return NO_FREE_SPACE;
 }
