@@ -28,6 +28,7 @@ jobs:
         run: |
           git checkout gh-pages || git checkout --orphan gh-pages
 
+
       - name: Commit and push docs
         run: |
           rm -rf search/
