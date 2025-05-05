@@ -2,6 +2,8 @@
 #include "filesystem/file_record.hpp"
 #include "filesystem/segment.hpp"
 
+#include "commands/commands_constants.hpp"
+
 std::string SqueezeCommand::execute() {
     if (!receiver_.is_valid()) {
         return ERROR + ": the file system has not been initialized";

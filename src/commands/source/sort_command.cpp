@@ -2,8 +2,6 @@
 
 #include "commands/commands_constants.hpp"
 
-#include <iostream>
-
 auto get_extension = [](const std::string& line) -> std::string {
     size_t pos = line.find_last_of('.');
     return (pos == std::string::npos) ? "" : line.substr(pos);

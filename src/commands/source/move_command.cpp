@@ -1,4 +1,7 @@
 #include "commands/move_command.hpp"
+#include "commands/commands_constants.hpp"
+#include "commands/create_command.hpp"
+#include "commands/delete_command.hpp"
 
 std::string MoveCommand::execute() {
     if (!receiver_.is_valid()) {

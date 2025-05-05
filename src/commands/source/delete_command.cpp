@@ -1,4 +1,5 @@
 #include "commands/delete_command.hpp"
+#include "commands/commands_constants.hpp"
 
 #include "filesystem/file_record.hpp"
 
