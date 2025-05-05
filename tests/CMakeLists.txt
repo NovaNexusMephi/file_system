@@ -3,7 +3,12 @@ project(Tests)
 
 set(CMAKE_CXX_STANDARD 20)
 
-find_package(GTest REQUIRED)
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.tar.gz
+)
+FetchContent_MakeAvailable(googletest)
 
 file(GLOB_RECURSE TESTS_SOURCE_FILES "source/*.cpp")
 
