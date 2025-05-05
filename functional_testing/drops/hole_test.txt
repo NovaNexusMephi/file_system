@@ -1,0 +1,7 @@
+init VOL /segm:2 /vol:10 /rec:3;
+create f1.txt /allocate:5;
+create f2.txt /allocate:2;
+delete f1.txt;
+create f3.txt /allocate:4;
+create f4.txt /allocate:1;
+dir;

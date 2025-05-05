@@ -11,12 +11,12 @@ constexpr unsigned short MAX_SEGMENT_NUMBER = 31;
 
 constexpr unsigned short DEFAULT_SEGMENT_NUMBER = 15;
 
-constexpr std::string DEFAULT_VOLUME_NAME = "VOL001";
+static const std::string DEFAULT_VOLUME_NAME = "VOL001";
 
-constexpr std::string DEFAULT_OWNER_NAME = "Admin";
+static const std::string DEFAULT_OWNER_NAME = "Admin";
 
-constexpr std::string DEFAULT_SYSTEM_NAME = "fs";
+static const std::string DEFAULT_SYSTEM_NAME = "fs";
 
-} // namespace lib
+}  // namespace lib
 
 #endif

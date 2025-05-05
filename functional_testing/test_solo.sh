@@ -1,0 +1,1 @@
+cat test.txt | ../build/src/dialog/FileSystemModel
