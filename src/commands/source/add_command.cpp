@@ -1,4 +1,5 @@
 #include "commands/add_command.hpp"
+#include "commands/commands_constants.hpp"
 
 std::string AddCommand::execute() {
     if (!receiver_.is_valid()) {
