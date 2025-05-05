@@ -1,0 +1,2 @@
+init VOL /segm:1 /vol:5 /rec:1;
+delete f1;
