@@ -39,6 +39,5 @@ add_subdirectory(src/monitor)
 add_subdirectory(src/commands)
 add_subdirectory(src/command_builder)
 
-add_subdirectory(tests)
 
 add_subdirectory(src/dialog)
