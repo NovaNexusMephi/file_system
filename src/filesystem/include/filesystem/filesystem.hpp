@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 #include "catalog.hpp"
 #include "system_information.hpp"
 
