@@ -143,6 +143,55 @@ TEST(DeleteTestCommand, DeleteError) {
     EXPECT_EQ(delete_test1.execute(), "OK: the test1.txt has been removed");
 }
 
+TEST(DeleteTestCommand, DeleteWithSingleRecord) {
+    FileSystem filesystem;
+    InitCommand init_command(filesystem, "VOL", "OWNER", 2, 1, 5);
+    CreateCommand create_test1(filesystem, "test1.txt", 2);
+    CreateCommand create_test2(filesystem, "test2.txt", 1);
+    CreateCommand create_test3(filesystem, "test3.txt", 3);
+    DeleteCommand delete_test1(filesystem, "test2.txt");
+    DirCommand dir_command(filesystem);
+
+    EXPECT_EQ(init_command.execute(), "OK");
+    EXPECT_EQ(create_test1.execute(), "OK: the test1.txt has been added");
+    EXPECT_EQ(create_test2.execute(), "OK: the test2.txt has been added");
+    EXPECT_EQ(delete_test1.execute(), "OK: the test2.txt has been removed");
+    EXPECT_EQ(create_test3.execute(), "OK: the test3.txt has been added");
+}
+
+TEST(DeleteTestCommand, DeleteWithSingleRecordAndSqueeze) {
+    FileSystem filesystem;
+    InitCommand init_command(filesystem, "VOL", "OWNER", 2, 1, 5);
+    CreateCommand create_test1(filesystem, "test1.txt", 2);
+    CreateCommand create_test2(filesystem, "test2.txt", 1);
+    DeleteCommand delete_test1(filesystem, "test1.txt");
+    SqueezeCommand squeeze_command(filesystem);
+
+    EXPECT_EQ(init_command.execute(), "OK");
+    EXPECT_EQ(create_test1.execute(), "OK: the test1.txt has been added");
+    EXPECT_EQ(create_test2.execute(), "OK: the test2.txt has been added");
+    EXPECT_EQ(delete_test1.execute(), "OK: the test1.txt has been removed");
+    EXPECT_EQ(squeeze_command.execute(), "OK: fragmentation was completed successfully");
+}
+
+TEST(DeleteTestCommand, DeleteWithSingleRecordAndDir) {
+    FileSystem filesystem;
+    InitCommand init_command(filesystem, "VOL", "OWNER", 2, 3, 10);
+    CreateCommand create_test1(filesystem, "test1.txt", 5);
+    CreateCommand create_test2(filesystem, "test2.txt", 2);
+    DeleteCommand delete_test1(filesystem, "test1.txt");
+    CreateCommand create_test3(filesystem, "test3.txt", 4);
+    CreateCommand create_test4(filesystem, "test4.txt", 1);
+    DirCommand dir_command(filesystem);
+
+    EXPECT_EQ(init_command.execute(), "OK");
+    EXPECT_EQ(create_test1.execute(), "OK: the test1.txt has been added");
+    EXPECT_EQ(create_test2.execute(), "OK: the test2.txt has been added");
+    EXPECT_EQ(delete_test1.execute(), "OK: the test1.txt has been removed");
+    EXPECT_EQ(create_test3.execute(), "OK: the test3.txt has been added");
+    EXPECT_EQ(create_test4.execute(), "OK: the test4.txt has been added");
+}
+
 TEST(RenameTestCommand, RenameFile) {
     FileSystem filesystem;
     InitCommand init_command(filesystem, "VOL", "OWNER", 3, 2, 10);
