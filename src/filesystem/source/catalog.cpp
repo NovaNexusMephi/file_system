@@ -1,7 +1,5 @@
 #include "filesystem/catalog.hpp"
 
-#include <algorithm>
-#include <format>
 #include <iostream>
 
 #include "filesystem/file_record.hpp"
