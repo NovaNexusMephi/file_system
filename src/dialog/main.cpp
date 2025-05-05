@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
 
     } catch (const ExitException& exit) {
         std::cerr << exit.what() << "\n";
-        return 1;
+        return 0;
     } catch (const std::exception& fatal_error) {
         std::cerr << fatal_error.what() << "\n";
         return 1;
