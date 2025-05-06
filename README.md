@@ -10,7 +10,7 @@
 
 Перед компиляцией и запуском надо выполнить следующие шаги:
 
-1. ` git clone [https://github.com/NovaNexusMephi/file_system](https://github.com/NovaNexusMephi/file_system)`
+1. ` git clone https://github.com/NovaNexusMephi/file_system`
 
 2.  `cd file_system`
 
